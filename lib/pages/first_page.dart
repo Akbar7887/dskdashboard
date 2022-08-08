@@ -12,6 +12,7 @@ TextEditingController _password = TextEditingController();
 Repository repository = Repository();
 final _keyUser = GlobalKey<FormState>();
 final _keyPassword = GlobalKey<FormState>();
+bool visiblepassvord = true;
 
 class FirstPage extends StatelessWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class FirstPage extends StatelessWidget {
               height: 50,
             ),
             Container(
-              // alignment: Alignment.center,
+                // alignment: Alignment.center,
                 child: Text(Ui.company,
                     style: GoogleFonts.openSans(
                         fontSize: 50,
@@ -54,7 +55,7 @@ class FirstPage extends StatelessWidget {
                   key: _keyUser,
                   child: TextFormField(
                       controller: _user,
-                      validator: (value){
+                      validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Просим заполнить пользователя";
                         }
@@ -75,7 +76,7 @@ class FirstPage extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                              BorderSide(width: 0.5, color: Colors.white)),
+                                  BorderSide(width: 0.5, color: Colors.white)),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
@@ -87,36 +88,53 @@ class FirstPage extends StatelessWidget {
             Container(
                 width: 400,
                 child: Form(
-                  key: _keyPassword,
-                  child: TextFormField(
-                      controller: _password,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Просим заполнить пароль";
-                        }
+                    key: _keyPassword,
+                    child: StatefulBuilder(
+                      builder: (context, setState) {
+                        return TextFormField(
+                            controller: _password,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Просим заполнить пароль";
+                              }
+                            },
+                            obscureText: visiblepassvord,
+                            style: GoogleFonts.openSans(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w200,
+                                color: Colors.white),
+                            decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    color: Colors.white,
+                                    (visiblepassvord)
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      visiblepassvord = !visiblepassvord;
+                                    });
+                                  },
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.vpn_key_rounded,
+                                  color: Colors.white,
+                                ),
+                                fillColor: Colors.white,
+                                //Theme.of(context).backgroundColor,
+                                labelText: "Пароль",
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        width: 0.5, color: Colors.white)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        width: 0.5, color: Colors.white))));
                       },
-                      style: GoogleFonts.openSans(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white),
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.vpn_key_rounded,
-                            color: Colors.white,
-                          ),
-                          fillColor: Colors.white,
-                          //Theme.of(context).backgroundColor,
-                          labelText: "Пароль",
-                          labelStyle: TextStyle(color: Colors.white),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                              BorderSide(width: 0.5, color: Colors.white)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  width: 0.5, color: Colors.white)))),
-                )),
+                    ))),
             SizedBox(
               height: 30,
             ),
@@ -130,11 +148,10 @@ class FirstPage extends StatelessWidget {
               // color: Colors.black,
               child: ElevatedButton(
                 onPressed: () {
-
-                  if(_keyUser.currentState!.validate() ==false){
+                  if (_keyUser.currentState!.validate() == false) {
                     return;
                   }
-                  if(_keyPassword.currentState!.validate() ==false){
+                  if (_keyPassword.currentState!.validate() == false) {
                     return;
                   }
                   repository
@@ -165,11 +182,10 @@ class FirstPage extends StatelessWidget {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                             side:
-                            BorderSide(color: Colors.white, width: 0.5)))),
+                                BorderSide(color: Colors.white, width: 0.5)))),
               ),
             )
           ],
-        )
-    );
+        ));
   }
 }
