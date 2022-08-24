@@ -212,25 +212,3 @@ class KomleksPage extends StatelessWidget {
     );
   }
 }
-
-// class KomleksPage extends StatefulWidget {
-//   const KomleksPage({Key? key}) : super(key: key);
-//
-//   @override
-//   State<KomleksPage> createState() => _KomleksPageState();
-// }
-//
-// class _KomleksPageState extends State<KomleksPage> {
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     //
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // kompleksBloc.add(BlocLoadEvent());
-//     return
-//   }

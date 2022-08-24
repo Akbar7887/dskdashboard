@@ -2,14 +2,10 @@ import 'package:dskdashboard/bloc/doma_bloc.dart';
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/models/doma.dart';
-import 'package:dskdashboard/pages/komleks_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../bloc/bloc_event.dart';
-import '../bloc/bloc_state.dart';
 
 class DomaPage extends StatefulWidget {
   const DomaPage({Key? key}) : super(key: key);
