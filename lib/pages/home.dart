@@ -1,6 +1,7 @@
 import 'package:dskdashboard/bloc/bloc_event.dart';
 import 'package:dskdashboard/bloc/bloc_state.dart';
 import 'package:dskdashboard/bloc/doma_bloc.dart';
+import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:dskdashboard/pages/doma_page.dart';
 import 'package:dskdashboard/pages/image_page.dart';
@@ -42,7 +43,11 @@ class _HomeState extends State<Home> {
                     ..add(BlocLoadEvent())
               ),
               BlocProvider(create: (context) =>
-                  DomaBloc(repository: context.read<Repository>()))
+                  DomaBloc(repository: context.read<Repository>())),
+              BlocProvider(
+                  create: (context) =>
+                  ImageBloc(repository: context.read<Repository>())
+              ),
             ],
             child: Scaffold(
               appBar: PreferredSize(

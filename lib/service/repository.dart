@@ -1,4 +1,5 @@
 import 'package:dskdashboard/models/Kompleks.dart';
+import 'package:dskdashboard/models/picture_home.dart';
 import 'package:dskdashboard/service/api.dart';
 import 'package:dskdashboard/service/api_doma.dart';
 
@@ -21,4 +22,7 @@ class Repository {
 
   Future<dynamic> savedom(String url, dynamic object, Map<String, dynamic> param) => apiDoma.postDom(url, object, param);
 
+  Future<List<PictureHome>> getImage(String id) => api.getPicture(id);
+
+  Future<PictureHome> webImage(String url,bool web, String id) => api.webImage(url, web, id);
 }

@@ -1,12 +1,18 @@
 import 'package:dskdashboard/bloc/doma_bloc.dart';
+import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
+import 'package:dskdashboard/service/api.dart';
+import 'package:dskdashboard/service/repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import '../bloc/bloc_state.dart';
 import '../bloc/kompleks_bloc.dart';
+import '../models/picture_home.dart';
 import '../models/doma.dart';
 import '../ui.dart';
 
@@ -18,16 +24,38 @@ class ImagePage extends StatefulWidget {
 }
 
 class _ImagePageState extends State<ImagePage> {
-  List<Kompleks> _listKomleks = [];
+  List<Kompleks>? _listKomleks = [];
   Kompleks? _kompleks;
   List<Doma> _listDoma = [];
   Doma? _doma;
   DomaBloc? _domaBloc;
+  ImageBloc? imageBloc;
+  List<PictureHome> _listPicture = [];
+  FlutterSecureStorage _storage = FlutterSecureStorage();
+  late Map<String, String> hedersWithToken;
+  int _indexImage = 0;
+
+  // late final Repository repository;
+
+  Future<void> getToken() async {
+    String? token = await _storage.read(key: "token");
+
+    hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
+    imageBloc = BlocProvider.of<ImageBloc>(context);
     _domaBloc = BlocProvider.of<DomaBloc>(context);
-
     return BlocConsumer<KompleksBloc, BlocState>(
       builder: (context, state) {
         if (state is BlocEmtyState) {
@@ -38,11 +66,13 @@ class _ImagePageState extends State<ImagePage> {
           return Center(child: CircularProgressIndicator());
         }
         if (state is KompleksLoadedState) {
-          //
           _listKomleks = state.loadedKomleks;
-          _listKomleks.sort((a, b) => a.id!.compareTo(b.id!));
+          _listKomleks!.sort((a, b) => a.id!.compareTo(b.id!));
+          // _if(_listKomleks.length > 0){
+          //   _doma = _listKomleks[0].;
+          // }
 
-          return mainList(context);
+          return mainList();
         }
 
         if (state is BlocErrorState) {
@@ -56,8 +86,8 @@ class _ImagePageState extends State<ImagePage> {
     );
   }
 
-  Widget mainList(BuildContext context) {
-    return ListView(
+  Widget mainList() {
+    return Column(
       children: [
         Container(
             alignment: Alignment.center,
@@ -69,6 +99,9 @@ class _ImagePageState extends State<ImagePage> {
                   fontWeight: FontWeight.w200,
                   color: Colors.black),
             )),
+        SizedBox(
+          height: 20,
+        ),
         Container(
             padding: EdgeInsets.only(left: 100, right: 100),
             child: Row(
@@ -92,10 +125,10 @@ class _ImagePageState extends State<ImagePage> {
                             setState(() {
                               _kompleks = newValue;
                               _listDoma = value;
-                              if(_listDoma.length > 0){
-                                _doma = _listDoma.first;
-                              }
                             });
+                            if (_listDoma.length > 0) {
+                              _doma = _listDoma.first;
+                            }
                             _listDoma.sort((a, b) => a.id!.compareTo(b.id!));
                           });
                         })),
@@ -114,19 +147,108 @@ class _ImagePageState extends State<ImagePage> {
                         }).toList(),
                         value: _doma,
                         onChanged: (Doma? newValue) {
-                          // domaBloc.getDoma(newValue!.id.toString()).then((value) {
-                          //   _listDoma = value;
-
-                          setState(() {
-                            _doma = newValue;
+                          imageBloc!
+                              .getImage(_doma!.id.toString())
+                              .then((value) {
+                            _listPicture = value;
+                            setState(() {
+                              _doma = newValue;
+                            });
+                          }).catchError((onError) {
+                            print(onError);
                           });
-                          // _listDoma!.sort((a,b) => a.id!.compareTo(b.id!));
                         })),
               ],
             )),
-
-
+        SizedBox(
+          height: 20,
+        ),
+        // Expanded(child: Text("ekjhglkerhge"),)
+        Expanded(
+          child: Row(children: [
+            _doma != null ? Expanded(child: imageTable()) : Container(),
+            Expanded(
+                flex: 3,
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Card(
+                    elevation: 5,
+                    child: _listPicture.length > 0
+                        ? Image.network(
+                            "${Ui.url}les/download/images/${_listPicture[_indexImage].imagepath}",
+                            headers: hedersWithToken,
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                  ),
+                ))
+          ]),
+        ),
       ],
+    );
+  }
+
+  Widget imageTable() {
+    var formatter = new DateFormat('yyyy-MM-dd');
+
+    return ListView.builder(
+      itemCount: _listPicture.length,
+      itemBuilder: (BuildContext ctx, index) {
+        return Container(
+            width: 70,
+            height: 150,
+            child: Card(
+                child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(formatter.format(DateTime.parse(
+                                    _listPicture[index].datacreate!)))),
+                            Container(
+                                width: 100,
+                                child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _indexImage = index;
+                                      });
+                                    },
+                                    child: Image.network(
+                                      "${Ui.url}les/download/images/${_listPicture[index].imagepath}",
+                                      headers: hedersWithToken,
+                                    ))),
+                          ],
+                        )),
+                        Expanded(
+                            child: CheckboxListTile(
+                          title: Text("web"),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (newVlaue) {
+                            imageBloc!
+                                .putWeb("webimage", newVlaue!,
+                                    _listPicture[index].id.toString())
+                                .then((value) {
+                              setState(() {
+                                _listPicture[index].web = newVlaue;
+                              });
+                            });
+                          },
+                          value: _listPicture[index].web,
+                        )),
+                        Divider(),
+                        Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              _listPicture[index].name!,
+                              style: TextStyle(fontSize: 15),
+                            ))
+                      ],
+                    ))));
+      },
     );
   }
 }
