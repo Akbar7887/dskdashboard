@@ -2,11 +2,10 @@ import 'dart:typed_data';
 
 import 'package:dskdashboard/models/picture_home.dart';
 import 'package:dskdashboard/service/api.dart';
-import 'package:dskdashboard/service/api_doma.dart';
 
 class Repository {
   final Api api = Api();
-  final ApiDoma apiDoma = ApiDoma();
+
 
   Future<List<dynamic>> getall(String url) => api.getAll(url);
 
@@ -17,9 +16,6 @@ class Repository {
 
   Future<dynamic> save(String url, dynamic object) => api.save(url, object);
 
-  Future<dynamic> savedom(
-          String url, dynamic object, Map<String, dynamic> param) =>
-      apiDoma.postDom(url, object, param);
 
   Future<List<PictureHome>> getImage(String id) => api.getPicture(id);
 
