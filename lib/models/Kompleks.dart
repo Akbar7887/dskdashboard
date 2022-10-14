@@ -11,6 +11,7 @@ class Kompleks {
     String? statusbuilding;
     String? title;
     String? typehouse;
+    bool? web;
 
     Kompleks({this.customer,
         this.customerlink,
@@ -21,7 +22,8 @@ class Kompleks {
         this.mainimagepath,
         this.statusbuilding,
         this.title,
-        this.typehouse});
+        this.typehouse,
+    this.web});
 
     factory Kompleks.fromJson(Map<String, dynamic> json) {
         return Kompleks(
@@ -33,8 +35,9 @@ class Kompleks {
             id: json['id'], 
             mainimagepath: json['mainimagepath'],
             statusbuilding: json['statusbuilding'], 
-            title: json['title'], 
-            typehouse: json['typehouse'], 
+            title: json['title'],
+            typehouse: json['typehouse'],
+            web: json['web'],
         );
     }
 
@@ -51,7 +54,8 @@ class Kompleks {
         if (this.domSet != null) {
             data['domSet'] = this.domSet!.map((v) => v.toJson()).toList();
         }
-            data['mainimagepath'] = this.mainimagepath;
+        data['mainimagepath'] = this.mainimagepath;
+        data['web'] = this.web;
         return data;
     }
 }

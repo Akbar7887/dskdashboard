@@ -228,14 +228,14 @@ class _ImagePageState extends State<ImagePage> {
                           title: Text("web"),
                           controlAffinity: ListTileControlAffinity.leading,
                           onChanged: (newVlaue) {
-                            imageBloc!
-                                .putWeb("webimage", newVlaue!,
-                                    _listPicture[index].id.toString())
-                                .then((value) {
-                              setState(() {
-                                _listPicture[index].web = newVlaue;
-                              });
-                            });
+                            // imageBloc!
+                            //     .putWeb("webimage",
+                            //         _listPicture[index].id.toString())
+                            //     .then((value) {
+                            //   setState(() {
+                            //     // _listPicture[index].web = newVlaue;
+                            //   });
+                            // });
                           },
                           value: _listPicture[index].web,
                         )),

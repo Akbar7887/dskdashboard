@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:dskdashboard/models/picture_home.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -74,7 +75,7 @@ class Api {
     }
   }
 
-Future<bool> save(String url, dynamic object) async {
+Future<dynamic> save(String url, dynamic object) async {
   String? token = await _storage.read(key: "token");
 
   Uri uri = Uri.parse("${Ui.url}${url}");
@@ -86,9 +87,9 @@ Future<bool> save(String url, dynamic object) async {
       headers: hedersWithToken, body: json.encode(object));
 
   if (response.statusCode == 200) {
-    // final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
+    // final dynamic json = ;
 
-    return true;
+    return jsonDecode(utf8.decode(response.bodyBytes));
   } else {
     throw Exception("Error");
   }
@@ -114,26 +115,27 @@ Future<List<PictureHome>> getPicture(String id) async {
   }
 }
 
-Future<PictureHome> webImage(String url, bool web, String id) async {
-  Map<String, dynamic> param = {"web": web.toString(), "id": id};
+  Future postImage(String url, String id, Uint8List data) async {
+    token = await _storage.read(key: "token");
 
-  String? token = await _storage.read(key: "token");
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
 
-  Uri uri = Uri.parse("${Ui.url}les/${url}").replace(queryParameters: param);
-  Map<String, String> hedersWithToken = {
-    "Content-type": "application/json",
-    "Authorization": "Bearer $token"
-  };
-  final response = await http.put(uri, headers: hedersWithToken);
+    List<int> list = data;
+    final uri = Uri.parse('${Ui.url}${url}');
+    var request = await http.MultipartRequest('POST', uri);
+    request.fields['id'] = id;
 
-  if (response.statusCode == 200) {
-    final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
-
-    return PictureHome.fromJson(json);
-  } else {
-    throw Exception("Error");
+    request.headers.addAll(hedersWithToken);
+    request.files
+        .add(http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
+    request.send().then((value) => {
+      if (value.statusCode == 200)
+        {print('Ok')}
+      else
+        {print(value.statusCode)}
+    });
   }
-
-
-}
 }

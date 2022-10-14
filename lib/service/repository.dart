@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/models/picture_home.dart';
 import 'package:dskdashboard/service/api.dart';
@@ -26,6 +28,6 @@ class Repository {
 
   Future<List<PictureHome>> getImage(String id) => api.getPicture(id);
 
-  Future<PictureHome> webImage(String url, bool web, String id) =>
-      api.webImage(url, web, id);
+  Future webImage(String url, String id, Uint8List data) =>
+      api.postImage(url, id, data);
 }

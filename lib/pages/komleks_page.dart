@@ -1,13 +1,18 @@
+import 'dart:html';
+import 'dart:typed_data';
+
 import 'package:dskdashboard/bloc/bloc_state.dart';
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../bloc/bloc_event.dart';
 import '../models/Kompleks.dart';
+import '../ui.dart';
 
 List<Kompleks> _listKomleks = [];
 late KompleksBloc kompleksBloc;
@@ -20,9 +25,20 @@ TextEditingController _typehouseControl = TextEditingController();
 TextEditingController _statusbuildingControl = TextEditingController();
 TextEditingController _dateprojectControl = TextEditingController();
 var formatter = new DateFormat('yyyy-MM-dd');
+Uint8List? _webImage;
 
 class KomleksPage extends StatelessWidget {
   const KomleksPage({Key? key}) : super(key: key);
+
+  Future<File?> pickImage() async {
+    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      var f = await image.readAsBytes();
+      // setState(() {
+      _webImage = f;
+      // });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,6 +376,36 @@ class KomleksPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
                                       width: 0.5, color: Colors.black)))),
+                    ),
+                    Expanded(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _webImage == null
+                                ? Image.network(
+                                    "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
+                                    width: 200,
+                                    height: 200, errorBuilder:
+                                        (BuildContext context, Object error,
+                                            StackTrace? stackTrace) {
+                                    return Icon(Icons.photo);
+                                  })
+                                : Container(
+                                    child: Image.memory(
+                                    _webImage!,
+                                    width: 200,
+                                    height: 200,
+                                  )),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            // Spacer(),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  pickImage();
+                                },
+                                child: Text("Загрузить фото.."))
+                          ]),
                     )
                   ],
                 ),
@@ -381,8 +427,13 @@ class KomleksPage extends StatelessWidget {
                 // Map<String, dynamic> param = {'name': _nameControl.text};
 
                 kompleksBloc.save("kompleks/save", kompleks).then((value) {
-                  kompleksBloc.add(BlocLoadEvent());
-                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                  kompleksBloc
+                      .postWeb(
+                          "kompleks/upload", value.id.toString(), _webImage!)
+                      .then((value) {
+                    kompleksBloc.add(BlocLoadEvent());
+                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                  });
                 }).catchError((error) {
                   print(error);
                 });
