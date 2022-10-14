@@ -1,4 +1,4 @@
-import 'package:dskdashboard/bloc/doma_bloc.dart';
+
 import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/service/api.dart';
@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 
 import '../bloc/bloc_state.dart';
 import '../bloc/kompleks_bloc.dart';
+import '../models/Dom.dart';
 import '../models/picture_home.dart';
-import '../models/doma.dart';
 import '../ui.dart';
 
 class ImagePage extends StatefulWidget {
@@ -26,9 +26,9 @@ class ImagePage extends StatefulWidget {
 class _ImagePageState extends State<ImagePage> {
   List<Kompleks>? _listKomleks = [];
   Kompleks? _kompleks;
-  List<Doma> _listDoma = [];
-  Doma? _doma;
-  DomaBloc? _domaBloc;
+  List<Dom> _listDoma = [];
+  Dom? _doma;
+  // DomaBloc? _domaBloc;
   ImageBloc? imageBloc;
   List<PictureHome> _listPicture = [];
   FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -55,7 +55,7 @@ class _ImagePageState extends State<ImagePage> {
   @override
   Widget build(BuildContext context) {
     imageBloc = BlocProvider.of<ImageBloc>(context);
-    _domaBloc = BlocProvider.of<DomaBloc>(context);
+    // _domaBloc = BlocProvider.of<DomaBloc>(context);
     return BlocConsumer<KompleksBloc, BlocState>(
       builder: (context, state) {
         if (state is BlocEmtyState) {
@@ -119,34 +119,34 @@ class _ImagePageState extends State<ImagePage> {
                         }).toList(),
                         value: _kompleks,
                         onChanged: (Kompleks? newValue) {
-                          _domaBloc!
-                              .getDoma(newValue!.id.toString())
-                              .then((value) {
-                            setState(() {
-                              _kompleks = newValue;
-                              _listDoma = value;
-                            });
-                            if (_listDoma.length > 0) {
-                              _doma = _listDoma.first;
-                            }
-                            _listDoma.sort((a, b) => a.id!.compareTo(b.id!));
-                          });
+                          // _domaBloc!
+                          //     .getDoma(newValue!.id.toString())
+                          //     .then((value) {
+                          //   setState(() {
+                          //     _kompleks = newValue;
+                          //     //_listDoma = value;
+                          //   });
+                          //   if (_listDoma.length > 0) {
+                          //     _doma = _listDoma.first;
+                          //   }
+                          //   _listDoma.sort((a, b) => a.id!.compareTo(b.id!));
+                          // });
                         })),
                 SizedBox(
                   width: 20,
                 ),
                 Expanded(
-                    child: DropdownButton<Doma>(
+                    child: DropdownButton<Dom>(
                         isExpanded: true,
                         hint: Text("Дома"),
-                        items: _listDoma.map<DropdownMenuItem<Doma>>((e) {
+                        items: _listDoma.map<DropdownMenuItem<Dom>>((e) {
                           return DropdownMenuItem(
                             value: e,
                             child: Text(e.name!),
                           );
                         }).toList(),
                         value: _doma,
-                        onChanged: (Doma? newValue) {
+                        onChanged: (Dom? newValue) {
                           imageBloc!
                               .getImage(_doma!.id.toString())
                               .then((value) {

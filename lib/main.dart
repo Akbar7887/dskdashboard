@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toast/toast.dart';
 
 import 'bloc/bloc_event.dart';
-import 'bloc/doma_bloc.dart';
 import 'bloc/image_Bloc.dart';
 import 'bloc/kompleks_bloc.dart';
 
@@ -44,9 +43,6 @@ class MyApp extends StatelessWidget {
               create: (context) =>
                   KompleksBloc(repository: context.read<Repository>())
                     ..add(BlocLoadEvent())),
-          BlocProvider(
-              create: (context) =>
-                  DomaBloc(repository: context.read<Repository>())),
           BlocProvider(
               create: (context) =>
                   ImageBloc(repository: context.read<Repository>())),

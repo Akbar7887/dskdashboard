@@ -1,11 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/models/picture_home.dart';
 import 'package:dskdashboard/service/api.dart';
 import 'package:dskdashboard/service/api_doma.dart';
-
-import '../models/doma.dart';
 
 class Repository {
   final Api api = Api();
@@ -19,8 +16,6 @@ class Repository {
       api.delete(url, param);
 
   Future<dynamic> save(String url, dynamic object) => api.save(url, object);
-
-  Future<List<Doma>> getDom(String komleks_id) => apiDoma.getDoms(komleks_id);
 
   Future<dynamic> savedom(
           String url, dynamic object, Map<String, dynamic> param) =>

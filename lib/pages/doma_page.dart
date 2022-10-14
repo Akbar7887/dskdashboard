@@ -1,11 +1,14 @@
-import 'package:dskdashboard/bloc/doma_bloc.dart';
+
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
-import 'package:dskdashboard/models/doma.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../bloc/bloc_state.dart';
+import '../models/Dom.dart';
 
 class DomaPage extends StatefulWidget {
   const DomaPage({Key? key}) : super(key: key);
@@ -15,36 +18,63 @@ class DomaPage extends StatefulWidget {
 }
 
 class _DomaPageState extends State<DomaPage> {
-  List<Kompleks>? _listKompleks = [];
-  List<Doma>? _listDoma = [];
-  late KompleksBloc kompleksBloc;
-  late DomaBloc domaBloc;
+  List<Kompleks>? _listKomleks = [];
+  List<Dom>? _listDoma = [];
   Kompleks? _kompleks;
+  Dom? _doma;
+
   TextEditingController _nameControl = TextEditingController();
   GlobalKey _keyform = GlobalKey<FormState>();
-  Doma? _doma;
 
   @override
   void initState() {
     super.initState();
-    kompleksBloc = BlocProvider.of<KompleksBloc>(context);
-    domaBloc = BlocProvider.of<DomaBloc>(context);
+    // kompleksBloc = BlocProvider.of<KompleksBloc>(context);
+    // domaBloc = BlocProvider.of<DomaBloc>(context);
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    kompleksBloc.close();
-    domaBloc.close();
+    // kompleksBloc.close();
+    // domaBloc.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    return mainList(context);
+    return BlocConsumer<KompleksBloc, BlocState>(
+      builder: (context, state) {
+        if (state is BlocEmtyState) {
+          return Center(child: Text("No data!"));
+        }
+
+        if (state is BlocLoadingState) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (state is KompleksLoadedState) {
+          //
+          _listKomleks = state.loadedKomleks;
+          _listKomleks!.sort((a, b) => a.id!.compareTo(b.id!));
+          return mainList(context);
+        }
+
+        if (state is BlocErrorState) {
+          return Center(
+            child: Text("Сервер не работает!"),
+          );
+        }
+        return SizedBox.shrink();
+      },
+      listener: (context, state) {},
+    );
   }
 
   Widget mainList(BuildContext context) {
+    return main(context);
+  }
+
+  Widget main(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return ListView(
         children: [
@@ -62,7 +92,7 @@ class _DomaPageState extends State<DomaPage> {
               child: DropdownButton<Kompleks>(
                 isExpanded: true,
                 hint: Text("Комплексы"),
-                items: _listKompleks!.map<DropdownMenuItem<Kompleks>>((e) {
+                items: _listKomleks!.map<DropdownMenuItem<Kompleks>>((e) {
                   return DropdownMenuItem(
                     value: e,
                     child: Text(e.title!),
@@ -70,13 +100,9 @@ class _DomaPageState extends State<DomaPage> {
                 }).toList(),
                 value: _kompleks,
                 onChanged: (Kompleks? newValue) {
-                  domaBloc.getDoma(newValue!.id.toString()).then((value) {
-                    _listDoma = value;
-
-                    setState(() {
-                      _kompleks = newValue;
-                    });
-                    // _listDoma!.sort((a,b) => a.id!.compareTo(b.id!));
+                  setState(() {
+                    _kompleks = newValue;
+                    _listDoma = newValue!.domSet!;
                   });
                 },
               )),
@@ -130,17 +156,18 @@ class _DomaPageState extends State<DomaPage> {
             DataCell(IconButton(
               icon: Icon(Icons.delete_forever),
               onPressed: () {
-                Map<String, dynamic> param = {'id': e.id.toString()};
-                domaBloc.remove("domdelete", param).then((value) {
-                  domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
-                    setState(() {
-                      _listDoma = value;
-                    });
-                  });
-                  // kompleksBloc.add(BlocLoadEvent());
-                }).catchError((onError) {
-                  print(onError);
-                });
+
+                // Map<String, dynamic> param = {'id': e.id.toString()};
+                // domaBloc.remove("domdelete", param).then((value) {
+                //   domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
+                //     setState(() {
+                //       _listDoma = value;
+                //     });
+                //   });
+                //   // kompleksBloc.add(BlocLoadEvent());
+                // }).catchError((onError) {
+                //   print(onError);
+                // });
               },
             )),
           ]);
@@ -208,7 +235,7 @@ class _DomaPageState extends State<DomaPage> {
               child: Text('Сохранить'),
               onPressed: () {
                 if (_doma == null) {
-                  _doma = Doma();
+                  _doma = Dom();
                   _doma!.kompleks = _kompleks;
                   _doma!.name = _nameControl.text;
                 } else {
@@ -216,17 +243,17 @@ class _DomaPageState extends State<DomaPage> {
                 }
                 Map<String, dynamic> param = {'id': _kompleks!.id.toString()};
 
-                domaBloc.save("postdom", _doma, param).then((value) {
-                  Navigator.of(dialogContext).pop();
-
-                  domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
-                    setState(() {
-                      _listDoma = value;
-                    });
-                  }); // Dismiss alert dialog
-                }).catchError((error) {
-                  print(error);
-                });
+                // domaBloc.save("postdom", _doma, param).then((value) {
+                //   Navigator.of(dialogContext).pop();
+                //
+                //   domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
+                //     setState(() {
+                //       _listDoma = value;
+                //     });
+                //   }); // Dismiss alert dialog
+                // }).catchError((error) {
+                //   print(error);
+                // });
               },
             ),
             TextButton(

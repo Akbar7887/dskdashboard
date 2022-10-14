@@ -169,8 +169,9 @@ class _KomleksPageState extends State<KomleksPage> {
       // false = user must tap button, true = tap outside dialog
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(builder: (context, setState) {
-          String url =
-              "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}";
+          String url = kompleks == null
+              ? ""
+              : "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}";
           return AlertDialog(
             title: Text('Комплекс'),
             content: Container(
@@ -449,6 +450,7 @@ class _KomleksPageState extends State<KomleksPage> {
                           .postWeb("kompleks/upload", value.id.toString(),
                               _webImage!)
                           .then((value) {
+                        kompleksBloc.add(BlocLoadEvent());
                         Navigator.of(dialogContext).pop();
                       }).catchError((onError) {
                         print(onError);

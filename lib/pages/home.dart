@@ -1,6 +1,5 @@
 import 'package:dskdashboard/bloc/bloc_event.dart';
 import 'package:dskdashboard/bloc/bloc_state.dart';
-import 'package:dskdashboard/bloc/doma_bloc.dart';
 import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:dskdashboard/pages/doma_page.dart';
@@ -75,8 +74,10 @@ class _HomeState extends State<Home> {
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
-                                      side:
-                                          BorderSide(color: Colors.white54)))),
+                                      side: BorderSide(
+                                          color: page == 1
+                                              ? Colors.white
+                                              : Colors.white54)))),
                           // color: Colors.black54,
                           onPressed: () {
                             setState(() {
@@ -98,8 +99,10 @@ class _HomeState extends State<Home> {
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
-                                      side:
-                                          BorderSide(color: Colors.white54)))),
+                                      side: BorderSide(
+                                          color: page == 2
+                                              ? Colors.white
+                                              : Colors.white54)))),
                           // color: Colors.black54,
                           onPressed: () {
                             setState(() {
@@ -122,8 +125,10 @@ class _HomeState extends State<Home> {
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
-                                      side:
-                                          BorderSide(color: Colors.white54)))),
+                                      side: BorderSide(
+                                          color: page == 3
+                                              ? Colors.white
+                                              : Colors.white54)))),
                           // color: Colors.black54,
                           onPressed: () {
                             setState(() {
