@@ -75,47 +75,47 @@ class Api {
     }
   }
 
-Future<dynamic> save(String url, dynamic object) async {
-  String? token = await _storage.read(key: "token");
+  Future<dynamic> save(String url, dynamic object) async {
+    String? token = await _storage.read(key: "token");
 
-  Uri uri = Uri.parse("${Ui.url}${url}");
-  Map<String, String> hedersWithToken = {
-    "Content-type": "application/json",
-    "Authorization": "Bearer $token"
-  };
-  final response = await http.post(uri,
-      headers: hedersWithToken, body: json.encode(object));
+    Uri uri = Uri.parse("${Ui.url}${url}");
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+    final response = await http.post(uri,
+        headers: hedersWithToken, body: json.encode(object));
 
-  if (response.statusCode == 200) {
-    // final dynamic json = ;
+    if (response.statusCode == 200) {
+      // final dynamic json = ;
 
-    return jsonDecode(utf8.decode(response.bodyBytes));
-  } else {
-    throw Exception("Error");
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception("Error");
+    }
   }
-}
 
-Future<List<PictureHome>> getPicture(String id) async {
-  String? token = await _storage.read(key: "token");
-  Map<String, dynamic> parm = {'id': id};
+  Future<List<PictureHome>> getPicture(String id) async {
+    String? token = await _storage.read(key: "token");
+    Map<String, dynamic> parm = {'id': id};
 
-  Uri uri = Uri.parse("${Ui.url}les/imageall").replace(queryParameters: parm);
-  Map<String, String> hedersWithToken = {
-    "Content-type": "application/json",
-    "Authorization": "Bearer $token"
-  };
-  final response = await http.get(uri, headers: hedersWithToken);
+    Uri uri = Uri.parse("${Ui.url}les/imageall").replace(queryParameters: parm);
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+    final response = await http.get(uri, headers: hedersWithToken);
 
-  if (response.statusCode == 200) {
-    final List<dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      final List<dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
 
-    return json.map((e) => PictureHome.fromJson(e)).toList();
-  } else {
-    throw Exception("Error");
+      return json.map((e) => PictureHome.fromJson(e)).toList();
+    } else {
+      throw Exception("Error");
+    }
   }
-}
 
-  Future postImage(String url, String id, Uint8List data) async {
+  Future<bool> postImage(String url, String id, Uint8List data) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -131,11 +131,11 @@ Future<List<PictureHome>> getPicture(String id) async {
     request.headers.addAll(hedersWithToken);
     request.files
         .add(http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
-    request.send().then((value) => {
-      if (value.statusCode == 200)
-        {print('Ok')}
-      else
-        {print(value.statusCode)}
-    });
+    final response = await request.send();
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

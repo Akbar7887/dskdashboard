@@ -24,7 +24,6 @@ class _HomeState extends State<Home> {
   int page = 1;
   late KompleksBloc kompleksBloc;
 
-
   @override
   void initState() {
     super.initState();
@@ -33,139 +32,120 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-        create: (context) => Repository(),
-        child: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                  create: (context) =>
-                  KompleksBloc(repository: context.read<Repository>())
-                    ..add(BlocLoadEvent())
-              ),
-              BlocProvider(create: (context) =>
-                  DomaBloc(repository: context.read<Repository>())),
-              BlocProvider(
-                  create: (context) =>
-                  ImageBloc(repository: context.read<Repository>())
-              ),
-            ],
-            child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(100),
-                child: AppBar(
-                  flexibleSpace: Container(
-                    padding: EdgeInsets.only(left: 100),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      Ui.company,
-                      style: GoogleFonts.openSans(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              body: Row(
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100),
+        child: AppBar(
+          flexibleSpace: Container(
+            padding: EdgeInsets.only(left: 100),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              Ui.company,
+              style: GoogleFonts.openSans(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w200,
+                  color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+      body: Row(
+        children: [
+          Expanded(
+            child: Container(
+              color: Colors.black54,
+              child: ListView(
                 children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.black54,
-                      child: ListView(
-                        children: [
-                          Container(
-                            height: 50,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Справочники",
-                              style: Ui.fonttext,
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.white,
-                          ),
-                          Container(
-                              height: 70,
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              side: BorderSide(
-                                                  color: Colors.white54)))),
-                                  // color: Colors.black54,
-                                  onPressed: () {
-                                    setState(() {
-                                      page = 1;
-                                    });
-                                  },
-                                  child: Text(
-                                    "Комплексы",
-                                    style: Ui.fonttext,
-                                  ))),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Container(
-                              height: 70,
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              side: BorderSide(
-                                                  color: Colors.white54)))),
-                                  // color: Colors.black54,
-                                  onPressed: () {
-                                    setState(() {
-                                      page = 2;
-                                      // kompleksBloc.add(BlocLoadEvent());
-                                    });
-                                  },
-                                  child: Text(
-                                    "Дома",
-                                    style: Ui.fonttext,
-                                  ))),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Container(
-                              height: 70,
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              side: BorderSide(
-                                                  color: Colors.white54)))),
-                                  // color: Colors.black54,
-                                  onPressed: () {
-                                    setState(() {
-                                      page = 3;
-                                      // kompleksBloc.add(BlocLoadEvent());
-                                    });
-                                  },
-                                  child: Text(
-                                    "Фото материалы (Комплекс, Дома)",
-                                    style: Ui.fonttext,
-                                  )))
-                        ],
-                      ),
+                  Container(
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Справочники",
+                      style: Ui.fonttext,
                     ),
                   ),
-                  Expanded(
-                    flex: 4,
-                    child: selectPage(),
+                  Divider(
+                    color: Colors.white,
                   ),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side:
+                                          BorderSide(color: Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 1;
+                            });
+                          },
+                          child: Text(
+                            "Комплексы",
+                            style: Ui.fonttext,
+                          ))),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side:
+                                          BorderSide(color: Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 2;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Дома",
+                            style: Ui.fonttext,
+                          ))),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side:
+                                          BorderSide(color: Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 3;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Фото материалы (Комплекс, Дома)",
+                            style: Ui.fonttext,
+                          )))
                 ],
               ),
-            )));
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: selectPage(),
+          ),
+        ],
+      ),
+    );
   }
 
   selectPage() {

@@ -42,7 +42,7 @@ class KompleksBloc extends Bloc<BlocEvent, BlocState> {
     return kompleks;
   }
 
-  Future<PictureHome> postWeb(String url, String id, Uint8List data) async {
+  Future<bool> postWeb(String url, String id, Uint8List data) async {
     return await repository.webImage(url, id, data);
   }
 }

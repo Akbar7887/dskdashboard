@@ -1,7 +1,14 @@
 import 'package:dskdashboard/pages/first_page.dart';
 import 'package:dskdashboard/pages/home.dart';
+import 'package:dskdashboard/service/repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toast/toast.dart';
+
+import 'bloc/bloc_event.dart';
+import 'bloc/doma_bloc.dart';
+import 'bloc/image_Bloc.dart';
+import 'bloc/kompleks_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,19 +36,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        //fontFamily://
-        primarySwatch: primaryColorShades,
-      ),
-      // home: FirstPage(),
-      initialRoute: "/",
-      routes: {
-        '/home': (context) => Home(),
-        '/': (context) => FirstPage(),
-      },
-    );
+    return  RepositoryProvider(
+        create: (context) => Repository(),
+    child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) =>
+                  KompleksBloc(repository: context.read<Repository>())
+                    ..add(BlocLoadEvent())),
+          BlocProvider(
+              create: (context) =>
+                  DomaBloc(repository: context.read<Repository>())),
+          BlocProvider(
+              create: (context) =>
+                  ImageBloc(repository: context.read<Repository>())),
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            //fontFamily://
+            primarySwatch: primaryColorShades,
+          ),
+          // home: FirstPage(),
+          initialRoute: "/",
+          routes: {
+            '/home': (context) => Home(),
+            '/': (context) => FirstPage(),
+          },
+        )));
   }
 }

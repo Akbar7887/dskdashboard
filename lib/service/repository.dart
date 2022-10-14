@@ -28,6 +28,6 @@ class Repository {
 
   Future<List<PictureHome>> getImage(String id) => api.getPicture(id);
 
-  Future webImage(String url, String id, Uint8List data) =>
+  Future<bool> webImage(String url, String id, Uint8List data) =>
       api.postImage(url, id, data);
 }

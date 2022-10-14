@@ -21,7 +21,7 @@ class _DomaPageState extends State<DomaPage> {
   late DomaBloc domaBloc;
   Kompleks? _kompleks;
   TextEditingController _nameControl = TextEditingController();
-  GlobalKey _keyName = GlobalKey();
+  GlobalKey _keyform = GlobalKey<FormState>();
   Doma? _doma;
 
   @override
@@ -175,7 +175,7 @@ class _DomaPageState extends State<DomaPage> {
                 Container(
                     width: 400,
                     child: Form(
-                      key: _keyName,
+                      key: _keyform,
                       child: TextFormField(
                           controller: _nameControl,
                           validator: (value) {
