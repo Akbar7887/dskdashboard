@@ -16,7 +16,7 @@ class Repository {
   Future delete(String url, Map<String, dynamic> param) =>
       api.delete(url, param);
 
-  Future<dynamic> save(String url, dynamic object) => api.post(url, object);
+  Future<dynamic> save(String url, dynamic object) => api.save(url, object);
 
   Future<List<Doma>> getDom(String komleks_id) => apiDoma.getDoms(komleks_id);
 

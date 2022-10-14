@@ -58,12 +58,12 @@ class Api {
   Future<bool> delete(String url, Map<String, dynamic> param) async {
     String? token = await _storage.read(key: "token");
 
-    Uri uri = Uri.parse("${Ui.url}les/${url}").replace(queryParameters: param);
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: param);
     Map<String, String> hedersWithToken = {
       "Content-type": "application/json",
       "Authorization": "Bearer $token"
     };
-    final response = await http.post(uri, headers: hedersWithToken);
+    final response = await http.put(uri, headers: hedersWithToken);
 
     if (response.statusCode == 200) {
       // final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -74,10 +74,10 @@ class Api {
     }
   }
 
-Future<bool> post(String url, dynamic object) async {
+Future<bool> save(String url, dynamic object) async {
   String? token = await _storage.read(key: "token");
 
-  Uri uri = Uri.parse("${Ui.url}les/${url}");
+  Uri uri = Uri.parse("${Ui.url}${url}");
   Map<String, String> hedersWithToken = {
     "Content-type": "application/json",
     "Authorization": "Bearer $token"
