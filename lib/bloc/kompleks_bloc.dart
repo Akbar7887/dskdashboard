@@ -12,9 +12,9 @@ class KompleksBloc extends Bloc<BlocEvent, BlocState> {
     on<BlocLoadEvent>((event, emit) async {
       emit(BlocLoadingState());
       try {
-        final List<Kompleks> komleksList = await repository.getKompleks();
-
-        emit(KompleksLoadedState(loadedKomleks: komleksList));
+        final json = await repository.getall("kompleks/get");
+        final loadedHouse = json.map((e) => Kompleks.fromJson(e)).toList();
+        emit(KompleksLoadedState(loadedKomleks: loadedHouse));
       } catch (e) {
         emit(BlocErrorState());
       }
@@ -25,9 +25,10 @@ class KompleksBloc extends Bloc<BlocEvent, BlocState> {
     });
   }
 
-  Future<List<Kompleks>> getKompleks() async{
-    return await repository.getKompleks();
-  }
+  // Future<List<Kompleks>> getKompleks() async {
+  //   return await repository.getKompleks();
+  // }
+
   Future remove(String url, Map<String, dynamic> param) {
     return repository.delete(url, param);
   }
@@ -35,5 +36,4 @@ class KompleksBloc extends Bloc<BlocEvent, BlocState> {
   Future<dynamic> save(String url, dynamic object) {
     return repository.save(url, object);
   }
-
 }

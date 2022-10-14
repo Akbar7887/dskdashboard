@@ -94,7 +94,7 @@ class KomleksPage extends StatelessWidget {
                       return DataRow(cells: [
                         DataCell(
                             Text((_listKomleks.indexOf(e) + 1).toString())),
-                        DataCell(Text(e.name!)),
+                        DataCell(Text(e.title!)),
                         DataCell(IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
@@ -125,7 +125,7 @@ class KomleksPage extends StatelessWidget {
 
   Future<void> showdialogwidget(BuildContext context) {
     if (kompleks != null) {
-      _nameControl.text = kompleks!.name!;
+      _nameControl.text = kompleks!.title!;
     } else {
       _nameControl.text = "";
     }
@@ -185,9 +185,9 @@ class KomleksPage extends StatelessWidget {
               onPressed: () {
                 if (kompleks == null) {
                   kompleks = Kompleks();
-                  kompleks!.name = _nameControl.text;
+                  kompleks!.title = _nameControl.text;
                 } else {
-                  kompleks!.name = _nameControl.text;
+                  kompleks!.title = _nameControl.text;
                 }
 
                 // Map<String, dynamic> param = {'name': _nameControl.text};

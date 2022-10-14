@@ -41,29 +41,7 @@ class _DomaPageState extends State<DomaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: kompleksBloc.getKompleks(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            _listKompleks = snapshot.data as List<Kompleks>;
-
-            _listKompleks!.sort((a, b) => a.id!.compareTo(b.id!));
-            // if (_kompleks == null) {
-            //    _kompleks = _listKompleks!.first;
-            //  }
-            if (_listKompleks!.length > 0) {
-              return mainList(context);
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return mainList(context);
   }
 
   Widget mainList(BuildContext context) {
@@ -87,7 +65,7 @@ class _DomaPageState extends State<DomaPage> {
                 items: _listKompleks!.map<DropdownMenuItem<Kompleks>>((e) {
                   return DropdownMenuItem(
                     value: e,
-                    child: Text(e.name!),
+                    child: Text(e.title!),
                   );
                 }).toList(),
                 value: _kompleks,

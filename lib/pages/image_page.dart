@@ -114,7 +114,7 @@ class _ImagePageState extends State<ImagePage> {
                             _listKomleks!.map<DropdownMenuItem<Kompleks>>((e) {
                           return DropdownMenuItem(
                             value: e,
-                            child: Text(e.name!),
+                            child: Text(e.title!),
                           );
                         }).toList(),
                         value: _kompleks,
