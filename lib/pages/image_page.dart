@@ -1,8 +1,5 @@
-
 import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
-import 'package:dskdashboard/service/api.dart';
-import 'package:dskdashboard/service/repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +10,7 @@ import 'package:intl/intl.dart';
 import '../bloc/bloc_state.dart';
 import '../bloc/kompleks_bloc.dart';
 import '../models/Dom.dart';
-import '../models/picture_home.dart';
+import '../models/ImageData.dart';
 import '../ui.dart';
 
 class ImagePage extends StatefulWidget {
@@ -28,9 +25,10 @@ class _ImagePageState extends State<ImagePage> {
   Kompleks? _kompleks;
   List<Dom> _listDoma = [];
   Dom? _doma;
+
   // DomaBloc? _domaBloc;
   ImageBloc? imageBloc;
-  List<PictureHome> _listPicture = [];
+  List<ImageDom> _listPicture = [];
   FlutterSecureStorage _storage = FlutterSecureStorage();
   late Map<String, String> hedersWithToken;
   int _indexImage = 0;
@@ -119,18 +117,10 @@ class _ImagePageState extends State<ImagePage> {
                         }).toList(),
                         value: _kompleks,
                         onChanged: (Kompleks? newValue) {
-                          // _domaBloc!
-                          //     .getDoma(newValue!.id.toString())
-                          //     .then((value) {
-                          //   setState(() {
-                          //     _kompleks = newValue;
-                          //     //_listDoma = value;
-                          //   });
-                          //   if (_listDoma.length > 0) {
-                          //     _doma = _listDoma.first;
-                          //   }
-                          //   _listDoma.sort((a, b) => a.id!.compareTo(b.id!));
-                          // });
+                          setState(() {
+                            _kompleks = newValue;
+                            _listDoma = newValue!.domSet!;
+                          });
                         })),
                 SizedBox(
                   width: 20,
@@ -147,16 +137,11 @@ class _ImagePageState extends State<ImagePage> {
                         }).toList(),
                         value: _doma,
                         onChanged: (Dom? newValue) {
-                          imageBloc!
-                              .getImage(_doma!.id.toString())
-                              .then((value) {
-                            _listPicture = value;
-                            setState(() {
-                              _doma = newValue;
-                            });
-                          }).catchError((onError) {
-                            print(onError);
+                          setState(() {
+                            _doma = newValue;
+                            _listPicture = _doma!.imagedom!;
                           });
+
                         })),
               ],
             )),
@@ -218,7 +203,7 @@ class _ImagePageState extends State<ImagePage> {
                                       });
                                     },
                                     child: Image.network(
-                                      "${Ui.url}les/download/images/${_listPicture[index].imagepath}",
+                                      "${Ui.url}imagedata/download/images/${_listPicture[index].imagepath}",
                                       headers: hedersWithToken,
                                     ))),
                           ],

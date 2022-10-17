@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:dskdashboard/bloc/bloc_event.dart';
 import 'package:dskdashboard/bloc/bloc_state.dart';
-import 'package:dskdashboard/models/picture_home.dart';
+import 'package:dskdashboard/models/ImageData.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../service/repository.dart';
@@ -13,7 +13,7 @@ class ImageBloc extends Cubit<BlocState>{
 
   ImageBloc({required this.repository}) : super(BlocEmtyState());
 
-  Future<List<PictureHome>> getImage(String id)  async {
+  Future<List<ImageDom>> getImage(String id)  async {
    return await repository.getImage(id);
   }
 

@@ -5,7 +5,7 @@ import 'package:dskdashboard/service/repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/Kompleks.dart';
-import '../models/picture_home.dart';
+import '../models/ImageData.dart';
 import 'bloc_event.dart';
 
 class KompleksBloc extends Bloc<BlocEvent, BlocState> {

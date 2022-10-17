@@ -1,7 +1,7 @@
 
 import 'Dom.dart';
 
-class PictureHome {
+class ImageDom {
     String? datacreate;
     Dom? dom;
     int? id;
@@ -9,10 +9,11 @@ class PictureHome {
     String? name;
     bool web;
 
-    PictureHome({this.datacreate, this.dom, this.id, this.imagepath, this.name, required this.web});
 
-    factory PictureHome.fromJson(Map<String, dynamic> json) {
-        return PictureHome(
+    ImageDom({this.datacreate, this.dom, this.id, this.imagepath, this.name, required this.web});
+
+    factory ImageDom.fromJson(Map<String, dynamic> json) {
+        return ImageDom(
             datacreate: json['datacreate'], 
             dom: json['dom'] != null ? Dom.fromJson(json['dom']) : null, 
             id: json['id'], 

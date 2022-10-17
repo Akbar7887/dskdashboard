@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dskdashboard/models/picture_home.dart';
+import 'package:dskdashboard/models/ImageData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../ui.dart';
@@ -87,7 +87,7 @@ class Api {
         headers: hedersWithToken, body: json.encode(object));
 
     if (response.statusCode == 200) {
-      // final dynamic json = ;
+
 
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
@@ -95,7 +95,7 @@ class Api {
     }
   }
 
-  Future<List<PictureHome>> getPicture(String id) async {
+  Future<List<ImageDom>> getPicture(String id) async {
     String? token = await _storage.read(key: "token");
     Map<String, dynamic> parm = {'id': id};
 
@@ -109,7 +109,7 @@ class Api {
     if (response.statusCode == 200) {
       final List<dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
 
-      return json.map((e) => PictureHome.fromJson(e)).toList();
+      return json.map((e) => ImageDom.fromJson(e)).toList();
     } else {
       throw Exception("Error");
     }

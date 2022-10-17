@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dskdashboard/models/picture_home.dart';
+import 'package:dskdashboard/models/ImageData.dart';
 import 'package:dskdashboard/service/api.dart';
 
 class Repository {
@@ -17,7 +17,7 @@ class Repository {
   Future<dynamic> save(String url, dynamic object) => api.save(url, object);
 
 
-  Future<List<PictureHome>> getImage(String id) => api.getPicture(id);
+  Future<List<ImageDom>> getImage(String id) => api.getPicture(id);
 
   Future<bool> webImage(String url, String id, Uint8List data) =>
       api.postImage(url, id, data);
