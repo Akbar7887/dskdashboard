@@ -99,6 +99,7 @@ class _KomleksPageState extends State<KomleksPage> {
             padding: EdgeInsets.all(10),
             child: SingleChildScrollView(
                 child: DataTable(
+                    key: UniqueKey(),
                     sortAscending: true,
                     sortColumnIndex: 0,
                     headingRowColor: MaterialStateProperty.all(Colors.black54),
@@ -164,315 +165,350 @@ class _KomleksPageState extends State<KomleksPage> {
     }
 
     return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      // false = user must tap button, true = tap outside dialog
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(builder: (context, setState) {
-          String url = kompleks == null
-              ? ""
-              : "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}";
-          return AlertDialog(
-            title: Text('Комплекс'),
-            content: Container(
-                height: MediaQuery.of(context).size.height / 1.1,
-                width: MediaQuery.of(context).size.width / 1.1,
-                child: Form(
-                  key: _keyformkompleks,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      (kompleks != null)
-                          ? Text('№ ${kompleks?.id.toString()}')
-                          : Text('№'),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: TextFormField(
-                            controller: _titleControl,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Просим наименование пользователя";
-                              }
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Наименование",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: TextFormField(
-                            controller: _typehouseControl,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Тип комплекса";
-                              }
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Тип комплекса",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: TextFormField(
-                            controller: _statusbuildingControl,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Состояние комплекса";
-                              }
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Состояние комплекса",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.1,
-                        // height: MediaQuery.of(context).size.height / 2,
-                        child: TextFormField(
-                            controller: _deskriptionContoller,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Описание комплекса";
-                              }
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Описание комплекса",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        // height: MediaQuery.of(context).size.height / 2,
-                        child: TextFormField(
-                            controller: _customerContoller,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Заказщик";
-                              }
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Заказщик",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        // height: MediaQuery.of(context).size.height / 2,
-                        child: TextFormField(
-                            controller: _dateprojectControl,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Дата";
-                              }
-                            },
-                            onTap: () async {
-                              await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2015),
-                                lastDate: DateTime(2030),
-                              ).then((selectedDate) {
-                                if (selectedDate != null) {
-                                  _dateprojectControl.text =
-                                      formatter.format(selectedDate);
+        context: context,
+        barrierDismissible: true,
+        // false = user must tap button, true = tap outside dialog
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(builder: (context, setState) {
+            String url = kompleks == null
+                ? ""
+                : "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}";
+            return AlertDialog(
+              // key: UniqueKey(),
+              title: Text('Комплекс'),
+              content: Container(
+                  height: MediaQuery.of(context).size.height / 1.1,
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  child: Form(
+                    key: _keyformkompleks,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        (kompleks != null)
+                            ? Text('№ ${kompleks?.id.toString()}')
+                            : Text('№'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: TextFormField(
+                              controller: _titleControl,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Просим наименование пользователя";
                                 }
-                              });
-                              FocusScope.of(context)
-                                  .requestFocus(new FocusNode());
-                            },
-                            style: GoogleFonts.openSans(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                //Theme.of(context).backgroundColor,
-                                labelText: "Дата",
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 0.5, color: Colors.black)))),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Expanded(
+                              },
+                              style: GoogleFonts.openSans(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w200,
+                                  color: Colors.black),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  //Theme.of(context).backgroundColor,
+                                  labelText: "Наименование",
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          width: 0.5, color: Colors.black)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          width: 0.5, color: Colors.black)))),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                            _webImage == null
-                                ? Image.network(url,
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
                                     width:
                                         MediaQuery.of(context).size.width / 3,
-                                    height:
-                                        MediaQuery.of(context).size.height / 3,
-                                    errorBuilder: (BuildContext context,
-                                        Object error, StackTrace? stackTrace) {
-                                    return Icon(Icons.photo);
-                                  })
-                                : Container(
-                                    child: Image.memory(
-                                      _webImage!,
-                                      width: 200,
-                                      height: 200,
-                                    ),
+                                    child: TextFormField(
+                                        controller: _typehouseControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Тип комплекса";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Тип комплекса",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
                                   ),
-                            SizedBox(
-                              width: 50,
-                            ),
-                            // Spacer(),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  XFile? image = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (image != null) {
-                                    var f = await image.readAsBytes();
-                                    setState(() {
-                                      _webImage = f;
-                                    });
-                                  }
-                                },
-                                child: Text("Загрузить фото.."))
-                          ]))
-                    ],
-                  ),
-                )),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Сохранить'),
-                onPressed: () {
-                  if (kompleks == null) {
-                    kompleks = Kompleks();
-                  } else {}
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: TextFormField(
+                                        controller: _statusbuildingControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Состояние комплекса";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Состояние комплекса",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    // height: MediaQuery.of(context).size.height / 2,
+                                    child: TextFormField(
+                                        controller: _customerContoller,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Заказщик";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Заказщик",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    // height: MediaQuery.of(context).size.height / 2,
+                                    child: TextFormField(
+                                        controller: _dateprojectControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Дата";
+                                          }
+                                        },
+                                        onTap: () async {
+                                          await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2015),
+                                            lastDate: DateTime(2030),
+                                          ).then((selectedDate) {
+                                            if (selectedDate != null) {
+                                              _dateprojectControl.text =
+                                                  formatter
+                                                      .format(selectedDate);
+                                            }
+                                          });
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Дата",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  )
+                                ],
+                              ),
+                              Expanded(
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                    _webImage == null
+                                        ? Image.network(url,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2,
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                            return Icon(Icons.photo);
+                                          })
+                                        : Container(
+                                            child: Image.memory(
+                                              _webImage!,
+                                              width: 200,
+                                              height: 200,
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    // Spacer(),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          XFile? image = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.gallery);
+                                          if (image != null) {
+                                            var f = await image.readAsBytes();
+                                            setState(() {
+                                              _webImage = f;
+                                            });
+                                          }
+                                        },
+                                        child: Text("Загрузить фото.."))
+                                  ]))
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          // height: MediaQuery.of(context).size.height / 2,
+                          child: TextFormField(
+                              controller: _deskriptionContoller,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Описание комплекса";
+                                }
+                              },
+                              style: GoogleFonts.openSans(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w200,
+                                  color: Colors.black),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  //Theme.of(context).backgroundColor,
+                                  labelText: "Описание комплекса",
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          width: 0.5, color: Colors.black)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          width: 0.5, color: Colors.black)))),
+                        ),
+                      ],
+                    ),
+                  )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Сохранить'),
+                  onPressed: () {
+                    if (kompleks == null) {
+                      kompleks = Kompleks();
+                    } else {}
 
-                  if (!_keyformkompleks.currentState!.validate()) {
-                    return;
-                  }
+                    if (!_keyformkompleks.currentState!.validate()) {
+                      return;
+                    }
 
-                  kompleks!.title = _titleControl.text;
-                  kompleks!.dateproject = _dateprojectControl.text;
-                  kompleks!.customer = _customerContoller.text;
-                  kompleks!.statusbuilding = _statusbuildingControl.text;
-                  kompleks!.typehouse = _typehouseControl.text;
-                  kompleks!.description = _deskriptionContoller.text;
-                  // Map<String, dynamic> param = {'name': _nameControl.text};
+                    kompleks!.title = _titleControl.text;
+                    kompleks!.dateproject = _dateprojectControl.text;
+                    kompleks!.customer = _customerContoller.text;
+                    kompleks!.statusbuilding = _statusbuildingControl.text;
+                    kompleks!.typehouse = _typehouseControl.text;
+                    kompleks!.description = _deskriptionContoller.text;
+                    // Map<String, dynamic> param = {'name': _nameControl.text};
 
-                  kompleksBloc.save("kompleks/save", kompleks).then((value) {
-                    // setState(() {
-                    //   kompleks = value;
-                    // });
-                    if (_webImage != null) {
-                      kompleksBloc
-                          .postWeb("kompleks/upload", value.id.toString(),
-                              _webImage!)
-                          .then((value) {
+                    kompleksBloc.save("kompleks/save", kompleks).then((value) {
+                      // setState(() {
+                      //   kompleks = value;
+                      // });
+                      if (_webImage != null) {
+                        kompleksBloc
+                            .postWeb("kompleks/upload", value.id.toString(),
+                                _webImage!)
+                            .then((value) {
+                          kompleksBloc.add(BlocLoadEvent());
+                          Navigator.of(dialogContext).pop();
+                        }).catchError((onError) {
+                          print(onError);
+                        });
+                      } else {
                         kompleksBloc.add(BlocLoadEvent());
                         Navigator.of(dialogContext).pop();
-                      }).catchError((onError) {
-                        print(onError);
-                      });
-                    } else {
-                      kompleksBloc.add(BlocLoadEvent());
-                      Navigator.of(dialogContext).pop();
-                    }
-                    // _webImage = null;
-                  });
-                },
-              ),
-              TextButton(
-                child: Text('Отмена'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-                },
-              ),
-            ],
-          );
+                      }
+                      // _webImage = null;
+                    });
+                  },
+                ),
+                TextButton(
+                  child: Text('Отмена'),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                  },
+                ),
+              ],
+            );
+          });
         });
-      },
-    );
   }
 }

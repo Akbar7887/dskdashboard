@@ -1,4 +1,3 @@
-
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
 
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../bloc/bloc_event.dart';
 import '../bloc/bloc_state.dart';
 import '../models/Dom.dart';
 
@@ -22,14 +22,15 @@ class _DomaPageState extends State<DomaPage> {
   List<Dom>? _listDoma = [];
   Kompleks? _kompleks;
   Dom? _doma;
+  KompleksBloc? kompleksBloc;
 
   TextEditingController _nameControl = TextEditingController();
-  GlobalKey _keyform = GlobalKey<FormState>();
+  final _keyform = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    // kompleksBloc = BlocProvider.of<KompleksBloc>(context);
+    kompleksBloc = BlocProvider.of<KompleksBloc>(context);
     // domaBloc = BlocProvider.of<DomaBloc>(context);
   }
 
@@ -56,6 +57,12 @@ class _DomaPageState extends State<DomaPage> {
           //
           _listKomleks = state.loadedKomleks;
           _listKomleks!.sort((a, b) => a.id!.compareTo(b.id!));
+          if (_kompleks != null) {
+            _kompleks = _listKomleks!
+                .firstWhere((element) => element.id == _kompleks!.id);
+            _listDoma = _kompleks!.domSet;
+          }
+
           return mainList(context);
         }
 
@@ -124,13 +131,13 @@ class _DomaPageState extends State<DomaPage> {
           SizedBox(
             height: 10,
           ),
-          getDataTable(context, setState)
+          getDataTable(context)
         ],
       );
     });
   }
 
-  Widget getDataTable(BuildContext context, setState) {
+  Widget getDataTable(BuildContext context) {
     return DataTable(
         columns: [
           DataColumn(label: Text("№")),
@@ -156,18 +163,15 @@ class _DomaPageState extends State<DomaPage> {
             DataCell(IconButton(
               icon: Icon(Icons.delete_forever),
               onPressed: () {
+                kompleksBloc?.remove("kompleks/removedom",
+                    {"id": e.id.toString()}).then((value) {
+                  // setState(() {
+                  //   _listDoma!.remove(value);
+                  // });
+                  kompleksBloc!.add(BlocLoadEvent());
 
-                // Map<String, dynamic> param = {'id': e.id.toString()};
-                // domaBloc.remove("domdelete", param).then((value) {
-                //   domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
-                //     setState(() {
-                //       _listDoma = value;
-                //     });
-                //   });
-                //   // kompleksBloc.add(BlocLoadEvent());
-                // }).catchError((onError) {
-                //   print(onError);
-                // });
+                  // _listDoma.
+                });
               },
             )),
           ]);
@@ -207,7 +211,7 @@ class _DomaPageState extends State<DomaPage> {
                           controller: _nameControl,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Просим заполнить пользователя";
+                              return "Просим заполнить наименование";
                             }
                           },
                           style: GoogleFonts.openSans(
@@ -234,26 +238,23 @@ class _DomaPageState extends State<DomaPage> {
             TextButton(
               child: Text('Сохранить'),
               onPressed: () {
+                if (!_keyform.currentState!.validate()) {
+                  return;
+                }
                 if (_doma == null) {
                   _doma = Dom();
-                  _doma!.kompleks = _kompleks;
+                  // _doma!.kompleks = _kompleks;
                   _doma!.name = _nameControl.text;
                 } else {
                   _doma!.name = _nameControl.text;
                 }
-                Map<String, dynamic> param = {'id': _kompleks!.id.toString()};
+                _kompleks!.domSet = [];
+                _kompleks!.domSet!.add(_doma!);
 
-                // domaBloc.save("postdom", _doma, param).then((value) {
-                //   Navigator.of(dialogContext).pop();
-                //
-                //   domaBloc.getDoma(_kompleks!.id.toString()).then((value) {
-                //     setState(() {
-                //       _listDoma = value;
-                //     });
-                //   }); // Dismiss alert dialog
-                // }).catchError((error) {
-                //   print(error);
-                // });
+                kompleksBloc!.save("kompleks/save", _kompleks).then((value) {
+                  kompleksBloc!.add(BlocLoadEvent());
+                  Navigator.of(dialogContext).pop();
+                });
               },
             ),
             TextButton(
