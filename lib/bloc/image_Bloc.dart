@@ -17,7 +17,7 @@ class ImageBloc extends Cubit<BlocState>{
    return await repository.getImage(id);
   }
 
-  // Future<PictureHome> putWeb(String url, String id) async{
+  // Future<ImageDom> putWeb(String url, String id) async{
   //   return await repository.webImage(url,  id);
   // }
 }

@@ -141,7 +141,6 @@ class _ImagePageState extends State<ImagePage> {
                             _doma = newValue;
                             _listPicture = _doma!.imagedom!;
                           });
-
                         })),
               ],
             )),
@@ -152,15 +151,16 @@ class _ImagePageState extends State<ImagePage> {
         Expanded(
           child: Row(children: [
             _doma != null ? Expanded(child: imageTable()) : Container(),
+            VerticalDivider(),
             Expanded(
-                flex: 3,
+                flex: 2,
                 child: Container(
                   padding: EdgeInsets.all(10),
                   child: Card(
                     elevation: 5,
                     child: _listPicture.length > 0
                         ? Image.network(
-                            "${Ui.url}les/download/images/${_listPicture[_indexImage].imagepath}",
+                            "${Ui.url}imagedata/download/images/${_listPicture[_indexImage].imagepath}",
                             headers: hedersWithToken,
                           )
                         : Center(
@@ -217,9 +217,9 @@ class _ImagePageState extends State<ImagePage> {
                             //     .putWeb("webimage",
                             //         _listPicture[index].id.toString())
                             //     .then((value) {
-                            //   setState(() {
-                            //     // _listPicture[index].web = newVlaue;
-                            //   });
+                              setState(() {
+                                _listPicture[index].web = newVlaue;
+                              });
                             // });
                           },
                           value: _listPicture[index].web,
