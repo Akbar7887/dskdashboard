@@ -1,6 +1,7 @@
 import 'package:dskdashboard/models/Kompleks.dart';
 
 import '../models/ImageData.dart';
+import '../models/Make.dart';
 
 abstract class BlocState {}
 
@@ -20,4 +21,10 @@ class PictureLoadedState extends BlocState{
 
   List<ImageDom> loadedPicture;
   PictureLoadedState({required this.loadedPicture});
+}
+
+class MakeLoadedState extends BlocState {
+  List<Make> loadedMake;
+
+  MakeLoadedState({required this.loadedMake});
 }
