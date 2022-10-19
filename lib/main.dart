@@ -1,3 +1,4 @@
+import 'package:dskdashboard/bloc/make_bloc.dart';
 import 'package:dskdashboard/pages/first_page.dart';
 import 'package:dskdashboard/pages/home.dart';
 import 'package:dskdashboard/service/repository.dart';
@@ -35,30 +36,34 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return  RepositoryProvider(
+    return RepositoryProvider(
         create: (context) => Repository(),
-    child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) =>
-                  KompleksBloc(repository: context.read<Repository>())
-                    ..add(BlocLoadEvent())),
-          BlocProvider(
-              create: (context) =>
-                  ImageBloc(repository: context.read<Repository>())),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            //fontFamily://
-            primarySwatch: primaryColorShades,
-          ),
-          // home: FirstPage(),
-          initialRoute: "/",
-          routes: {
-            '/home': (context) => Home(),
-            '/': (context) => FirstPage(),
-          },
-        )));
+        child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                  create: (context) =>
+                      KompleksBloc(repository: context.read<Repository>())
+                        ..add(BlocLoadEvent())),
+              BlocProvider(
+                  create: (context) =>
+                      ImageBloc(repository: context.read<Repository>())),
+              BlocProvider(
+                  create: (context) =>
+                      MakeBloc(repository: context.read<Repository>())
+                        ..add(BlocLoadEvent())),
+            ],
+            child: MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                //fontFamily://
+                primarySwatch: primaryColorShades,
+              ),
+              // home: FirstPage(),
+              initialRoute: "/",
+              routes: {
+                '/home': (context) => Home(),
+                '/': (context) => FirstPage(),
+              },
+            )));
   }
 }

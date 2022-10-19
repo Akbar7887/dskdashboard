@@ -2,9 +2,11 @@ import 'package:dskdashboard/bloc/bloc_event.dart';
 import 'package:dskdashboard/bloc/bloc_state.dart';
 import 'package:dskdashboard/bloc/image_Bloc.dart';
 import 'package:dskdashboard/bloc/kompleks_bloc.dart';
+import 'package:dskdashboard/models/Make.dart';
 import 'package:dskdashboard/pages/doma_page.dart';
 import 'package:dskdashboard/pages/image_page.dart';
 import 'package:dskdashboard/pages/komleks_page.dart';
+import 'package:dskdashboard/pages/make_page.dart';
 import 'package:dskdashboard/service/repository.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +22,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int page = 1;
+  int page = 4;
   late KompleksBloc kompleksBloc;
 
   @override
@@ -139,6 +141,29 @@ class _HomeState extends State<Home> {
                           child: Text(
                             "Фото материалы (Комплекс, Дома)",
                             style: Ui.fonttext,
+                          ))),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                          color: page == 3
+                                              ? Colors.white
+                                              : Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 4;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Каталоги",
+                            style: Ui.fonttext,
                           )))
                 ],
               ),
@@ -161,6 +186,8 @@ class _HomeState extends State<Home> {
         return DomaPage();
       case 3:
         return ImagePage();
+      case 4:
+        return MakePage();
     }
   }
 }
