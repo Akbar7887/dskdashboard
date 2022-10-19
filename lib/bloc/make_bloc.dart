@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dskdashboard/bloc/bloc_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,5 +24,13 @@ class MakeBloc extends Bloc<BlocEvent, BlocState> {
     });
 
     on<BlocClearEvent>((event, emit) => emit(BlocEmtyState()));
+  }
+
+  Future<dynamic> save(String url, Make make) async {
+    return await repository.save(url, make);
+  }
+
+  Future<bool> postWeb(String url, String id, Uint8List data) async {
+    return await repository.webImage(url, id, data);
   }
 }

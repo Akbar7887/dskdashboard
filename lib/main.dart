@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
                         ..add(BlocLoadEvent())),
             ],
             child: MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
               theme: ThemeData(
                 //fontFamily://
