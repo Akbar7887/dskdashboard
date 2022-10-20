@@ -7,6 +7,7 @@ import 'package:dskdashboard/pages/doma_page.dart';
 import 'package:dskdashboard/pages/image_page.dart';
 import 'package:dskdashboard/pages/komleks_page.dart';
 import 'package:dskdashboard/pages/make_page.dart';
+import 'package:dskdashboard/pages/meneger_page.dart';
 import 'package:dskdashboard/service/repository.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +23,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int page = 4;
+  int page = 5;
   late KompleksBloc kompleksBloc;
 
   @override
@@ -151,7 +152,7 @@ class _HomeState extends State<Home> {
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       side: BorderSide(
-                                          color: page == 3
+                                          color: page == 4
                                               ? Colors.white
                                               : Colors.white54)))),
                           // color: Colors.black54,
@@ -163,6 +164,29 @@ class _HomeState extends State<Home> {
                           },
                           child: Text(
                             "Каталоги",
+                            style: Ui.fonttext,
+                          ))),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                          color: page == 5
+                                              ? Colors.white
+                                              : Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 5;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Руководство",
                             style: Ui.fonttext,
                           )))
                 ],
@@ -188,6 +212,8 @@ class _HomeState extends State<Home> {
         return ImagePage();
       case 4:
         return MakePage();
+      case 5:
+        return MenegerPage();
     }
   }
 }

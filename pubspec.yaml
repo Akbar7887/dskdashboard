@@ -36,6 +36,8 @@ dependencies:
   toast: ^0.2.9
   intl: ^0.17.0
   image_picker: ^0.8.4+4
+  syncfusion_flutter_datagrid: ^20.3.50
+  syncfusion_flutter_core: ^20.3.50
 
 
 

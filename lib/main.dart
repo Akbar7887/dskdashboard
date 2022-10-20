@@ -1,3 +1,4 @@
+import 'package:dskdashboard/bloc/meneger_Bloc.dart';
 import 'package:dskdashboard/bloc/make_bloc.dart';
 import 'package:dskdashboard/pages/first_page.dart';
 import 'package:dskdashboard/pages/home.dart';
@@ -51,6 +52,10 @@ class MyApp extends StatelessWidget {
                   create: (context) =>
                       MakeBloc(repository: context.read<Repository>())
                         ..add(BlocLoadEvent())),
+              BlocProvider(
+                  create: (context) =>
+                  MenegerBloc(repository: context.read<Repository>())
+                    ..add(BlocLoadEvent())),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

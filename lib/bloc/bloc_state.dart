@@ -2,6 +2,7 @@ import 'package:dskdashboard/models/Kompleks.dart';
 
 import '../models/ImageData.dart';
 import '../models/Make.dart';
+import '../models/Meneger.dart';
 
 abstract class BlocState {}
 
@@ -27,4 +28,10 @@ class MakeLoadedState extends BlocState {
   List<Make> loadedMake;
 
   MakeLoadedState({required this.loadedMake});
+}
+
+class MenegerLoadedState extends BlocState {
+  List<Meneger> loadedMeneger;
+
+  MenegerLoadedState({required this.loadedMeneger});
 }
