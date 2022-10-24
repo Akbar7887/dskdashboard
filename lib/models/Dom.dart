@@ -8,6 +8,7 @@ class Dom {
   String? name;
   List<ImageDom>? imagedom;
 
+
   Dom({this.id, this.imagedom, this.name});
 
   factory Dom.fromJson(Map<String, dynamic> json) {

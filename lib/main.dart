@@ -32,12 +32,15 @@ MaterialColor primaryColorShades = MaterialColor(
   },
 );
 
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return RepositoryProvider(
         create: (context) => Repository(),
         child: MultiBlocProvider(
@@ -55,12 +58,12 @@ class MyApp extends StatelessWidget {
                         ..add(BlocLoadEvent())),
               BlocProvider(
                   create: (context) =>
-                  MenegerBloc(repository: context.read<Repository>())
-                    ..add(BlocLoadEvent())),
+                      MenegerBloc(repository: context.read<Repository>())
+                        ..add(BlocLoadEvent())),
               BlocProvider(
                   create: (context) =>
-                  NewsBloc(repository: context.read<Repository>())
-                    ..add(BlocLoadEvent())),
+                      NewsBloc(repository: context.read<Repository>())
+                        ..add(BlocLoadEvent())),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

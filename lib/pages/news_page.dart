@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dskdashboard/bloc/news_bloc.dart';
+import 'package:dskdashboard/main.dart';
 import 'package:dskdashboard/models/News.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,8 +36,6 @@ class _NewsPageState extends State<NewsPage> {
   late NewsBloc _newsBloc;
   var formatter = new DateFormat('yyyy-MM-dd');
 
-  // TextEditingController _nameControl = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +46,8 @@ class _NewsPageState extends State<NewsPage> {
     if (_news != null) {
       _titleControl.text = _news!.title!;
       _descriptionControl.text = _news!.description!;
-      _datacreateControl.text = formatter.format(DateTime.parse(_news!.datacreate!));
+      _datacreateControl.text =
+          formatter.format(DateTime.parse(_news!.datacreate!));
     } else {
       _titleControl.text = "";
       _descriptionControl.text = "";
@@ -63,8 +63,8 @@ class _NewsPageState extends State<NewsPage> {
           content: StatefulBuilder(
             builder: (context, setState) {
               return SizedBox(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Form(
                       key: _keyNews,
                       child: Column(
@@ -172,58 +172,111 @@ class _NewsPageState extends State<NewsPage> {
                             height: 10,
                           ),
                           Expanded(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                _webImage == null
-                                    ? Image.network(
-                                        _news == null
-                                            ? ""
-                                            : '${Ui.url}news/download/news/${_news!.imagepath}',
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                2,
-                                        errorBuilder: (BuildContext context,
-                                            Object error,
-                                            StackTrace? stackTrace) {
-                                          return Icon(Icons.photo);
-                                        },
-                                        // loadingBuilder: (BuildContext context,
-                                        //     Widget child,
-                                        //     ImageChunkEvent? loadingProgress) {
-                                        //   return Center(
-                                        //     child: CircularProgressIndicator(),
-                                        //   );
-                                        // },
-                                      )
-                                    : Container(
-                                        child: Image.memory(
-                                          _webImage!,
-                                          width: 200,
-                                          height: 200,
-                                        ),
+                              child: Card(
+                                  child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Column(children: [
+                                    Container(
+                                      child: Text(
+                                        "Основное фото",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                SizedBox(
-                                  width: 50,
-                                ),
-                                // Spacer(),
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      XFile? image = await ImagePicker()
-                                          .pickImage(
-                                              source: ImageSource.gallery);
-                                      if (image != null) {
-                                        var f = await image.readAsBytes();
-                                        setState(() {
-                                          _webImage = f;
-                                        });
-                                      }
-                                    },
-                                    child: Text("Загрузить фото.."))
-                              ]))
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    // Spacer(),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          XFile? image = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.gallery);
+                                          if (image != null) {
+                                            var f = await image.readAsBytes();
+                                            setState(() {
+                                              _webImage = f;
+                                            });
+                                          }
+                                        },
+                                        child: Text("Загрузить фото..")),
+                                    Divider(),
+                                    _webImage == null
+                                        ? Image.network(
+                                            _news == null
+                                                ? ""
+                                                : '${Ui.url}news/download/news/${_news!.imagepath}',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2,
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                              return Icon(Icons.photo);
+                                            },
+                                            // loadingBuilder: (BuildContext context,
+                                            //     Widget child,
+                                            //     ImageChunkEvent? loadingProgress) {
+                                            //   return Center(
+                                            //     child: CircularProgressIndicator(),
+                                            //   );
+                                            // },
+                                          )
+                                        : Container(
+                                            child: Image.memory(
+                                              _webImage!,
+                                              width: 200,
+                                              height: 200,
+                                            ),
+                                          ),
+                                  ])),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              VerticalDivider(),
+                              Expanded(
+                                  child: Column(
+                                children: [
+                                  Container(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        XFile? image = await ImagePicker()
+                                            .pickImage(
+                                            source: ImageSource.gallery);
+                                        if (image != null) {
+                                          // var f = await image.readAsBytes();
+                                          // setState(() {
+                                          //   _webImage = f;
+                                          // });
+                                        }
+                                      },
+                                      child: Text("Добавить доп фото"),
+                                    ),
+                                  ),
+                                  Divider(),
+                                  Expanded(
+                                      child: ListView.builder(
+                                          itemCount:
+                                              _news!.imageNewsList!.length,
+                                          itemBuilder: (context, idx) {
+                                            return Container(
+                                              child: Card(
+                                                  child: Image.network(
+                                                      '${Ui.url}news/download/news/${_news!.imageNewsList![idx].imagepath}')),
+                                            );
+                                          }))
+                                ],
+                              ))
+                            ],
+                          )))
                         ],
                       )));
             },
@@ -251,7 +304,9 @@ class _NewsPageState extends State<NewsPage> {
                         .postWeb(
                             "news/newsupload", men.id.toString(), _webImage!)
                         .then((value) {
+                      _webImage = null;
                       _newsBloc.add(BlocLoadEvent());
+
                       Navigator.of(dialogContext).pop();
                     });
                   } else {
@@ -442,7 +497,7 @@ class _NewsPageState extends State<NewsPage> {
 class SourceMeneger extends DataGridSource {
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
-   var formatter = new DateFormat('yyyy-MM-dd');
+  var formatter = new DateFormat('yyyy-MM-dd');
 
   SourceMeneger({required List<News> listNews}) {
     _listDataRow = listNews
@@ -454,7 +509,8 @@ class SourceMeneger extends DataGridSource {
               DataGridCell<String>(
                   columnName: "description", value: e.description),
               DataGridCell<String>(
-                  columnName: "datecreate", value: formatter.format(DateTime.parse(e.datacreate!))),
+                  columnName: "datecreate",
+                  value: formatter.format(DateTime.parse(e.datacreate!))),
               DataGridCell<Icon>(columnName: "edit", value: Icon(Icons.edit)),
               DataGridCell<Icon>(
                   columnName: "delete", value: Icon(Icons.delete)),
