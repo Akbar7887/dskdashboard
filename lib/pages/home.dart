@@ -8,6 +8,7 @@ import 'package:dskdashboard/pages/image_page.dart';
 import 'package:dskdashboard/pages/komleks_page.dart';
 import 'package:dskdashboard/pages/make_page.dart';
 import 'package:dskdashboard/pages/meneger_page.dart';
+import 'package:dskdashboard/pages/news_page.dart';
 import 'package:dskdashboard/service/repository.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -188,6 +189,29 @@ class _HomeState extends State<Home> {
                           child: Text(
                             "Руководство",
                             style: Ui.fonttext,
+                          ))),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                          color: page == 6
+                                              ? Colors.white
+                                              : Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 6;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Новости",
+                            style: Ui.fonttext,
                           )))
                 ],
               ),
@@ -214,6 +238,8 @@ class _HomeState extends State<Home> {
         return MakePage();
       case 5:
         return MenegerPage();
+      case 6:
+        return NewsPage();
     }
   }
 }

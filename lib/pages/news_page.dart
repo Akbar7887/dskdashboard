@@ -1,58 +1,57 @@
 import 'dart:typed_data';
 
-import 'package:dskdashboard/bloc/meneger_Bloc.dart';
+import 'package:dskdashboard/bloc/news_bloc.dart';
+import 'package:dskdashboard/models/News.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../bloc/bloc_event.dart';
 import '../bloc/bloc_state.dart';
 import '../models/Meneger.dart';
-import '../service/repository.dart';
 
-class MenegerPage extends StatefulWidget {
-  const MenegerPage({Key? key}) : super(key: key);
+class NewsPage extends StatefulWidget {
+  const NewsPage({Key? key}) : super(key: key);
 
   @override
-  State<MenegerPage> createState() => _MenegerPageState();
+  State<NewsPage> createState() => _NewsPageState();
 }
 
-class _MenegerPageState extends State<MenegerPage> {
-  List<Meneger> _listMeneger = [];
+class _NewsPageState extends State<NewsPage> {
+  List<News> _listNews = [];
   late SourceMeneger sourceMeneger;
-  TextEditingController _nameControl = TextEditingController();
-  TextEditingController _phoneControl = TextEditingController();
-  TextEditingController _emailControl = TextEditingController();
-  TextEditingController _postControl = TextEditingController();
+  TextEditingController _titleControl = TextEditingController();
+  TextEditingController _descriptionControl = TextEditingController();
+  TextEditingController _datacreateControl = TextEditingController();
   Uint8List? _webImage;
-  Meneger? _meneger;
-  final _keyMeneger = GlobalKey<FormState>();
-  late MenegerBloc _menegerBloc;
+  News? _news;
+  final _keyNews = GlobalKey<FormState>();
+  late NewsBloc _newsBloc;
+  var formatter = new DateFormat('yyyy-MM-dd');
 
   // TextEditingController _nameControl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _menegerBloc = BlocProvider.of(context);
+    _newsBloc = BlocProvider.of(context);
   }
 
   Future<void> showDialogMeneger() async {
-    if (_meneger != null) {
-      _nameControl.text = _meneger!.name!;
-      _phoneControl.text = _meneger!.phone!;
-      _emailControl.text = _meneger!.email!;
-      _postControl.text = _meneger!.post!;
+    if (_news != null) {
+      _titleControl.text = _news!.title!;
+      _descriptionControl.text = _news!.description!;
+      _datacreateControl.text = formatter.format(DateTime.parse(_news!.datacreate!));
     } else {
-      _nameControl.text = "";
-      _phoneControl.text = "";
-      _emailControl.text = "";
-      _postControl.text = "";
+      _titleControl.text = "";
+      _descriptionControl.text = "";
+      _datacreateControl.text = "";
     }
     return await showDialog<void>(
       context: context,
@@ -60,23 +59,23 @@ class _MenegerPageState extends State<MenegerPage> {
       // false = user must tap button, true = tap outside dialog
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Добавить Руководителя'),
+          title: Text('Добавить новость'),
           content: StatefulBuilder(
             builder: (context, setState) {
               return SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
                   width: MediaQuery.of(context).size.width / 2,
                   child: Form(
-                      key: _keyMeneger,
+                      key: _keyNews,
                       child: Column(
                         children: [
                           Container(
                             width: MediaQuery.of(context).size.width / 3,
                             child: TextFormField(
-                                controller: _nameControl,
+                                controller: _titleControl,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Просим заплнить ФИО";
+                                    return "Просим заплнить заголовок";
                                   }
                                 },
                                 style: GoogleFonts.openSans(
@@ -86,7 +85,7 @@ class _MenegerPageState extends State<MenegerPage> {
                                 decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     //Theme.of(context).backgroundColor,
-                                    labelText: "ФИО",
+                                    labelText: "Заголовок",
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
@@ -102,10 +101,10 @@ class _MenegerPageState extends State<MenegerPage> {
                           Container(
                             width: MediaQuery.of(context).size.width / 3,
                             child: TextFormField(
-                                controller: _phoneControl,
+                                controller: _descriptionControl,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Просим заплнить телефон";
+                                    return "Просим заплнить Описание";
                                   }
                                 },
                                 style: GoogleFonts.openSans(
@@ -115,7 +114,7 @@ class _MenegerPageState extends State<MenegerPage> {
                                 decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     //Theme.of(context).backgroundColor,
-                                    labelText: "Телефон",
+                                    labelText: "Описание",
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
@@ -131,11 +130,26 @@ class _MenegerPageState extends State<MenegerPage> {
                           Container(
                             width: MediaQuery.of(context).size.width / 3,
                             child: TextFormField(
-                                controller: _emailControl,
+                                controller: _datacreateControl,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Просим заплнить эл. почту";
+                                    return "Просим заплнить дату";
                                   }
+                                },
+                                onTap: () async {
+                                  await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2015),
+                                    lastDate: DateTime(2030),
+                                  ).then((selectedDate) {
+                                    if (selectedDate != null) {
+                                      _datacreateControl.text =
+                                          formatter.format(selectedDate);
+                                    }
+                                  });
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                 },
                                 style: GoogleFonts.openSans(
                                     fontSize: 20,
@@ -144,36 +158,7 @@ class _MenegerPageState extends State<MenegerPage> {
                                 decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     //Theme.of(context).backgroundColor,
-                                    labelText: "Эл. почта ",
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)))),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            child: TextFormField(
-                                controller: _postControl,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Просим заплнить должность";
-                                  }
-                                },
-                                style: GoogleFonts.openSans(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.black),
-                                decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    //Theme.of(context).backgroundColor,
-                                    labelText: "Должность",
+                                    labelText: "Дата создание",
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
@@ -192,9 +177,9 @@ class _MenegerPageState extends State<MenegerPage> {
                                   children: [
                                 _webImage == null
                                     ? Image.network(
-                                        _meneger == null
+                                        _news == null
                                             ? ""
-                                            : '${Ui.url}meneger/download/meneger/${_meneger!.imagepath}',
+                                            : '${Ui.url}news/download/news/${_news!.imagepath}',
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 3,
@@ -247,31 +232,30 @@ class _MenegerPageState extends State<MenegerPage> {
             TextButton(
               child: Text('Сохранить'),
               onPressed: () {
-                if (!_keyMeneger.currentState!.validate()) {
+                if (!_keyNews.currentState!.validate()) {
                   return;
                 }
 
-                if (_meneger == null) {
-                  _meneger = Meneger();
+                if (_news == null) {
+                  _news = News();
                 }
 
-                _meneger!.name = _nameControl.text;
-                _meneger!.email = _emailControl.text;
-                _meneger!.phone = _phoneControl.text;
-                _meneger!.post = _postControl.text;
+                _news!.title = _titleControl.text;
+                _news!.description = _descriptionControl.text;
+                _news!.datacreate = _datacreateControl.text;
 
-                _menegerBloc.save("meneger/save", _meneger).then((value) {
+                _newsBloc.save("news/save", _news).then((value) {
                   Meneger men = Meneger.fromJson(value);
                   if (_webImage != null) {
-                    _menegerBloc
-                        .postWeb("meneger/menegerupload", men.id.toString(),
-                            _webImage!)
+                    _newsBloc
+                        .postWeb(
+                            "news/newsupload", men.id.toString(), _webImage!)
                         .then((value) {
-                      _menegerBloc.add(BlocLoadEvent());
+                      _newsBloc.add(BlocLoadEvent());
                       Navigator.of(dialogContext).pop();
                     });
                   } else {
-                    _menegerBloc.add(BlocLoadEvent());
+                    _newsBloc.add(BlocLoadEvent());
                     Navigator.of(dialogContext).pop();
                   }
                   // Dismiss alert dialog
@@ -292,7 +276,7 @@ class _MenegerPageState extends State<MenegerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<MenegerBloc, BlocState>(
+    return BlocConsumer<NewsBloc, BlocState>(
       builder: (context, state) {
         if (state is BlocEmtyState) {
           return Center(child: Text("No data!"));
@@ -301,11 +285,11 @@ class _MenegerPageState extends State<MenegerPage> {
         if (state is BlocLoadingState) {
           return Center(child: CircularProgressIndicator());
         }
-        if (state is MenegerLoadedState) {
+        if (state is NewsLoadedState) {
           //
-          _listMeneger = state.loadedMeneger;
-          _listMeneger.sort((a, b) => a.id!.compareTo(b.id!));
-          sourceMeneger = SourceMeneger(listMeneger: _listMeneger);
+          _listNews = state.loadedNews;
+          _listNews.sort((a, b) => a.id!.compareTo(b.id!));
+          sourceMeneger = SourceMeneger(listNews: _listNews);
 
           return mainWidget();
         }
@@ -330,7 +314,7 @@ class _MenegerPageState extends State<MenegerPage> {
               height: 50,
               alignment: Alignment.center,
               child: Text(
-                "Руководство",
+                "Новости",
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -340,7 +324,7 @@ class _MenegerPageState extends State<MenegerPage> {
                 child: ElevatedButton(
                     onPressed: () {
                       _webImage = null;
-                      _meneger = null;
+                      _news = null;
                       showDialogMeneger();
                       // setState(() {
                       //   Meneger meneger = Meneger();
@@ -352,112 +336,101 @@ class _MenegerPageState extends State<MenegerPage> {
               height: 20,
             ),
             Expanded(
-                child:SfDataGridTheme(
-                  data:  SfDataGridThemeData(headerColor: Colors.blue, rowHoverTextStyle: TextStyle(color: Colors.white)),
-                    child:  SfDataGrid(
-                    source: sourceMeneger,
+                child: SfDataGridTheme(
+                    data: SfDataGridThemeData(
+                        headerColor: Colors.blue,
+                        rowHoverTextStyle: TextStyle(color: Colors.white)),
+                    child: SfDataGrid(
+                        source: sourceMeneger,
 
-                    // headerGridLinesVisibility: GridLinesVisibility.vertical,
-                    allowEditing: true,
-                    columnWidthMode: ColumnWidthMode.fill,
-                    selectionMode: SelectionMode.single,
-                    navigationMode: GridNavigationMode.cell,
-                    allowSorting: true,
-                    onCellTap: (cell) {
-                      if (cell.rowColumnIndex.columnIndex == 5) {
-                        _meneger =
-                            _listMeneger[cell.rowColumnIndex.rowIndex - 1];
-                        _webImage = null;
-                        showDialogMeneger();
-                      }
-                      if (cell.rowColumnIndex.columnIndex == 6) {
-                        _meneger =
-                            _listMeneger[cell.rowColumnIndex.rowIndex - 1];
-                        _menegerBloc.remove("meneger/remove",
-                            {"id": _meneger!.id.toString()}).then((value) {
-                          _menegerBloc.add(BlocLoadEvent());
-                        });
-                      }
-                    },
-                    columns: [
-                  GridColumn(
-                      columnName: "id",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '№',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "name",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'ФИО',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "phone",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'телефон',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "email",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'э-почта',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "post",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'должность',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "edit",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Изменить',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                  GridColumn(
-                      columnName: "delete",
-                      label: Container(
-                          padding: EdgeInsets.all(16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Удалить',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ))),
-                ])))
+                        // headerGridLinesVisibility: GridLinesVisibility.vertical,
+                        allowEditing: true,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        selectionMode: SelectionMode.single,
+                        navigationMode: GridNavigationMode.cell,
+                        allowSorting: true,
+                        onCellTap: (cell) {
+                          if (cell.rowColumnIndex.columnIndex == 4) {
+                            _news = _listNews[cell.rowColumnIndex.rowIndex - 1];
+                            _webImage = null;
+                            showDialogMeneger();
+                          }
+                          if (cell.rowColumnIndex.columnIndex == 5) {
+                            _news = _listNews[cell.rowColumnIndex.rowIndex - 1];
+                            _newsBloc.remove("news/remove",
+                                {"id": _news!.id.toString()}).then((value) {
+                              _newsBloc.add(BlocLoadEvent());
+                            });
+                          }
+                        },
+                        columns: [
+                          GridColumn(
+                              columnName: "id",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '№',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                          GridColumn(
+                              columnName: "title",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Заголовок',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                          GridColumn(
+                              columnName: "description",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Описание',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                          GridColumn(
+                              columnName: "datacreate",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Дата создания',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                          GridColumn(
+                              columnName: "edit",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Изменить',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                          GridColumn(
+                              columnName: "delete",
+                              label: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Удалить',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
+                        ])))
           ],
         ));
   }
@@ -469,19 +442,22 @@ class _MenegerPageState extends State<MenegerPage> {
 class SourceMeneger extends DataGridSource {
   dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
+   var formatter = new DateFormat('yyyy-MM-dd');
 
-  SourceMeneger({required List<Meneger> listMeneger}) {
-    _listDataRow = listMeneger
+  SourceMeneger({required List<News> listNews}) {
+    _listDataRow = listNews
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(
                   columnName: 'id',
-                  value: (listMeneger.indexOf(e) + 1).toString()),
-              DataGridCell<String>(columnName: "name", value: e.name),
-              DataGridCell<String>(columnName: "phone", value: e.phone),
-              DataGridCell<String>(columnName: "email", value: e.email),
-              DataGridCell<String>(columnName: "post", value: e.post),
+                  value: (listNews.indexOf(e) + 1).toString()),
+              DataGridCell<String>(columnName: "title", value: e.title),
+              DataGridCell<String>(
+                  columnName: "description", value: e.description),
+              DataGridCell<String>(
+                  columnName: "datecreate", value: formatter.format(DateTime.parse(e.datacreate!))),
               DataGridCell<Icon>(columnName: "edit", value: Icon(Icons.edit)),
-              DataGridCell<Icon>(columnName: "delete", value: Icon(Icons.delete)),
+              DataGridCell<Icon>(
+                  columnName: "delete", value: Icon(Icons.delete)),
             ]))
         .toList();
   }
@@ -512,11 +488,6 @@ class SourceMeneger extends DataGridSource {
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Text(row.getCells()[3].value.toString()),
-      ),
-      Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Text(row.getCells()[4].value.toString()),
       ),
       Container(
           alignment: Alignment.center,
