@@ -62,6 +62,12 @@ class _NewsPageState extends State<NewsPage> {
           title: Text('Добавить новость'),
           content: StatefulBuilder(
             builder: (context, setState) {
+
+              void update() {
+                setState(() {
+                  _news = _listNews.firstWhere((element) => element.id == _news!.id);
+                });
+              }
               return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
@@ -243,16 +249,23 @@ class _NewsPageState extends State<NewsPage> {
                               ),
                               VerticalDivider(),
                               Expanded(
-                                  child: Column(
+                                  child: _news!.id == null? Container():Column(
                                 children: [
                                   Container(
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         XFile? image = await ImagePicker()
                                             .pickImage(
-                                            source: ImageSource.gallery);
+                                                source: ImageSource.gallery);
                                         if (image != null) {
-                                          // var f = await image.readAsBytes();
+                                          var f = await image.readAsBytes();
+                                          _newsBloc
+                                              .postWeb("news/imagenewsupload",
+                                                  _news!.id.toString(), f)
+                                              .then((value) {
+                                            _newsBloc.add(BlocLoadEvent());
+                                            update();
+                                          });
                                           // setState(() {
                                           //   _webImage = f;
                                           // });
@@ -270,7 +283,10 @@ class _NewsPageState extends State<NewsPage> {
                                             return Container(
                                               child: Card(
                                                   child: Image.network(
-                                                      '${Ui.url}news/download/news/${_news!.imageNewsList![idx].imagepath}')),
+                                                '${Ui.url}news/download/imagenews/${_news!.imageNewsList![idx].imagepath}',
+                                                height: 200,
+                                                width: 100,
+                                              )),
                                             );
                                           }))
                                 ],
@@ -328,6 +344,8 @@ class _NewsPageState extends State<NewsPage> {
       },
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {

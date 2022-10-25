@@ -1,3 +1,4 @@
+import 'package:dskdashboard/bloc/job_bloc.dart';
 import 'package:dskdashboard/bloc/meneger_Bloc.dart';
 import 'package:dskdashboard/bloc/make_bloc.dart';
 import 'package:dskdashboard/bloc/news_bloc.dart';
@@ -64,6 +65,10 @@ class MyApp extends StatelessWidget {
                   create: (context) =>
                       NewsBloc(repository: context.read<Repository>())
                         ..add(BlocLoadEvent())),
+              BlocProvider(
+                  create: (context) =>
+                  JobBloc(repository: context.read<Repository>())
+                    ..add(BlocLoadEvent())),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

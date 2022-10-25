@@ -2,6 +2,7 @@ import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/models/News.dart';
 
 import '../models/ImageData.dart';
+import '../models/Job.dart';
 import '../models/Make.dart';
 import '../models/Meneger.dart';
 
@@ -41,4 +42,10 @@ class NewsLoadedState extends BlocState {
   List<News> loadedNews;
 
   NewsLoadedState({required this.loadedNews});
+}
+
+class JobLoadedState extends BlocState {
+  List<Job> loadedJob;
+
+  JobLoadedState({required this.loadedJob});
 }

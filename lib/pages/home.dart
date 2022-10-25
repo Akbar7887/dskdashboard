@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'job_page.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -93,7 +95,7 @@ class _HomeState extends State<Home> {
                             style: Ui.fonttext,
                           ))),
                   SizedBox(
-                    height: 3,
+                    height: 5,
                   ),
                   Container(
                       height: 70,
@@ -119,7 +121,7 @@ class _HomeState extends State<Home> {
                             style: Ui.fonttext,
                           ))),
                   SizedBox(
-                    height: 3,
+                    height: 5,
                   ),
                   Container(
                       height: 70,
@@ -144,6 +146,9 @@ class _HomeState extends State<Home> {
                             "Фото материалы (Комплекс, Дома)",
                             style: Ui.fonttext,
                           ))),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Container(
                       height: 70,
                       padding: EdgeInsets.only(left: 5, right: 5),
@@ -167,6 +172,9 @@ class _HomeState extends State<Home> {
                             "Каталоги",
                             style: Ui.fonttext,
                           ))),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Container(
                       height: 70,
                       padding: EdgeInsets.only(left: 5, right: 5),
@@ -190,6 +198,9 @@ class _HomeState extends State<Home> {
                             "Руководство",
                             style: Ui.fonttext,
                           ))),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Container(
                       height: 70,
                       padding: EdgeInsets.only(left: 5, right: 5),
@@ -211,6 +222,32 @@ class _HomeState extends State<Home> {
                           },
                           child: Text(
                             "Новости",
+                            style: Ui.fonttext,
+                          ))),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      height: 70,
+                      padding: EdgeInsets.only(left: 5, right: 5),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(
+                                          color: page == 7
+                                              ? Colors.white
+                                              : Colors.white54)))),
+                          // color: Colors.black54,
+                          onPressed: () {
+                            setState(() {
+                              page = 7;
+                              // kompleksBloc.add(BlocLoadEvent());
+                            });
+                          },
+                          child: Text(
+                            "Вакансия",
                             style: Ui.fonttext,
                           )))
                 ],
@@ -240,6 +277,8 @@ class _HomeState extends State<Home> {
         return MenegerPage();
       case 6:
         return NewsPage();
+      case 7:
+        return JobPage();
     }
   }
 }
