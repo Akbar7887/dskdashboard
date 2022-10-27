@@ -42,35 +42,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return RepositoryProvider(
-        create: (context) => Repository(),
-        child: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                  create: (context) =>
-                      KompleksBloc(repository: context.read<Repository>())
-                        ..add(BlocLoadEvent())),
-              BlocProvider(
-                  create: (context) =>
-                      ImageBloc(repository: context.read<Repository>())),
-              BlocProvider(
-                  create: (context) =>
-                      MakeBloc(repository: context.read<Repository>())
-                        ..add(BlocLoadEvent())),
-              BlocProvider(
-                  create: (context) =>
-                      MenegerBloc(repository: context.read<Repository>())
-                        ..add(BlocLoadEvent())),
-              BlocProvider(
-                  create: (context) =>
-                      NewsBloc(repository: context.read<Repository>())
-                        ..add(BlocLoadEvent())),
-              BlocProvider(
-                  create: (context) =>
-                  JobBloc(repository: context.read<Repository>())
-                    ..add(BlocLoadEvent())),
-            ],
-            child: MaterialApp(
+    return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
               theme: ThemeData(
@@ -83,6 +55,6 @@ class MyApp extends StatelessWidget {
                 '/home': (context) => Home(),
                 '/': (context) => FirstPage(),
               },
-            )));
+            );
   }
 }
