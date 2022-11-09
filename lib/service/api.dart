@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dskdashboard/models/ImageData.dart';
+import 'package:dskdashboard/models/ImageDom.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../ui.dart';
@@ -84,15 +84,31 @@ class Api {
       "Authorization": "Bearer $token"
     };
     final response = await http.post(uri,
-        headers: hedersWithToken, body: json.encode(object));
-
-    if (response.statusCode == 200) {
+        headers: hedersWithToken, body: jsonEncode(object));
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       throw Exception("Error");
     }
   }
 
+  Future<dynamic> saveWithDom(String url, dynamic object, String dom_id) async {
+    String? token = await _storage.read(key: "token");
+    Map<String, dynamic> parm = {'dom_id': dom_id};
+
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: parm);
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+    final response = await http.post(uri,
+        headers: hedersWithToken, body: jsonEncode(object));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception("Error");
+    }
+  }
   Future<List<ImageDom>> getPicture(String id) async {
     String? token = await _storage.read(key: "token");
     Map<String, dynamic> parm = {'id': id};
@@ -175,7 +191,8 @@ class Api {
     }
   }
 
-  Future<dynamic> saveImage(String url, String id, String name, Uint8List data) async {
+  Future<dynamic> saveImage(
+      String url, String id, Uint8List data) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -186,12 +203,12 @@ class Api {
     List<int> list = data;
     final uri = Uri.parse('${Ui.url}${url}');
     var request = await http.MultipartRequest('POST', uri);
-    request.fields['dom_id'] = id;
-    request.fields['name'] = name;
+    request.fields['id'] = id;
 
     request.headers.addAll(hedersWithToken);
     request.files
         .add(http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
+
     final response = await request.send();
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;

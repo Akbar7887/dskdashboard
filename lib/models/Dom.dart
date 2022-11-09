@@ -1,4 +1,4 @@
-import 'ImageData.dart';
+import 'ImageDom.dart';
 import 'Kompleks.dart';
 
 class Dom {

@@ -123,6 +123,7 @@ class _KomleksPageState extends State<KomleksPage> {
                           icon: Icon(Icons.edit),
                           onPressed: () {
                             kompleks = e;
+                            _webImage = null;
                             showdialogwidget(context);
                           },
                         )),
@@ -470,12 +471,12 @@ class _KomleksPageState extends State<KomleksPage> {
                       return;
                     }
 
-                    kompleks!.title = _titleControl.text;
-                    kompleks!.dateproject = _dateprojectControl.text;
+                    kompleks!.title = _titleControl.text.trim();
+                    kompleks!.dateproject = _dateprojectControl.text.trim();
                     kompleks!.customer = _customerContoller.text;
-                    kompleks!.statusbuilding = _statusbuildingControl.text;
-                    kompleks!.typehouse = _typehouseControl.text;
-                    kompleks!.description = _deskriptionContoller.text;
+                    kompleks!.statusbuilding = _statusbuildingControl.text.trim();
+                    kompleks!.typehouse = _typehouseControl.text.trim();
+                    kompleks!.description = _deskriptionContoller.text.trim();
                     // Map<String, dynamic> param = {'name': _nameControl.text};
 
                     kompleksBloc.save("kompleks/save", kompleks).then((value) {

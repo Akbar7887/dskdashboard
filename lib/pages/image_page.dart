@@ -14,7 +14,7 @@ import '../bloc/bloc_event.dart';
 import '../bloc/bloc_state.dart';
 import '../bloc/kompleks_bloc.dart';
 import '../models/Dom.dart';
-import '../models/ImageData.dart';
+import '../models/ImageDom.dart';
 import '../ui.dart';
 
 class ImagePage extends StatefulWidget {
@@ -192,14 +192,15 @@ class _ImagePageState extends State<ImagePage> {
                             padding: EdgeInsets.all(10),
                             child: Card(
                               elevation: 5,
-                              child: _listPicture.length > 0
-                                  ? Image.network(
+                              child: Image.network(
                                       "${Ui.url}imagedata/download/images/${_listPicture[_indexImage].imagepath}",
                                       headers: hedersWithToken,
+                                      errorBuilder:
+                                          (context, object, stacktrace) {
+                                        return Center(
+                                            child:  Icon(Icons.photo));
+                                      },
                                     )
-                                  : Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
                             ),
                           ))
                     ]),
@@ -267,7 +268,7 @@ class _ImagePageState extends State<ImagePage> {
                             alignment: Alignment.topLeft,
                             child: RichText(
                               text: TextSpan(children: [
-                                TextSpan(text: "Коментарий"),
+                                TextSpan(text: "Коментарий: "),
                                 TextSpan(
                                   text: _listPicture[index].name!,
                                   style: TextStyle(fontSize: 15),
@@ -283,6 +284,7 @@ class _ImagePageState extends State<ImagePage> {
                                 onPressed: () {
                                   _imagepath = _listPicture[index].imagepath;
                                   _imageDom = _listPicture[index];
+                                  _webImage = null;
                                   showdialog();
                                 },
                                 child: Text("Изменить"),
@@ -471,15 +473,28 @@ class _ImagePageState extends State<ImagePage> {
                   _imageDom!.datacreate = _dateprojectControl.text;
 
                   imageBloc!
-                      .saveImage("imagedata/imageupload", _doma!.id.toString(),
-                          _imageDom!.name!, _webImage!)
+                      .save("imagedata/save", _imageDom!, _doma!.id.toString())
                       .then((value) {
-                    _kompleksBloc!.add(BlocLoadEvent());
-                    setState(() {
-                      _doma = _listDoma
-                          .firstWhere((element) => element.id == _doma!.id);
-                    });
-                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                    ImageDom imagedom = ImageDom.fromJson(value);
+                    if (_webImage != null) {
+                      return imageBloc!
+                          .saveImage("imagedata/upload", imagedom.id.toString(),
+                              _webImage!)
+                          .then((value) {
+                        _kompleksBloc!.add(BlocLoadEvent());
+                        setState(() {
+                          _doma = _listDoma
+                              .firstWhere((element) => element.id == _doma!.id);
+                        });
+                        Navigator.of(dialogContext)
+                            .pop(); // Dismiss alert dialog
+                      });
+                    } else {
+                      _kompleksBloc!.add(BlocLoadEvent());
+                      Navigator.of(dialogContext).pop();
+                    }
+                  }).catchError((onError) {
+                    print("Error");
                   });
                 },
               ),

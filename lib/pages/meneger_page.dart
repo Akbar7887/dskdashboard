@@ -264,7 +264,7 @@ class _MenegerPageState extends State<MenegerPage> {
                   Meneger men = Meneger.fromJson(value);
                   if (_webImage != null) {
                     _menegerBloc
-                        .postWeb("meneger/menegerupload", men.id.toString(),
+                        .postWeb("meneger/upload", men.id.toString(),
                             _webImage!)
                         .then((value) {
                       _menegerBloc.add(BlocLoadEvent());

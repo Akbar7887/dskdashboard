@@ -30,31 +30,23 @@ class _MakePageState extends State<MakePage> {
   Uint8List? _webImage;
   Catalog? _catalog;
   bool _read = true;
-  List<Map<String, dynamic>> _listController = [];
+  List<Map<String, TextEditingController>> _listController = [];
   List<Catalog> _listCatalogs = [];
   MakeBloc? makeBloc;
   Repository _repository = Repository();
 
-  getListControl() {
-    _listController = [
-      {"contr": [], "title": "наименование"},
-      {"contr": [], "title": "ширина"},
-      {"contr": [], "title": "высота"},
-      {"contr": [], "title": "длина"},
-      {"contr": [], "title": "Объем"},
-      {"contr": [], "title": "Масса"},
-      {"contr": [], "title": "Класс"},
-    ];
-  }
+  // getListControl() {
+  //   _listController = [
+  //   ];
+  // }
+  //{"name": "", "concrete": "", "heigth": "", "length": "", "mass": "", "volume": "",  "description": "наименование"},
 
   @override
   void initState() {
     super.initState();
-    getListControl();
+    // getListControl();
     makeBloc = BlocProvider.of<MakeBloc>(context);
-  } // List<Catalog> _listCatalogs = [];
-
-  // List<TextEditingController> _listController = [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +68,6 @@ class _MakePageState extends State<MakePage> {
                   _listMake.firstWhere((element) => element.id == _make!.id);
               _listCatalogs = _make!.catalogs!;
             }
-            // if (_listMake.length > 0) {
-            //   _make = _listMake.first;
-            // }
-
             return Container(
                 padding: EdgeInsets.only(left: 100, right: 100),
                 child: main(context));
@@ -113,6 +101,8 @@ class _MakePageState extends State<MakePage> {
               onPressed: () {
                 _make = null;
                 _webImage = null;
+                _listCatalogs = [];
+                _listController = [];
                 showDialogMake();
               },
               child: Text("Добавить"),
@@ -143,11 +133,11 @@ class _MakePageState extends State<MakePage> {
             onPressed: () {
               _make = e;
               _webImage = null;
-              getListControl();
-              makeBloc!.add(BlocLoadEvent());
-              // _listCatalogs.clear();
-              _listCatalogs = _make!.catalogs!;
+              _listController = [];
+
+              _listCatalogs = (_make!.catalogs == null ? [] : _make!.catalogs)!;
               _listCatalogs.sort((a, b) => a.id!.compareTo(b.id!));
+              fillController();
               showDialogMake();
             },
           )),
@@ -266,7 +256,9 @@ class _MakePageState extends State<MakePage> {
                                     children: [
                                   _webImage == null
                                       ? Image.network(
-                                          '${Ui.url}make/download/makes/${_make!.imagepath}',
+                                          _make == null
+                                              ? ''
+                                              : '${Ui.url}make/download/makes/${_make!.imagepath}',
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
@@ -308,6 +300,9 @@ class _MakePageState extends State<MakePage> {
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Align(
                           alignment: Alignment.topLeft,
                           child: ElevatedButton(
@@ -317,6 +312,7 @@ class _MakePageState extends State<MakePage> {
                                 Catalog catalog = Catalog();
                                 _listCatalogs.add(catalog);
                               });
+                              fillController();
                             },
                             child: Text("Добавить каталог"),
                             style: ButtonStyle(
@@ -351,12 +347,13 @@ class _MakePageState extends State<MakePage> {
                     _make = Make.fromJson(value);
                     if (_webImage != null) {
                       makeBloc!
-                          .postWeb("make/makeupload", _make!.id.toString(),
-                              _webImage!)
+                          .postWeb(
+                              "make/upload", _make!.id.toString(), _webImage!)
                           .then((value) {
                         _webImage = null;
                         makeBloc!.add(BlocLoadEvent());
-                        Navigator.pop(dialogContext, true); // Dismiss alert dialog
+                        Navigator.pop(
+                            dialogContext, true); // Dismiss alert dialog
                       });
                     } else {
                       makeBloc!.add(BlocLoadEvent());
@@ -379,152 +376,145 @@ class _MakePageState extends State<MakePage> {
   }
 
   void fillController() {
-    getListControl();
+    _listController = [];
     _listCatalogs.forEach((element) {
-      TextEditingController _nameController = TextEditingController();
-      _nameController.text = element.name != null ? element.name! : "";
-      _listController[0]["contr"].add(_nameController);
+      TextEditingController name = TextEditingController();
+      name.text = element.name == null ? "" : element.name!;
+      TextEditingController heigth = TextEditingController();
+      heigth.text = element.heigth == null ? "" : element.heigth!;
+      TextEditingController length = TextEditingController();
+      length.text = element.length == null ? "" : element.length!;
+      TextEditingController mass = TextEditingController();
+      mass.text = element.mass == null ? "" : element.mass!;
+      TextEditingController volume = TextEditingController();
+      volume.text = element.volume == null ? "" : element.volume!;
+      TextEditingController weigth = TextEditingController();
+      weigth.text = element.weigth == null ? "" : element.weigth!;
+      TextEditingController concrete = TextEditingController();
+      concrete.text = element.concrete == null ? "" : element.concrete!;
 
-      TextEditingController _weigthController = TextEditingController();
-      _weigthController.text = element.weigth != null ? element.weigth! : "";
-      _listController[1]["contr"].add(_weigthController);
-
-      TextEditingController _heigthController = TextEditingController();
-      _heigthController.text = element.heigth != null ? element.heigth! : "";
-      _listController[2]["contr"].add(_heigthController);
-
-      TextEditingController _lengthController = TextEditingController();
-      _lengthController.text = element.length != null ? element.length! : "";
-      _listController[3]["contr"].add(_lengthController);
-
-      TextEditingController _volumeController = TextEditingController();
-      _volumeController.text = element.volume != null ? element.volume! : "";
-      _listController[4]["contr"].add(_volumeController);
-
-      TextEditingController _massController = TextEditingController();
-      _massController.text = element.mass != null ? element.mass! : "";
-      _listController[5]["contr"].add(_massController);
-
-      TextEditingController _concreteController = TextEditingController();
-      _concreteController.text =
-          element.concrete != null ? element.concrete! : "";
-      _listController[6]["contr"].add(_concreteController);
+      _listController.add({
+        "concrete": concrete,
+        "heigth": heigth,
+        "length": length,
+        "mass": mass,
+        "name": name,
+        "volume": volume,
+        "weigth": weigth
+      });
     });
   }
 
   void filllistCatalog() {
-    _listController[0]["contr"].forEach((element) {
-      _listCatalogs[_listController[0]["contr"].indexOf(element)].name =
-          element.text;
-    });
-
-    _listController[1]["contr"].forEach((element) {
-      _listCatalogs[_listController[1]["contr"].indexOf(element)].weigth =
-          element.text;
-    });
-
-    _listController[2]["contr"].forEach((element) {
-      _listCatalogs[_listController[2]["contr"].indexOf(element)].heigth =
-          element.text;
-    });
-    _listController[3]["contr"].forEach((element) {
-      _listCatalogs[_listController[3]["contr"].indexOf(element)].length =
-          element.text;
-    });
-    _listController[4]["contr"].forEach((element) {
-      _listCatalogs[_listController[4]["contr"].indexOf(element)].volume =
-          element.text;
-    });
-    _listController[5]["contr"].forEach((element) {
-      _listCatalogs[_listController[5]["contr"].indexOf(element)].mass =
-          element.text;
-    });
-    _listController[6]["contr"].forEach((element) {
-      _listCatalogs[_listController[6]["contr"].indexOf(element)].concrete =
-          element.text;
+    _listController.forEach((element) {
+      _listCatalogs[_listController.indexOf(element)].name =
+          element["name"]!.text;
+      _listCatalogs[_listController.indexOf(element)].heigth =
+          element["heigth"]!.text;
+      _listCatalogs[_listController.indexOf(element)].weigth =
+          element["weigth"]!.text;
+      _listCatalogs[_listController.indexOf(element)].volume =
+          element["volume"]!.text;
+      _listCatalogs[_listController.indexOf(element)].length =
+          element["length"]!.text;
+      _listCatalogs[_listController.indexOf(element)].mass =
+          element["mass"]!.text;
+      _listCatalogs[_listController.indexOf(element)].concrete =
+          element["concrete"]!.text;
     });
   }
 
   Widget getDataTable(BuildContext context) {
-    fillController();
+    // fillController();
 
     return SingleChildScrollView(
-        child: DataTable(
-            border: TableBorder.all(
-              width: 0.5,
-              color: Colors.black87,
-            ),
-            headingRowColor: MaterialStateProperty.all(Colors.black38),
-            dataTextStyle: TextStyle(fontSize: 15),
-            // columnSpacing: MediaQuery.of(context).size.width / 14,
-            columns: [
-              DataColumn(label: Text("№")),
-              DataColumn(label: Text("Название")),
-              DataColumn(label: Text("ширина")),
-              DataColumn(label: Text("высота")),
-              DataColumn(label: Text("длина")),
-              DataColumn(label: Text("Объем")),
-              DataColumn(label: Text("Масса")),
-              DataColumn(label: Text("Класс")),
-              DataColumn(label: Text("Изменить")),
-              DataColumn(label: Text("Удалить")),
-            ],
-            rows: _listCatalogs
-                .asMap()
-                .map((idx, e) {
-                  return MapEntry(
-                      idx,
-                      DataRow(cells: [
-                        DataCell(Text((idx + 1).toString())),
-                        DataCell(TextFormField(
-                          controller: _listController[0]["contr"][idx],
+        child: StatefulBuilder(builder: (context, setState) {
+      return DataTable(
+          border: TableBorder.all(
+            width: 0.5,
+            color: Colors.black87,
+          ),
+          headingRowColor: MaterialStateProperty.all(Colors.black38),
+          dataTextStyle: TextStyle(fontSize: 15),
+          // columnSpacing: MediaQuery.of(context).size.width / 14,
+          columns: [
+            DataColumn(label: Text("№")),
+            DataColumn(label: Text("Название")),
+            DataColumn(label: Text("ширина")),
+            DataColumn(label: Text("высота")),
+            DataColumn(label: Text("длина")),
+            DataColumn(label: Text("Объем")),
+            DataColumn(label: Text("Масса")),
+            DataColumn(label: Text("Класс")),
+            DataColumn(label: Text("Изменить")),
+            DataColumn(label: Text("Удалить")),
+          ],
+          rows: _listCatalogs
+              .asMap()
+              .map((idx, e) {
+                return MapEntry(
+                    idx,
+                    DataRow(cells: [
+                      DataCell(Text((idx + 1).toString())),
+                      DataCell(TextFormField(
+                        controller: _listController[idx]["name"],
+                        style: TextStyle(fontSize: 15),
+                        readOnly: _read,
+                      )),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["weigth"],
                           style: TextStyle(fontSize: 15),
-                          readOnly: _read,
-                        )),
-                        DataCell(TextFormField(
-                            controller: _listController[1]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(TextFormField(
-                            controller: _listController[2]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(TextFormField(
-                            controller: _listController[3]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(TextFormField(
-                            controller: _listController[4]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(TextFormField(
-                            controller: _listController[5]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(TextFormField(
-                            controller: _listController[6]["contr"][idx],
-                            style: TextStyle(fontSize: 15),
-                            readOnly: _read)),
-                        DataCell(IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
+                          readOnly: _read)),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["heigth"],
+                          style: TextStyle(fontSize: 15),
+                          readOnly: _read)),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["length"],
+                          style: TextStyle(fontSize: 15),
+                          readOnly: _read)),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["volume"],
+                          style: TextStyle(fontSize: 15),
+                          readOnly: _read)),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["mass"],
+                          style: TextStyle(fontSize: 15),
+                          readOnly: _read)),
+                      DataCell(TextFormField(
+                          controller: _listController[idx]["concrete"],
+                          style: TextStyle(fontSize: 15),
+                          readOnly: _read)),
+                      DataCell(IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          setState(() {
+                            _read = !_read;
+                          });
+                        },
+                      )),
+                      DataCell(IconButton(
+                        icon: Icon(Icons.delete_forever),
+                        onPressed: () {
+                          _repository.delete("catalog/remove",
+                              {"id": e.id.toString()}).then((value) {
                             setState(() {
-                              _read = !_read;
+                              _listCatalogs.remove(e);
+                              fillController();
                             });
-                          },
-                        )),
-                        DataCell(IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          onPressed: () {
-                            _repository.delete("catalog/remove",
-                                {"id": e.id.toString()}).then((value) {
-                              makeBloc!.add(BlocLoadEvent());
+                          }).catchError((e) {
+                            setState(() {
+                              _listCatalogs.remove(e);
+                              fillController();
+
                             });
-                          },
-                        )),
-                      ]));
-                })
-                .values
-                .toList()));
+                          });
+                        },
+                      )),
+                    ]));
+              })
+              .values
+              .toList());
+    }));
   }
 }

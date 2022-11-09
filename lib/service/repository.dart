@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dskdashboard/models/ImageData.dart';
+import 'package:dskdashboard/models/ImageDom.dart';
 import 'package:dskdashboard/service/api.dart';
 
 class Repository {
@@ -18,6 +18,8 @@ class Repository {
 
   Future<dynamic> save(String url, dynamic object) => api.save(url, object);
 
+  Future<dynamic> savewithdom(String url, dynamic object, String dom_id) => api.saveWithDom(url, object, dom_id);
+
   Future<List<ImageDom>> getImage(String id) => api.getPicture(id);
 
   Future<bool> webImage(String url, String id, Uint8List data) =>
@@ -28,8 +30,8 @@ class Repository {
   }
 
   Future<dynamic> saveImage(
-      String url, String id, String name, Uint8List data) async {
-    return await api.saveImage(url, id, name, data);
+      String url, String id, Uint8List data) async {
+    return await api.saveImage(url, id, data);
   }
 
 }

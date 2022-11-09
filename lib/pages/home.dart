@@ -30,7 +30,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int page = 5;
+  int page = 1;
   late KompleksBloc kompleksBloc;
 
   @override

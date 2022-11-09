@@ -62,12 +62,15 @@ class _NewsPageState extends State<NewsPage> {
           title: Text('Добавить новость'),
           content: StatefulBuilder(
             builder: (context, setState) {
-
               void update() {
                 setState(() {
-                  _news = _listNews.firstWhere((element) => element.id == _news!.id);
+                  if (_news != null) {
+                    _news = _listNews
+                        .firstWhere((element) => element.id == _news!.id);
+                  }
                 });
               }
+
               return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
@@ -249,48 +252,77 @@ class _NewsPageState extends State<NewsPage> {
                               ),
                               VerticalDivider(),
                               Expanded(
-                                  child: _news!.id == null? Container():Column(
-                                children: [
-                                  Container(
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        XFile? image = await ImagePicker()
-                                            .pickImage(
-                                                source: ImageSource.gallery);
-                                        if (image != null) {
-                                          var f = await image.readAsBytes();
-                                          _newsBloc
-                                              .postWeb("news/imagenewsupload",
-                                                  _news!.id.toString(), f)
-                                              .then((value) {
-                                            _newsBloc.add(BlocLoadEvent());
-                                            update();
-                                          });
-                                          // setState(() {
-                                          //   _webImage = f;
-                                          // });
-                                        }
-                                      },
-                                      child: Text("Добавить доп фото"),
-                                    ),
-                                  ),
-                                  Divider(),
-                                  Expanded(
-                                      child: ListView.builder(
-                                          itemCount:
-                                              _news!.imageNewsList!.length,
-                                          itemBuilder: (context, idx) {
-                                            return Container(
-                                              child: Card(
-                                                  child: Image.network(
-                                                '${Ui.url}news/download/imagenews/${_news!.imageNewsList![idx].imagepath}',
-                                                height: 200,
-                                                width: 100,
-                                              )),
-                                            );
-                                          }))
-                                ],
-                              ))
+                                  child: _news == null
+                                      ? Container()
+                                      : Column(
+                                          children: [
+                                            Container(
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  XFile? image =
+                                                      await ImagePicker()
+                                                          .pickImage(
+                                                              source:
+                                                                  ImageSource
+                                                                      .gallery);
+                                                  if (image != null) {
+                                                    var f = await image
+                                                        .readAsBytes();
+                                                    _newsBloc
+                                                        .postWeb(
+                                                            "news/imagenewsupload",
+                                                            _news!.id
+                                                                .toString(),
+                                                            f)
+                                                        .then((value) {
+                                                      _newsBloc
+                                                          .add(BlocLoadEvent());
+                                                      update();
+                                                    });
+                                                    // setState(() {
+                                                    //   _webImage = f;
+                                                    // });
+                                                  }
+                                                },
+                                                child:
+                                                    Text("Добавить доп фото"),
+                                              ),
+                                            ),
+                                            Divider(),
+                                            Expanded(
+                                                child: _news == null
+                                                    ? Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      )
+                                                    : ListView.builder(
+                                                        itemCount: _news!
+                                                            .imageNewsList!
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, idx) {
+                                                          return Container(
+                                                            child: Card(
+                                                                child: Image.network(
+                                                                    _news ==
+                                                                            null
+                                                                        ? ''
+                                                                        : '${Ui.url}news/download/imagenews/${_news!.imageNewsList![idx].imagepath}',
+                                                                    height: 200,
+                                                                    width: 100,
+                                                                    errorBuilder: (BuildContext
+                                                                            context,
+                                                                        Object
+                                                                            error,
+                                                                        StackTrace?
+                                                                            stackTrace) {
+                                                              return Icon(
+                                                                  Icons.photo);
+                                                            })),
+                                                          );
+                                                        }))
+                                          ],
+                                        ))
                             ],
                           )))
                         ],
@@ -317,8 +349,7 @@ class _NewsPageState extends State<NewsPage> {
                   Meneger men = Meneger.fromJson(value);
                   if (_webImage != null) {
                     _newsBloc
-                        .postWeb(
-                            "news/newsupload", men.id.toString(), _webImage!)
+                        .postWeb("news/upload", men.id.toString(), _webImage!)
                         .then((value) {
                       _webImage = null;
                       _newsBloc.add(BlocLoadEvent());
@@ -344,8 +375,6 @@ class _NewsPageState extends State<NewsPage> {
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {

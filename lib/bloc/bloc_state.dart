@@ -1,7 +1,7 @@
 import 'package:dskdashboard/models/Kompleks.dart';
 import 'package:dskdashboard/models/News.dart';
 
-import '../models/ImageData.dart';
+import '../models/ImageDom.dart';
 import '../models/Job.dart';
 import '../models/Make.dart';
 import '../models/Meneger.dart';

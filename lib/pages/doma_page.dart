@@ -254,6 +254,10 @@ class _DomaPageState extends State<DomaPage> {
                 kompleksBloc!.save("kompleks/save", _kompleks).then((value) {
                   kompleksBloc!.add(BlocLoadEvent());
                   Navigator.of(dialogContext).pop();
+                }).whenComplete(() {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 });
               },
             ),
