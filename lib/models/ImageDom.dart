@@ -7,6 +7,7 @@ class ImageDom {
   String? imagepath;
   String? name;
   bool? web;
+  bool? layout;
 
   ImageDom(
       {this.datacreate,
@@ -14,7 +15,8 @@ class ImageDom {
       this.id,
       this.imagepath,
       this.name,
-      this.web});
+      this.web,
+      this.layout});
 
   factory ImageDom.fromJson(Map<String, dynamic> json) {
     return ImageDom(
@@ -23,7 +25,9 @@ class ImageDom {
         id: json['id'],
         imagepath: json['imagepath'],
         name: json['name'],
-        web: json['web']);
+        web: json['web'],
+        layout: json['layout']
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +40,8 @@ class ImageDom {
     //   data['dom'] = this.dom!.toJson();
     // }
     data['web'] = this.web;
+    data['layout'] = this.layout;
+
     return data;
   }
 }

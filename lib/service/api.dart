@@ -153,10 +153,10 @@ class Api {
     }
   }
 
-  Future<dynamic> postWebImage(String url, String id, bool web) async {
+  Future<dynamic> postWebImage(String url,String nameparam ,String id, bool web) async {
     String? token = await _storage.read(key: "token");
 
-    Map<String, String> param = {"web": web.toString(), "id": id};
+    Map<String, String> param = {nameparam: web.toString(), "id": id};
 
     Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: param);
     Map<String, String> hedersWithToken = {

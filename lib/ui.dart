@@ -8,8 +8,8 @@ class Ui {
 
   // static final String url =
   //     "https://dsk-webapp.azurewebsites.net/"; //; //
-  static final String url = "http://localhost:8087/"; //;
-  //static final String url = "http://146.120.17.76:8087/api/";
+   static final String url = "http://localhost:8087/"; //;
+
 
   static final TextStyle fonttext = GoogleFonts.openSans(
       // fontSize: 20,

@@ -19,8 +19,8 @@ class ImageBloc extends Cubit<BlocState> {
     return await repository.savewithdom(url, imageDom, dom_id);
   }
 
-  Future<dynamic> putWeb(String url, String id, bool web) async {
-    return await repository.postwebImage(url, id, web);
+  Future<dynamic> putWeb(String url,String nameparam, String id, bool web) async {
+    return await repository.postwebImage(url, nameparam, id, web);
   }
 
   Future remove(String url, Map<String, dynamic> param) async {

@@ -191,17 +191,14 @@ class _ImagePageState extends State<ImagePage> {
                           child: Container(
                             padding: EdgeInsets.all(10),
                             child: Card(
-                              elevation: 5,
-                              child: Image.network(
-                                      "${Ui.url}imagedata/download/images/${_listPicture[_indexImage].imagepath}",
-                                      headers: hedersWithToken,
-                                      errorBuilder:
-                                          (context, object, stacktrace) {
-                                        return Center(
-                                            child:  Icon(Icons.photo));
-                                      },
-                                    )
-                            ),
+                                elevation: 5,
+                                child: Image.network(
+                                  "${Ui.url}imagedata/download/images/${_listPicture[_indexImage].imagepath}",
+                                  headers: hedersWithToken,
+                                  errorBuilder: (context, object, stacktrace) {
+                                    return Center(child: Icon(Icons.photo));
+                                  },
+                                )),
                           ))
                     ]),
                   )
@@ -218,7 +215,7 @@ class _ImagePageState extends State<ImagePage> {
       itemBuilder: (BuildContext ctx, index) {
         return Container(
             width: MediaQuery.of(context).size.width / 2,
-            height: MediaQuery.of(context).size.height / 5,
+            height: MediaQuery.of(context).size.height / 4,
             child: Card(
                 child: Container(
                     padding: EdgeInsets.all(10),
@@ -228,8 +225,71 @@ class _ImagePageState extends State<ImagePage> {
                             child: Row(
                           children: [
                             Expanded(
-                                child: Text(formatter.format(DateTime.parse(
-                                    _listPicture[index].datacreate!)))),
+                                child: Column(
+                              children: [
+                                Container(
+                                    child: Text(formatter.format(DateTime.parse(
+                                        _listPicture[index].datacreate!)))),
+                                Container(
+                                    height: 80,
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: CheckboxListTile(
+                                            title: Text("web"),
+                                            controlAffinity:
+                                                ListTileControlAffinity.leading,
+                                            onChanged: (newVlaue) {
+                                              imageBloc!
+                                                  .putWeb(
+                                                      "imagedata/webimage",
+                                                  "web",
+                                                      _listPicture[index]
+                                                          .id
+                                                          .toString(),
+                                                      newVlaue!)
+                                                  .then((value) {
+                                                setState(() {
+                                                  _listPicture[index].web =
+                                                      ImageDom.fromJson(value)
+                                                          .web;
+                                                });
+                                              });
+                                            },
+                                            value: _listPicture[index].web,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Expanded(
+                                            child: CheckboxListTile(
+                                          title: Text("Проект"),
+                                          controlAffinity:
+                                              ListTileControlAffinity.leading,
+                                          onChanged: (newVlaue) {
+                                            imageBloc!
+                                                .putWeb(
+                                                    "imagedata/layotimage",
+                                                    "layout",
+                                                    _listPicture[index]
+                                                        .id
+                                                        .toString(),
+                                                    newVlaue!)
+                                                .then((value) {
+                                              setState(() {
+                                                _listPicture[index].layout =
+                                                    ImageDom.fromJson(value)
+                                                        .layout;
+                                              });
+                                            });
+                                          },
+                                          value: _listPicture[index].layout,
+                                        )),
+                                      ],
+                                    )),
+                              ],
+                            )),
                             Container(
                                 width: 100,
                                 child: InkWell(
@@ -244,25 +304,9 @@ class _ImagePageState extends State<ImagePage> {
                                     ))),
                           ],
                         )),
-                        Expanded(
-                            child: CheckboxListTile(
-                          title: Text("web"),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (newVlaue) {
-                            imageBloc!
-                                .putWeb(
-                                    "imagedata/webimage",
-                                    _listPicture[index].id.toString(),
-                                    newVlaue!)
-                                .then((value) {
-                              setState(() {
-                                _listPicture[index].web =
-                                    ImageDom.fromJson(value).web;
-                              });
-                            });
-                          },
-                          value: _listPicture[index].web,
-                        )),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Divider(),
                         Container(
                             alignment: Alignment.topLeft,
