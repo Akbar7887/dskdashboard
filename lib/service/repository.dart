@@ -25,6 +25,10 @@ class Repository {
   Future<bool> webImage(String url, String id, Uint8List data) =>
       api.postImage(url, id, data);
 
+  Future<bool> webImageKompleks(String url, String id, Uint8List? data, Uint8List? data0, Uint8List? data1) =>
+      api.postImageKompleks(url, id, data, data0, data1);
+
+
   Future<dynamic> postwebImage(String url,String nameparam, String id, bool web) async {
     return await api.postWebImage(url, nameparam, id, web);
   }

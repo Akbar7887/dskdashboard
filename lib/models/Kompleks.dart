@@ -8,6 +8,8 @@ class Kompleks {
     List<Dom>? domSet;
     int? id;
     String? mainimagepath;
+    String? mainimagepathfirst;
+    String? mainimagepathsecond;
     String? statusbuilding;
     String? title;
     String? typehouse;
@@ -20,6 +22,8 @@ class Kompleks {
         this.domSet,
         this.id,
         this.mainimagepath,
+        this.mainimagepathfirst,
+        this.mainimagepathsecond,
         this.statusbuilding,
         this.title,
         this.typehouse,
@@ -32,9 +36,11 @@ class Kompleks {
             dateproject: json['dateproject'], 
             description: json['description'], 
             domSet: json['domSet'] != null ? (json['domSet'] as List).map((i) => Dom.fromJson(i)).toList() : null,
-            id: json['id'], 
+            id: json['id'],
             mainimagepath: json['mainimagepath'],
-            statusbuilding: json['statusbuilding'], 
+            mainimagepathfirst: json['mainimagepathfirst'],
+            mainimagepathsecond: json['mainimagepathsecond'],
+            statusbuilding: json['statusbuilding'],
             title: json['title'],
             typehouse: json['typehouse'],
             web: json['web'],
@@ -55,6 +61,8 @@ class Kompleks {
             data['domSet'] = this.domSet!.map((v) => v.toJson()).toList();
         }
         data['mainimagepath'] = this.mainimagepath;
+        data['mainimagepathfirst'] = this.mainimagepathfirst;
+        data['mainimagepathsecond'] = this.mainimagepathsecond;
         data['web'] = this.web;
         return data;
     }

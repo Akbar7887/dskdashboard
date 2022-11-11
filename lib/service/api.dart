@@ -109,6 +109,7 @@ class Api {
       throw Exception("Error");
     }
   }
+
   Future<List<ImageDom>> getPicture(String id) async {
     String? token = await _storage.read(key: "token");
     Map<String, dynamic> parm = {'id': id};
@@ -153,7 +154,56 @@ class Api {
     }
   }
 
-  Future<dynamic> postWebImage(String url,String nameparam ,String id, bool web) async {
+  Future<bool> postImageKompleks(String url, String id, Uint8List? data,
+      Uint8List? data0, Uint8List? data1) async {
+    token = await _storage.read(key: "token");
+
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+
+    final uri = Uri.parse('${Ui.url}${url}');
+    var request = await http.MultipartRequest('POST', uri);
+    request.fields['id'] = id;
+
+    request.headers.addAll(hedersWithToken);
+    if (data != null) {
+      List<int> list = data;
+      request.files.add(
+          http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
+    }else{
+      request.files.add(
+          http.MultipartFile.fromBytes("file", [], filename: ('$id.png')));
+    }
+
+    if (data0 != null) {
+      List<int> list0 = data0;
+      request.files.add(
+          http.MultipartFile.fromBytes("file0", list0, filename: ('$id.png')));
+    }else{
+      request.files.add(
+          http.MultipartFile.fromBytes("file0", [], filename: ('$id.png')));
+    }
+    if (data1 != null) {
+      List<int> list1 = data1;
+      request.files.add(
+          http.MultipartFile.fromBytes("file1", list1, filename: ('$id.png')));
+    }else{
+      request.files.add(
+          http.MultipartFile.fromBytes("file1", [], filename: ('$id.png')));
+    }
+
+    final response = await request.send();
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<dynamic> postWebImage(
+      String url, String nameparam, String id, bool web) async {
     String? token = await _storage.read(key: "token");
 
     Map<String, String> param = {nameparam: web.toString(), "id": id};
@@ -191,8 +241,7 @@ class Api {
     }
   }
 
-  Future<dynamic> saveImage(
-      String url, String id, Uint8List data) async {
+  Future<dynamic> saveImage(String url, String id, Uint8List data) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -216,4 +265,6 @@ class Api {
       return false;
     }
   }
+
+
 }

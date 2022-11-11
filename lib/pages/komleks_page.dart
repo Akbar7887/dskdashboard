@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:dskdashboard/bloc/bloc_state.dart';
@@ -33,6 +34,8 @@ class _KomleksPageState extends State<KomleksPage> {
   TextEditingController _dateprojectControl = TextEditingController();
   var formatter = new DateFormat('yyyy-MM-dd');
   Uint8List? _webImage;
+  Uint8List? _webImage0;
+  Uint8List? _webImage1;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +89,8 @@ class _KomleksPageState extends State<KomleksPage> {
               onPressed: () {
                 kompleks = null;
                 _webImage = null;
+                _webImage0 = null;
+                _webImage1 = null;
 
                 showdialogwidget(context);
               },
@@ -124,6 +129,9 @@ class _KomleksPageState extends State<KomleksPage> {
                           onPressed: () {
                             kompleks = e;
                             _webImage = null;
+                            _webImage0 = null;
+                            _webImage1 = null;
+
                             showdialogwidget(context);
                           },
                         )),
@@ -171,9 +179,22 @@ class _KomleksPageState extends State<KomleksPage> {
         // false = user must tap button, true = tap outside dialog
         builder: (BuildContext dialogContext) {
           return StatefulBuilder(builder: (context, setState) {
-            String url = kompleks == null
-                ? ""
-                : "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}";
+            void callapi(Kompleks kompleks) {
+              kompleksBloc
+                  .postWeb(
+                      "kompleks/upload",
+                      kompleks.id.toString(),
+                      _webImage == null ? null : _webImage!,
+                      _webImage0 == null ? null : _webImage0!,
+                      _webImage1 == null ? null : _webImage1!)
+                  .then((value) {
+                kompleksBloc.add(BlocLoadEvent());
+                Navigator.of(dialogContext).pop();
+              }).catchError((onError) {
+                print(onError);
+              });
+            }
+
             return AlertDialog(
               // key: UniqueKey(),
               title: Text('Комплекс'),
@@ -378,13 +399,17 @@ class _KomleksPageState extends State<KomleksPage> {
                                   )
                                 ],
                               ),
+                              SizedBox(
+                                width: 20,
+                              ),
                               Expanded(
-                                  child: Row(
+                                  child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                     _webImage == null
-                                        ? Image.network(url,
+                                        ? Image.network(
+                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
@@ -418,6 +443,104 @@ class _KomleksPageState extends State<KomleksPage> {
                                             var f = await image.readAsBytes();
                                             setState(() {
                                               _webImage = f;
+                                            });
+                                          }
+                                        },
+                                        child: Text("Загрузить фото.."))
+                                  ])),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                    _webImage0 == null
+                                        ? Image.network(
+                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathfirst}",
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2,
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                            return Icon(Icons.photo);
+                                          })
+                                        : Container(
+                                            child: Image.memory(
+                                              _webImage0!,
+                                              width: 200,
+                                              height: 200,
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    // Spacer(),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          XFile? image = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.gallery);
+                                          if (image != null) {
+                                            var f = await image.readAsBytes();
+                                            setState(() {
+                                              _webImage0 = f;
+                                            });
+                                          }
+                                        },
+                                        child: Text("Загрузить фото.."))
+                                  ])),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                    _webImage1 == null
+                                        ? Image.network(
+                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathsecond}",
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2,
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                            return Icon(Icons.photo);
+                                          })
+                                        : Container(
+                                            child: Image.memory(
+                                              _webImage1!,
+                                              width: 200,
+                                              height: 200,
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    // Spacer(),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          XFile? image = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.gallery);
+                                          if (image != null) {
+                                            var f = await image.readAsBytes();
+                                            setState(() {
+                                              _webImage1 = f;
                                             });
                                           }
                                         },
@@ -474,30 +597,16 @@ class _KomleksPageState extends State<KomleksPage> {
                     kompleks!.title = _titleControl.text.trim();
                     kompleks!.dateproject = _dateprojectControl.text.trim();
                     kompleks!.customer = _customerContoller.text;
-                    kompleks!.statusbuilding = _statusbuildingControl.text.trim();
+                    kompleks!.statusbuilding =
+                        _statusbuildingControl.text.trim();
                     kompleks!.typehouse = _typehouseControl.text.trim();
                     kompleks!.description = _deskriptionContoller.text.trim();
                     // Map<String, dynamic> param = {'name': _nameControl.text};
 
                     kompleksBloc.save("kompleks/save", kompleks).then((value) {
-                      // setState(() {
-                      //   kompleks = value;
-                      // });
-                      if (_webImage != null) {
-                        kompleksBloc
-                            .postWeb("kompleks/upload", value.id.toString(),
-                                _webImage!)
-                            .then((value) {
-                          kompleksBloc.add(BlocLoadEvent());
-                          Navigator.of(dialogContext).pop();
-                        }).catchError((onError) {
-                          print(onError);
-                        });
-                      } else {
-                        kompleksBloc.add(BlocLoadEvent());
-                        Navigator.of(dialogContext).pop();
-                      }
-                      // _webImage = null;
+
+                      callapi(value);
+
                     });
                   },
                 ),
@@ -512,4 +621,4 @@ class _KomleksPageState extends State<KomleksPage> {
           });
         });
   }
-}
+
