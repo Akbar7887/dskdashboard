@@ -100,7 +100,7 @@ class _KomleksPageState extends State<KomleksPage> {
           height: 10,
         ),
         Container(
-            // color: Colors.black87,
+          // color: Colors.black87,
             padding: EdgeInsets.all(10),
             child: SingleChildScrollView(
                 child: DataTable(
@@ -182,11 +182,11 @@ class _KomleksPageState extends State<KomleksPage> {
             void callapi(Kompleks kompleks) {
               kompleksBloc
                   .postWeb(
-                      "kompleks/upload",
-                      kompleks.id.toString(),
-                      _webImage == null ? null : _webImage!,
-                      _webImage0 == null ? null : _webImage0!,
-                      _webImage1 == null ? null : _webImage1!)
+                  "kompleks/upload",
+                  kompleks.id.toString(),
+                  _webImage == null ? null : _webImage!,
+                  _webImage0 == null ? null : _webImage0!,
+                  _webImage1 == null ? null : _webImage1!)
                   .then((value) {
                 kompleksBloc.add(BlocLoadEvent());
                 Navigator.of(dialogContext).pop();
@@ -199,8 +199,14 @@ class _KomleksPageState extends State<KomleksPage> {
               // key: UniqueKey(),
               title: Text('Комплекс'),
               content: Container(
-                  height: MediaQuery.of(context).size.height / 1.1,
-                  width: MediaQuery.of(context).size.width / 1.1,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height / 1.1,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width / 1.1,
                   child: Form(
                     key: _keyformkompleks,
                     child: Column(
@@ -213,7 +219,10 @@ class _KomleksPageState extends State<KomleksPage> {
                           height: 10,
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width / 3,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 3,
                           child: TextFormField(
                               controller: _titleControl,
                               validator: (value) {
@@ -248,7 +257,10 @@ class _KomleksPageState extends State<KomleksPage> {
                                 children: [
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 3,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 3,
                                     child: TextFormField(
                                         controller: _typehouseControl,
                                         validator: (value) {
@@ -266,13 +278,13 @@ class _KomleksPageState extends State<KomleksPage> {
                                             labelText: "Тип комплекса",
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)))),
@@ -282,7 +294,10 @@ class _KomleksPageState extends State<KomleksPage> {
                                   ),
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 3,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 3,
                                     child: TextFormField(
                                         controller: _statusbuildingControl,
                                         validator: (value) {
@@ -300,13 +315,13 @@ class _KomleksPageState extends State<KomleksPage> {
                                             labelText: "Состояние комплекса",
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)))),
@@ -316,7 +331,10 @@ class _KomleksPageState extends State<KomleksPage> {
                                   ),
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 3,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 3,
                                     // height: MediaQuery.of(context).size.height / 2,
                                     child: TextFormField(
                                         controller: _customerContoller,
@@ -335,13 +353,13 @@ class _KomleksPageState extends State<KomleksPage> {
                                             labelText: "Заказщик",
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)))),
@@ -351,7 +369,10 @@ class _KomleksPageState extends State<KomleksPage> {
                                   ),
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width / 3,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 3,
                                     // height: MediaQuery.of(context).size.height / 2,
                                     child: TextFormField(
                                         controller: _dateprojectControl,
@@ -386,13 +407,13 @@ class _KomleksPageState extends State<KomleksPage> {
                                             labelText: "Дата",
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)))),
@@ -405,147 +426,162 @@ class _KomleksPageState extends State<KomleksPage> {
                               Expanded(
                                   child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
-                                    _webImage == null
-                                        ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                        _webImage == null
+                                            ? Image.network(
+                                            "${Ui
+                                                .url}kompleks/download/house/${kompleks!
+                                                .mainimagepath}",
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width /
                                                 3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height /
                                                 2,
                                             errorBuilder: (BuildContext context,
                                                 Object error,
                                                 StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
+                                              return Icon(Icons.photo);
+                                            })
+                                            : Container(
+                                          child: Image.memory(
+                                            _webImage!,
+                                            width: 200,
+                                            height: 200,
                                           ),
-                                    SizedBox(
-                                      width: 50,
-                                    ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                        ),
+                                        // Spacer(),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
                                                   source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ])),
+                                              if (image != null) {
+                                                var f = await image
+                                                    .readAsBytes();
+                                                setState(() {
+                                                  _webImage = f;
+                                                });
+                                              }
+                                            },
+                                            child: Text("Загрузить фото.."))
+                                      ])),
                               SizedBox(
                                 width: 10,
                               ),
                               Expanded(
                                   child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
-                                    _webImage0 == null
-                                        ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathfirst}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                        _webImage0 == null
+                                            ? Image.network(
+                                            "${Ui
+                                                .url}kompleks/download/house/${kompleks!
+                                                .mainimagepathfirst}",
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width /
                                                 3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height /
                                                 2,
                                             errorBuilder: (BuildContext context,
                                                 Object error,
                                                 StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage0!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
+                                              return Icon(Icons.photo);
+                                            })
+                                            : Container(
+                                          child: Image.memory(
+                                            _webImage0!,
+                                            width: 200,
+                                            height: 200,
                                           ),
-                                    SizedBox(
-                                      width: 50,
-                                    ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                        ),
+                                        // Spacer(),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
                                                   source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage0 = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ])),
+                                              if (image != null) {
+                                                var f = await image
+                                                    .readAsBytes();
+                                                setState(() {
+                                                  _webImage0 = f;
+                                                });
+                                              }
+                                            },
+                                            child: Text("Загрузить фото.."))
+                                      ])),
                               SizedBox(
                                 width: 10,
                               ),
                               Expanded(
                                   child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
-                                    _webImage1 == null
-                                        ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathsecond}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                        _webImage1 == null
+                                            ? Image.network(
+                                            "${Ui
+                                                .url}kompleks/download/house/${kompleks!
+                                                .mainimagepathsecond}",
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width /
                                                 3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height /
                                                 2,
                                             errorBuilder: (BuildContext context,
                                                 Object error,
                                                 StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage1!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
+                                              return Icon(Icons.photo);
+                                            })
+                                            : Container(
+                                          child: Image.memory(
+                                            _webImage1!,
+                                            width: 200,
+                                            height: 200,
                                           ),
-                                    SizedBox(
-                                      width: 50,
-                                    ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                        ),
+                                        // Spacer(),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
                                                   source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage1 = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ]))
+                                              if (image != null) {
+                                                var f = await image
+                                                    .readAsBytes();
+                                                setState(() {
+                                                  _webImage1 = f;
+                                                });
+                                              }
+                                            },
+                                            child: Text("Загрузить фото.."))
+                                      ]))
                             ],
                           ),
                         ),
@@ -553,7 +589,10 @@ class _KomleksPageState extends State<KomleksPage> {
                           height: 10,
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width / 1.1,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.1,
                           // height: MediaQuery.of(context).size.height / 2,
                           child: TextFormField(
                               controller: _deskriptionContoller,
@@ -604,9 +643,7 @@ class _KomleksPageState extends State<KomleksPage> {
                     // Map<String, dynamic> param = {'name': _nameControl.text};
 
                     kompleksBloc.save("kompleks/save", kompleks).then((value) {
-
                       callapi(value);
-
                     });
                   },
                 ),
@@ -621,4 +658,4 @@ class _KomleksPageState extends State<KomleksPage> {
           });
         });
   }
-
+}
