@@ -462,6 +462,7 @@ class _MenegerPageState extends State<MenegerPage> {
         ));
   }
 
+
   DataGridCellDoubleTapDetails(
       {required RowColumnIndex rowColumnIndex, required GridColumn column}) {}
 }

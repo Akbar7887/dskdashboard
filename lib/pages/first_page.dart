@@ -21,7 +21,7 @@ class FirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ToastContext().init(context);
     _user.text = "Admin";
-    _password.text = "7887";
+    _password.text = "";
     return Material(
         color: Colors.black87,
         child: Column(

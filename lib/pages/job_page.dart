@@ -50,13 +50,6 @@ class _JobPageState extends State<JobPage> {
       _listtitle.add(e.title == null ? false : e.title!);
       _listenable.add(e.title == null ? true : false);
     }).toList();
-    // _listJoblist.forEach((element) {
-    //   TextEditingController _texcontoller = TextEditingController();
-    //   _texcontoller.text = element.description!;
-    //   _listConrtoller.add(_texcontoller);
-    //   _listtitle.add(element.title!);
-    //   _listenable.add(false);
-    // });
   }
 
   @override
@@ -156,6 +149,7 @@ class _JobPageState extends State<JobPage> {
                             Map<String, dynamic> param = {
                               'id': e.id.toString()
                             };
+
                             jobBloc.remove("job/remove", param).then((value) {
                               jobBloc.add(BlocLoadEvent());
                             }).catchError((onError) {
@@ -185,6 +179,11 @@ class _JobPageState extends State<JobPage> {
         builder: (BuildContext dialogContext) {
           return StatefulBuilder(builder: (context, setState) {
             // fillListController();
+            void removeItem(int idx) {
+              setState(() {
+                _listJoblist.removeAt(idx);
+              });
+            }
 
             return AlertDialog(
               // key: UniqueKey(),
@@ -197,7 +196,7 @@ class _JobPageState extends State<JobPage> {
                       child: Row(children: [
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               (_job != null)
                                   ? Text('№ ${_job?.id.toString()}')
@@ -291,79 +290,89 @@ class _JobPageState extends State<JobPage> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  DataTable(
-                                      headingRowColor:
-                                          MaterialStateProperty.all(
-                                              Colors.blue),
-                                      columnSpacing: 150,
-                                      headingTextStyle:
-                                          TextStyle(color: Colors.white),
-                                      columns: [
-                                        DataColumn(label: Text("Заголовок")),
-                                        DataColumn(label: Text("Описание")),
-                                        DataColumn(label: Text("Изменить")),
-                                        DataColumn(label: Text("Удалить")),
-                                      ],
-                                      rows: _listJoblist.map((e) {
-                                        return DataRow(cells: [
-                                          DataCell(
-                                            Checkbox(
-                                              value: _listtitle[
-                                                  _listJoblist.indexOf(e)],
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  _listtitle[_listJoblist
-                                                      .indexOf(e)] = value!;
-                                                });
-                                                e.title = value;
-                                              },
-                                            ),
-                                          ),
-                                          DataCell(
-                                            TextFormField(
-                                              controller: _listConrtoller[
-                                                  _listJoblist.indexOf(e)],
-                                              enabled: _listenable[
-                                                  _listJoblist.indexOf(e)],
-                                              showCursor: _listenable[
-                                                  _listJoblist.indexOf(e)],
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "Просим заполнить описание";
-                                                }
-                                              },
-                                              onChanged: (newvalue) {
-                                                e.description = newvalue;
-                                              },
-                                            ),
-                                          ),
-                                          DataCell(IconButton(
-                                            icon: Icon(Icons.edit),
-                                            onPressed: () {
-                                              setState(() {
-                                                _listenable[_listJoblist
-                                                        .indexOf(e)] =
-                                                    !_listenable[_listJoblist
-                                                        .indexOf(e)];
-                                              });
-                                            },
-                                          )),
-                                          DataCell(IconButton(
-                                            icon: Icon(Icons.delete_forever),
-                                            onPressed: () {
-                                              jobBloc.remove("job/removeitem", {
-                                                "id": e.id.toString()
-                                              }).then((value) {
-                                                setState(() {
-                                                  _listJoblist.remove(e);
-                                                });
-                                                jobBloc.add(BlocLoadEvent());
-                                              });
-                                            },
-                                          )),
-                                        ]);
-                                      }).toList()),
+                                 Expanded(child:  SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                      child: DataTable(
+                                          headingRowColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.blue),
+                                          columnSpacing: 150,
+                                          headingTextStyle:
+                                              TextStyle(color: Colors.white),
+                                          columns: [
+                                            DataColumn(
+                                                label: Text("Заголовок")),
+                                            DataColumn(label: Text("Описание")),
+                                            DataColumn(label: Text("Изменить")),
+                                            DataColumn(label: Text("Удалить")),
+                                          ],
+                                          rows: _listJoblist.map((e) {
+                                            return DataRow(cells: [
+                                              DataCell(
+                                                Checkbox(
+                                                  value: _listtitle[
+                                                      _listJoblist.indexOf(e)],
+                                                  onChanged: (bool? value) {
+                                                    setState(() {
+                                                      _listtitle[_listJoblist
+                                                          .indexOf(e)] = value!;
+                                                    });
+                                                    e.title = value;
+                                                  },
+                                                ),
+                                              ),
+                                              DataCell(
+                                                TextFormField(
+                                                  controller: _listConrtoller[
+                                                      _listJoblist.indexOf(e)],
+                                                  enabled: _listenable[
+                                                      _listJoblist.indexOf(e)],
+                                                  showCursor: _listenable[
+                                                      _listJoblist.indexOf(e)],
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Просим заполнить описание";
+                                                    }
+                                                  },
+                                                  onChanged: (newvalue) {
+                                                    e.description = newvalue;
+                                                  },
+                                                ),
+                                              ),
+                                              DataCell(IconButton(
+                                                icon: Icon(Icons.edit),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _listenable[_listJoblist
+                                                            .indexOf(e)] =
+                                                        !_listenable[
+                                                            _listJoblist
+                                                                .indexOf(e)];
+                                                  });
+                                                },
+                                              )),
+                                              DataCell(IconButton(
+                                                icon:
+                                                    Icon(Icons.delete_forever),
+                                                onPressed: () {
+                                                  removeItem(
+                                                      _listJoblist.indexOf(e));
+
+                                                  jobBloc.remove(
+                                                      "job/removeitem", {
+                                                    "id": e.id.toString()
+                                                  }).then((value) {
+                                                    setState(() {
+                                                      _listJoblist.remove(e);
+                                                    });
+                                                    jobBloc
+                                                        .add(BlocLoadEvent());
+                                                  });
+                                                },
+                                              )),
+                                            ]);
+                                          }).toList()))),
                                 ])),
                       ]))),
               actions: <Widget>[
