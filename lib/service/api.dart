@@ -172,16 +172,16 @@ class Api {
       List<int> list = data;
       request.files.add(
           http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
-    }else{
-      request.files.add(
-          http.MultipartFile.fromBytes("file", [], filename: ('$id.png')));
+    } else {
+      request.files
+          .add(http.MultipartFile.fromBytes("file", [], filename: ('$id.png')));
     }
 
     if (data0 != null) {
       List<int> list0 = data0;
       request.files.add(
           http.MultipartFile.fromBytes("file0", list0, filename: ('$id.png')));
-    }else{
+    } else {
       request.files.add(
           http.MultipartFile.fromBytes("file0", [], filename: ('$id.png')));
     }
@@ -189,7 +189,7 @@ class Api {
       List<int> list1 = data1;
       request.files.add(
           http.MultipartFile.fromBytes("file1", list1, filename: ('$id.png')));
-    }else{
+    } else {
       request.files.add(
           http.MultipartFile.fromBytes("file1", [], filename: ('$id.png')));
     }
@@ -265,6 +265,4 @@ class Api {
       return false;
     }
   }
-
-
 }

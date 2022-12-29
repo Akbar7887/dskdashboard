@@ -409,7 +409,7 @@ class _KomleksPageState extends State<KomleksPage> {
                                       children: [
                                     _webImage == null
                                         ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
+                                   kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
@@ -458,7 +458,7 @@ class _KomleksPageState extends State<KomleksPage> {
                                       children: [
                                     _webImage0 == null
                                         ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathfirst}",
+                                        kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathfirst}",
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
@@ -507,7 +507,7 @@ class _KomleksPageState extends State<KomleksPage> {
                                       children: [
                                     _webImage1 == null
                                         ? Image.network(
-                                            "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathsecond}",
+                                        kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathsecond}",
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
