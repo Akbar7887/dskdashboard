@@ -7,8 +7,9 @@ class News {
     List<ImageNews>? imageNewsList;
     String? imagepath;
     String? title;
+    String? videopath;
 
-    News({ this.datacreate, this.description, this.id, this.imageNewsList, this.imagepath, this.title});
+    News({ this.datacreate, this.description, this.id, this.imageNewsList, this.imagepath, this.title, this.videopath});
 
     factory News.fromJson(Map<String, dynamic> json) {
         return News(
@@ -17,7 +18,8 @@ class News {
             id: json['id'], 
             imageNewsList: json['imageNewsList'] != null ? (json['imageNewsList'] as List).map((i) => ImageNews.fromJson(i)).toList() : null, 
             imagepath: json['imagepath'], 
-            title: json['title'], 
+            title: json['title'],
+            videopath: json['videopath']
         );
     }
 
@@ -31,6 +33,7 @@ class News {
         if (this.imageNewsList != null) {
             data['imageNewsList'] = this.imageNewsList!.map((v) => v.toJson()).toList();
         }
+        data['videopath'] = this.videopath;
         return data;
     }
 }

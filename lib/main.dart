@@ -1,19 +1,17 @@
-import 'package:dskdashboard/bloc/job_bloc.dart';
-import 'package:dskdashboard/bloc/meneger_Bloc.dart';
-import 'package:dskdashboard/bloc/make_bloc.dart';
-import 'package:dskdashboard/bloc/news_bloc.dart';
 import 'package:dskdashboard/pages/first_page.dart';
 import 'package:dskdashboard/pages/home.dart';
-import 'package:dskdashboard/service/repository.dart';
+import 'package:dskdashboard/ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:toast/toast.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
 
-import 'bloc/bloc_event.dart';
-import 'bloc/image_Bloc.dart';
-import 'bloc/kompleks_bloc.dart';
+import 'controller/Controller.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // setPathUrlStrategy();
+
   runApp(const MyApp());
 }
 
@@ -42,19 +40,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
-              theme: ThemeData(
-                //fontFamily://
-                primarySwatch: primaryColorShades,
-              ),
-              // home: FirstPage(),
-              initialRoute: "/",
-              routes: {
-                '/home': (context) => Home(),
-                '/': (context) => FirstPage(),
-              },
-            );
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: Ui.company,
+      theme: ThemeData(
+        backgroundColor: Colors.black,
+        bottomAppBarColor: Colors.black,
+        textTheme: TextTheme(),
+        // fontFamily: Ui.font,
+        // textTheme: TextTheme(bodyText1: ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        //primarySwatch: Colors.black87,
+      ),
+      initialRoute: '/',
+      initialBinding: HomeBindings(),
+      getPages: [
+        GetPage(name: '/home', page: () => Home()),
+        GetPage(name: '/', page: () => FirstPage()),
+        // GetPage(name: '/kompleksdetails', page: () => KompleksDetailesPage()),
+      ],
+    );
   }
 }

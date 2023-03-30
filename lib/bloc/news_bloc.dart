@@ -32,6 +32,9 @@ class NewsBloc extends Bloc<BlocEvent, BlocState> {
   Future<bool> postWeb(String url, String id, Uint8List data) async {
     return await repository.webImage(url, id, data);
   }
+  Future<bool> saveVideo(String url, String id, Uint8List data, String filename) async {
+    return await repository.saveVideo(url, id, data, filename);
+  }
 
   Future remove(String url, Map<String, dynamic> param) async {
     return await repository.delete(url, param);

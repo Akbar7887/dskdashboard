@@ -25,6 +25,9 @@ class Repository {
   Future<bool> webImage(String url, String id, Uint8List data) =>
       api.postImage(url, id, data);
 
+  Future<bool> saveVideo(String url, String id, Uint8List data, String filename) =>
+      api.saveVideo(url, id, data, filename);
+
   Future<bool> webImageKompleks(String url, String id, Uint8List? data, Uint8List? data0, Uint8List? data1) =>
       api.postImageKompleks(url, id, data, data0, data1);
 

@@ -1,11 +1,15 @@
+
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dskdashboard/models/ImageDom.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../models/ImageDom.dart';
 import '../ui.dart';
 
-class Api {
+
+class ApiConnector extends GetConnect {
   String? token;
   FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -46,25 +50,6 @@ class Api {
       return true;
     } else {
       return false;
-    }
-  }
-
-  Future<bool> delete(String url, Map<String, dynamic> param) async {
-    String? token = await _storage.read(key: "token");
-
-    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: param);
-    Map<String, String> hedersWithToken = {
-      "Content-type": "application/json",
-      "Authorization": "Bearer $token"
-    };
-    final response = await http.put(uri, headers: hedersWithToken);
-
-    if (response.statusCode == 200) {
-      // final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
-
-      return true;
-    } else {
-      throw Exception("Error");
     }
   }
 
@@ -139,30 +124,6 @@ class Api {
     request.headers.addAll(hedersWithToken);
     request.files
         .add(http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
-    final response = await request.send();
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Future<bool> saveVideo(String url, String id, Uint8List data, String filename) async {
-    token = await _storage.read(key: "token");
-
-    Map<String, String> hedersWithToken = {
-      "Content-type": "application/json",
-      "Authorization": "Bearer $token"
-    };
-
-    List<int> list = data;
-    final uri = Uri.parse('${Ui.url}${url}');
-    var request = await http.MultipartRequest('POST', uri);
-    request.fields['id'] = id;
-
-    request.headers.addAll(hedersWithToken);
-    request.files
-        .add(http.MultipartFile.fromBytes("file", list, filename: filename));
     final response = await request.send();
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
