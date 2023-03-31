@@ -225,7 +225,7 @@ class _NewsPageState extends State<NewsPage> {
                                     height: 150,
                                     child: VideoVistavka(
                                         url:
-                                            '${Ui.url}news/download/news/${_news!.videopath}'))
+                                            '${Ui.url}news/download/newsvideo/${_news!.videopath}'))
                                 // : Container(
                                 //     child:
                                 //   ),
