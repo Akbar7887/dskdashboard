@@ -397,10 +397,10 @@ class _NewsPageState extends State<NewsPage> {
                 _news!.datacreate = _datacreateControl.text;
 
                 _newsBloc.save("news/save", _news).then((value) {
-                  Meneger men = Meneger.fromJson(value);
+                  News news = News.fromJson(value);
                   if (_webImage != null) {
                     _newsBloc
-                        .postWeb("news/upload", men.id.toString(), _webImage!)
+                        .postWeb("news/upload", news.id.toString(), _webImage!)
                         .then((value) {
                       _webImage = null;
                       _newsBloc.add(BlocLoadEvent());
@@ -421,6 +421,8 @@ class _NewsPageState extends State<NewsPage> {
                   } else {
                     _newsBloc.add(BlocLoadEvent());
                   }
+                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+
                   // Dismiss alert dialog
                 });
               },

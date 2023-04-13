@@ -27,30 +27,30 @@ class FirstPage extends StatelessWidget {
         child: SafeArea(child: Column(
           children: [
             SizedBox(
-              height: 50,
+              height: MediaQuery.of(context).size.height/12,
             ),
             Container(
                 // alignment: Alignment.center,
-                child: Text(Ui.company,
+                child: FittedBox(child: Text(Ui.company,
                     style: GoogleFonts.openSans(
                         fontSize: 50,
                         fontWeight: FontWeight.w200,
-                        color: Colors.white))),
+                        color: Colors.white)), fit: BoxFit.fill,)),
             SizedBox(
-              height: 100,
+              height: MediaQuery.of(context).size.height/7,
             ),
             Container(
-              child: Text("Вход",
+              child: FittedBox(child: Text("Вход",
                   style: GoogleFonts.openSans(
                       fontSize: 50,
                       fontWeight: FontWeight.w200,
-                      color: Colors.white)),
+                      color: Colors.white),),fit: BoxFit.fill),
             ),
             SizedBox(
               height: 30,
             ),
             Container(
-                width: 400,
+                width: MediaQuery.of(context).size.width/3,
                 child: Form(
                   key: _keyUser,
                   child: TextFormField(
@@ -86,7 +86,7 @@ class FirstPage extends StatelessWidget {
               height: 30,
             ),
             Container(
-                width: 400,
+                width: MediaQuery.of(context).size.width/3,
                 child: Form(
                     key: _keyPassword,
                     child: StatefulBuilder(
