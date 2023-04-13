@@ -24,7 +24,7 @@ class FirstPage extends StatelessWidget {
     _password.text = "";
     return Material(
         color: Colors.black87,
-        child: Column(
+        child: SafeArea(child: Column(
           children: [
             SizedBox(
               height: 50,
@@ -186,6 +186,6 @@ class FirstPage extends StatelessWidget {
               ),
             )
           ],
-        ));
+        )));
   }
 }

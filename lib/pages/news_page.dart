@@ -43,8 +43,8 @@ class _NewsPageState extends State<NewsPage> {
 
   @override
   void initState() {
-    super.initState();
     _newsBloc = BlocProvider.of(context);
+    super.initState();
   }
 
   Future<void> showDialogMeneger() async {
@@ -54,9 +54,9 @@ class _NewsPageState extends State<NewsPage> {
       _datacreateControl.text =
           formatter.format(DateTime.parse(_news!.datacreate!));
     } else {
-      _titleControl.text = "";
-      _descriptionControl.text = "";
-      _datacreateControl.text = "";
+      _titleControl.clear();
+      _descriptionControl.clear();
+      _datacreateControl.clear();
     }
     return await showDialog<void>(
       context: context,
@@ -223,9 +223,13 @@ class _NewsPageState extends State<NewsPage> {
                                 Container(
                                     width: 300,
                                     height: 150,
-                                    child: VideoVistavka(
-                                        url:
-                                            '${Ui.url}news/download/newsvideo/${_news!.videopath}'))
+                                    child: _news != null
+                                        ? VideoVistavka(
+                                            url:
+                                                '${Ui.url}news/download/newsvideo/${_news!.videopath}')
+                                        : Center(
+                                            child: CircularProgressIndicator(),
+                                          ))
                                 // : Container(
                                 //     child:
                                 //   ),
@@ -261,36 +265,38 @@ class _NewsPageState extends State<NewsPage> {
                                     width: 300,
                                     height: 150,
                                     child: _webImage == null
-                                    ? Image.network(
-                                        _news == null
-                                            ? ""
-                                            : '${Ui.url}news/download/news/${_news!.imagepath}',
-                                        width:
-                                            MediaQuery.of(context).size.width /
+                                        ? Image.network(
+                                            _news == null
+                                                ? ""
+                                                : '${Ui.url}news/download/news/${_news!.imagepath}',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
                                                 3,
-                                        height:
-                                            MediaQuery.of(context).size.height /
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
                                                 2,
-                                        errorBuilder: (BuildContext context,
-                                            Object error,
-                                            StackTrace? stackTrace) {
-                                          return Icon(Icons.photo);
-                                        },
-                                        // loadingBuilder: (BuildContext context,
-                                        //     Widget child,
-                                        //     ImageChunkEvent? loadingProgress) {
-                                        //   return Center(
-                                        //     child: CircularProgressIndicator(),
-                                        //   );
-                                        // },
-                                      )
-                                    : Container(
-                                        child: Image.memory(
-                                          _webImage!,
-                                          width: 200,
-                                          height: 200,
-                                        ),
-                                      )),
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                              return Icon(Icons.photo);
+                                            },
+                                            // loadingBuilder: (BuildContext context,
+                                            //     Widget child,
+                                            //     ImageChunkEvent? loadingProgress) {
+                                            //   return Center(
+                                            //     child: CircularProgressIndicator(),
+                                            //   );
+                                            // },
+                                          )
+                                        : Container(
+                                            child: Image.memory(
+                                              _webImage!,
+                                              width: 200,
+                                              height: 200,
+                                            ),
+                                          )),
                               ])),
                               SizedBox(
                                 width: 20,
