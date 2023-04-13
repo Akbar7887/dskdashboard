@@ -1,74 +1,36 @@
-import 'dart:collection';
 import 'dart:typed_data';
-
-import 'package:dskdashboard/bloc/bloc_state.dart';
-import 'package:dskdashboard/bloc/kompleks_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../bloc/bloc_event.dart';
+import '../controller/Controller.dart';
 import '../models/Kompleks.dart';
 import '../ui.dart';
 
-class KomleksPage extends StatefulWidget {
+final Controller _controller = Get.find();
+
+final _keyformkompleks = GlobalKey<FormState>();
+TextEditingController _titleControl = TextEditingController();
+TextEditingController _customerContoller = TextEditingController();
+TextEditingController _deskriptionContoller = TextEditingController();
+TextEditingController _typehouseControl = TextEditingController();
+TextEditingController _statusbuildingControl = TextEditingController();
+TextEditingController _dateprojectControl = TextEditingController();
+var formatter = new DateFormat('yyyy-MM-dd');
+Uint8List? _webImage;
+Uint8List? _webImage0;
+Uint8List? _webImage1;
+
+class KomleksPage extends GetView<Controller> {
   const KomleksPage({Key? key}) : super(key: key);
 
   @override
-  State<KomleksPage> createState() => _KomleksPageState();
-}
-
-class _KomleksPageState extends State<KomleksPage> {
-  List<Kompleks> _listKomleks = [];
-  late KompleksBloc kompleksBloc;
-  Kompleks? kompleks;
-  final _keyformkompleks = GlobalKey<FormState>();
-  TextEditingController _titleControl = TextEditingController();
-  TextEditingController _customerContoller = TextEditingController();
-  TextEditingController _deskriptionContoller = TextEditingController();
-  TextEditingController _typehouseControl = TextEditingController();
-  TextEditingController _statusbuildingControl = TextEditingController();
-  TextEditingController _dateprojectControl = TextEditingController();
-  var formatter = new DateFormat('yyyy-MM-dd');
-  Uint8List? _webImage;
-  Uint8List? _webImage0;
-  Uint8List? _webImage1;
-
-  @override
   Widget build(BuildContext context) {
-    kompleksBloc = BlocProvider.of<KompleksBloc>(context);
-
-    return BlocConsumer<KompleksBloc, BlocState>(
-      builder: (context, state) {
-        if (state is BlocEmtyState) {
-          return Center(child: Text("No data!"));
-        }
-
-        if (state is BlocLoadingState) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (state is KompleksLoadedState) {
-          //
-          _listKomleks = state.loadedKomleks;
-            _listKomleks.sort((a, b) => a.id!.compareTo(b.id!));
-            return mainWidget(context);
-        }
-
-        if (state is BlocErrorState) {
-          return Center(
-            child: Text("Сервер не работает!"),
-          );
-        }
-        return SizedBox.shrink();
-      },
-      listener: (context, state) {},
-    );
-  }
-
-  Widget mainWidget(BuildContext context) {
     return ListView(
       children: [
         Container(
@@ -87,7 +49,7 @@ class _KomleksPageState extends State<KomleksPage> {
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.black54)),
               onPressed: () {
-                kompleks = null;
+                _controller.kompleks.value = Kompleks();
                 _webImage = null;
                 _webImage0 = null;
                 _webImage1 = null;
@@ -103,7 +65,7 @@ class _KomleksPageState extends State<KomleksPage> {
             // color: Colors.black87,
             padding: EdgeInsets.all(10),
             child: SingleChildScrollView(
-                child: DataTable(
+                child: Obx(() => DataTable(
                     key: UniqueKey(),
                     sortAscending: true,
                     sortColumnIndex: 0,
@@ -117,17 +79,18 @@ class _KomleksPageState extends State<KomleksPage> {
                       DataColumn(label: Text("Изменить")),
                       DataColumn(label: Text("Удалить")),
                     ],
-                    rows: _listKomleks.map((e) {
+                    rows: _controller.komplekses.value.map((e) {
                       return DataRow(cells: [
-                        DataCell(
-                            Text((_listKomleks.indexOf(e) + 1).toString())),
+                        DataCell(Text(
+                            (_controller.komplekses.value.indexOf(e) + 1)
+                                .toString())),
                         DataCell(Text(e.title!)),
                         DataCell(Text(e.statusbuilding!)),
                         DataCell(Text(e.customer!)),
                         DataCell(IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            kompleks = e;
+                            _controller.kompleks.value = e;
                             _webImage = null;
                             _webImage0 = null;
                             _webImage1 = null;
@@ -141,36 +104,53 @@ class _KomleksPageState extends State<KomleksPage> {
                             Map<String, dynamic> param = {
                               'id': e.id.toString()
                             };
-                            kompleksBloc
-                                .remove("kompleks/remove", param)
+                            _controller
+                                .removeById("kompleks/remove", e.id.toString())
                                 .then((value) {
-                              kompleksBloc.add(BlocLoadEvent());
+                              _controller.komplekses.value.remove(e);
+                              _controller.komplekses.refresh();
                             }).catchError((onError) {
                               print(onError);
                             });
                           },
                         )),
                       ]);
-                    }).toList())))
+                    }).toList()))))
       ],
     );
   }
 
   Future<void> showdialogwidget(BuildContext context) {
-    if (kompleks != null) {
-      _titleControl.text = kompleks!.title!;
-      _dateprojectControl.text = kompleks!.dateproject!;
-      _customerContoller.text = kompleks!.customer!;
-      _statusbuildingControl.text = kompleks!.statusbuilding!;
-      _typehouseControl.text = kompleks!.typehouse!;
-      _deskriptionContoller.text = kompleks!.description!;
+    if (_controller.kompleks.value.id != null) {
+      _titleControl.text = _controller.kompleks.value.title!;
+      _dateprojectControl.text = _controller.kompleks.value.dateproject!;
+      _customerContoller.text = _controller.kompleks.value.customer!;
+      _statusbuildingControl.text = _controller.kompleks.value.statusbuilding!;
+      _typehouseControl.text = _controller.kompleks.value.typehouse!;
+      _deskriptionContoller.text = _controller.kompleks.value.description!;
     } else {
-      _titleControl.text = "";
-      _dateprojectControl.text = "";
-      _customerContoller.text = "";
-      _statusbuildingControl.text = "";
-      _typehouseControl.text = "";
-      _deskriptionContoller.text = "";
+      _titleControl.clear();
+      _dateprojectControl.clear();
+      _customerContoller.clear();
+      _statusbuildingControl.clear();
+      _typehouseControl.clear();
+      _deskriptionContoller.clear();
+    }
+
+    Widget removeImage(
+        BuildContext context, setState, String filename, Uint8List? web) {
+      return ElevatedButton(
+          onPressed: () async {
+            _controller
+                .removeImage("kompleks/removeimage",
+                    _controller.kompleks.value.id.toString(), filename)
+                .then((value) {
+              setState(() {
+                web = null;
+              });
+            });
+          },
+          child: Icon(Icons.delete_forever_sharp));
     }
 
     return showDialog<void>(
@@ -179,73 +159,62 @@ class _KomleksPageState extends State<KomleksPage> {
         // false = user must tap button, true = tap outside dialog
         builder: (BuildContext dialogContext) {
           return StatefulBuilder(builder: (context, setState) {
-            void callapi(Kompleks kompleks) {
-              kompleksBloc
-                  .postWeb(
-                      "kompleks/upload",
-                      kompleks.id.toString(),
-                      _webImage == null ? null : _webImage!,
-                      _webImage0 == null ? null : _webImage0!,
-                      _webImage1 == null ? null : _webImage1!)
-                  .then((value) {
-                kompleksBloc.add(BlocLoadEvent());
-                Navigator.of(dialogContext).pop();
-              }).catchError((onError) {
-                print(onError);
-              });
-            }
-
             return AlertDialog(
               // key: UniqueKey(),
               title: Text('Комплекс'),
-              content: Container(
-                  height: MediaQuery.of(context).size.height / 1.1,
-                  width: MediaQuery.of(context).size.width / 1.1,
-                  child: Form(
-                    key: _keyformkompleks,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        (kompleks != null)
-                            ? Text('№ ${kompleks?.id.toString()}')
-                            : Text('№'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: TextFormField(
-                              controller: _titleControl,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Просим наименование пользователя";
-                                }
-                              },
-                              style: GoogleFonts.openSans(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.black),
-                              decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  //Theme.of(context).backgroundColor,
-                                  labelText: "Наименование",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          width: 0.5, color: Colors.black)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          width: 0.5, color: Colors.black)))),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
+              content: SafeArea(
+                  child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: Form(
+                          key: _keyformkompleks,
                           child: Row(
                             children: [
-                              Column(
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  (_controller.kompleks.value.id != null)
+                                      ? Text(
+                                          '№ ${_controller.kompleks.value.id.toString()}')
+                                      : Text('№'),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: TextFormField(
+                                        controller: _titleControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Просим наименование пользователя";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Наименование",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width / 3,
@@ -396,215 +365,308 @@ class _KomleksPageState extends State<KomleksPage> {
                                                 borderSide: BorderSide(
                                                     width: 0.5,
                                                     color: Colors.black)))),
-                                  )
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.1,
+                                    // height: MediaQuery.of(context).size.height / 2,
+                                    child: TextFormField(
+                                        controller: _deskriptionContoller,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Описание комплекса";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Описание комплекса",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
                                 ],
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
+                              )),
                               Expanded(
-                                  child: Column(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                    _webImage == null
-                                        ? Image.network(
-                                   kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepath}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                2,
-                                            errorBuilder: (BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
-                                          ),
-                                    SizedBox(
-                                      width: 50,
+                                        Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              _webImage == null
+                                                  ? Image.network(
+                                                      _controller.kompleks
+                                                                  .value ==
+                                                              null
+                                                          ? ""
+                                                          : "${Ui.url}kompleks/download/house/${_controller.kompleks.value!.mainimagepath}",
+                                                      width: 100,
+                                                      height: 100, errorBuilder:
+                                                          (BuildContext context,
+                                                              Object error,
+                                                              StackTrace?
+                                                                  stackTrace) {
+                                                      return Icon(Icons.photo);
+                                                    })
+                                                  : Container(
+                                                      child: Image.memory(
+                                                        _webImage!,
+                                                        width: 100,
+                                                        height: 100,
+                                                      ),
+                                                    ),
+                                              SizedBox(
+                                                height: 50,
+                                              ),
+                                              // Spacer(),
+
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              removeImage(
+                                                  context,
+                                                  setState,
+                                                  _controller.kompleks.value
+                                                      .mainimagepath!,
+                                                  _webImage),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              ElevatedButton(
+                                                  onPressed: () async {
+                                                    XFile? image =
+                                                        await ImagePicker()
+                                                            .pickImage(
+                                                                source:
+                                                                    ImageSource
+                                                                        .gallery);
+                                                    if (image != null) {
+                                                      var f = await image
+                                                          .readAsBytes();
+                                                      setState(() {
+                                                        _webImage = f;
+                                                      });
+                                                    }
+                                                  },
+                                                  child:
+                                                      Text("Загрузить фото.."))
+                                            ]),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              _webImage0 == null
+                                                  ? Image.network(
+                                                      _controller.kompleks
+                                                                  .value ==
+                                                              null
+                                                          ? ""
+                                                          : "${Ui.url}kompleks/download/house/${_controller.kompleks.value.mainimagepathfirst}",
+                                                      width: 100,
+                                                      height: 100, errorBuilder:
+                                                          (BuildContext context,
+                                                              Object error,
+                                                              StackTrace?
+                                                                  stackTrace) {
+                                                      return Icon(Icons.photo);
+                                                    })
+                                                  : Container(
+                                                      child: Image.memory(
+                                                        _webImage0!,
+                                                        width: 100,
+                                                        height: 100,
+                                                      ),
+                                                    ),
+                                              SizedBox(
+                                                height: 50,
+                                              ),
+                                              removeImage(
+                                                  context,
+                                                  setState,
+                                                  _controller.kompleks.value
+                                                      .mainimagepathfirst!,
+                                                  _webImage),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              // Spacer(),
+                                              ElevatedButton(
+                                                  onPressed: () async {
+                                                    XFile? image =
+                                                        await ImagePicker()
+                                                            .pickImage(
+                                                                source:
+                                                                    ImageSource
+                                                                        .gallery);
+                                                    if (image != null) {
+                                                      var f = await image
+                                                          .readAsBytes();
+                                                      setState(() {
+                                                        _webImage0 = f;
+                                                      });
+                                                    }
+                                                  },
+                                                  child:
+                                                      Text("Загрузить фото.."))
+                                            ]),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                      ],
                                     ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ])),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                    _webImage0 == null
-                                        ? Image.network(
-                                        kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathfirst}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                2,
-                                            errorBuilder: (BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage0!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
-                                          ),
                                     SizedBox(
-                                      width: 50,
+                                      height: 20,
                                     ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage0 = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ])),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                    _webImage1 == null
-                                        ? Image.network(
-                                        kompleks == null? "": "${Ui.url}kompleks/download/house/${kompleks!.mainimagepathsecond}",
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                2,
-                                            errorBuilder: (BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace) {
-                                            return Icon(Icons.photo);
-                                          })
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage1!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          _webImage1 == null
+                                              ? Image.network(
+                                                  _controller.kompleks.value ==
+                                                          null
+                                                      ? ""
+                                                      : "${Ui.url}kompleks/download/house/${_controller.kompleks.value.mainimagepathsecond}",
+                                                  width: 100,
+                                                  height: 100, errorBuilder:
+                                                      (BuildContext context,
+                                                          Object error,
+                                                          StackTrace?
+                                                              stackTrace) {
+                                                  return Icon(Icons.photo);
+                                                })
+                                              : Container(
+                                                  child: Image.memory(
+                                                    _webImage1!,
+                                                    width: 100,
+                                                    height: 100,
+                                                  ),
+                                                ),
+                                          SizedBox(
+                                            height: 10,
                                           ),
+                                          removeImage(
+                                              context,
+                                              setState,
+                                              _controller.kompleks.value
+                                                  .mainimagepathsecond!,
+                                              _webImage),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          // Spacer(),
+                                          ElevatedButton(
+                                              onPressed: () async {
+                                                XFile? image =
+                                                    await ImagePicker()
+                                                        .pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
+                                                if (image != null) {
+                                                  var f =
+                                                      await image.readAsBytes();
+                                                  setState(() {
+                                                    _webImage1 = f;
+                                                  });
+                                                }
+                                              },
+                                              child: Text("Загрузить фото.."))
+                                        ]),
                                     SizedBox(
-                                      width: 50,
+                                      height: 10,
                                     ),
-                                    // Spacer(),
-                                    ElevatedButton(
-                                        onPressed: () async {
-                                          XFile? image = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.gallery);
-                                          if (image != null) {
-                                            var f = await image.readAsBytes();
-                                            setState(() {
-                                              _webImage1 = f;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Загрузить фото.."))
-                                  ]))
+                                  ],
+                                ),
+                              )
                             ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          // height: MediaQuery.of(context).size.height / 2,
-                          child: TextFormField(
-                              controller: _deskriptionContoller,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Описание комплекса";
-                                }
-                              },
-                              style: GoogleFonts.openSans(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.black),
-                              decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  //Theme.of(context).backgroundColor,
-                                  labelText: "Описание комплекса",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          width: 0.5, color: Colors.black)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          width: 0.5, color: Colors.black)))),
-                        ),
-                      ],
-                    ),
-                  )),
+                          )))),
               actions: <Widget>[
                 TextButton(
                   child: Text('Сохранить'),
                   onPressed: () {
-                    if (kompleks == null) {
-                      kompleks = Kompleks();
+                    if (_controller.kompleks.value == null) {
+                      _controller.kompleks.value = Kompleks();
                     } else {}
 
                     if (!_keyformkompleks.currentState!.validate()) {
                       return;
                     }
 
-                    kompleks!.title = _titleControl.text.trim();
-                    kompleks!.dateproject = _dateprojectControl.text.trim();
-                    kompleks!.customer = _customerContoller.text;
-                    kompleks!.statusbuilding =
+                    _controller.kompleks.value.title =
+                        _titleControl.text.trim();
+                    _controller.kompleks.value.dateproject =
+                        _dateprojectControl.text.trim();
+                    _controller.kompleks.value.customer =
+                        _customerContoller.text;
+                    _controller.kompleks.value.statusbuilding =
                         _statusbuildingControl.text.trim();
-                    kompleks!.typehouse = _typehouseControl.text.trim();
-                    kompleks!.description = _deskriptionContoller.text.trim();
+                    _controller.kompleks.value.typehouse =
+                        _typehouseControl.text.trim();
+                    _controller.kompleks.value.description =
+                        _deskriptionContoller.text.trim();
                     // Map<String, dynamic> param = {'name': _nameControl.text};
 
-                    kompleksBloc.save("kompleks/save", kompleks).then((value) {
-                      callapi(value);
+                    _controller
+                        .save("kompleks/save", _controller.kompleks.value)
+                        .then((value) {
+                      _controller.kompleks.value = Kompleks.fromJson(value);
+                      // if (_webImage!.isNotEmpty ||
+                      //     _webImage0!.isNotEmpty ||
+                      //     _webImage1!.isNotEmpty) {
+                      if (_webImage != null) {
+                        _controller.postImageKompleks(
+                            "kompleks/upload",
+                            _controller.kompleks.value.id.toString(),
+                            _webImage!,
+                            _controller.kompleks.value.mainimagepath!);
+                      }
+                      if (_webImage0 != null) {
+                        _controller.postImageKompleks(
+                            "kompleks/upload",
+                            _controller.kompleks.value.id.toString(),
+                            _webImage!,
+                            _controller.kompleks.value.mainimagepathfirst!);
+                      }
+                      if (_webImage1 != null) {
+                        _controller.postImageKompleks(
+                            "kompleks/upload",
+                            _controller.kompleks.value.id.toString(),
+                            _webImage!,
+                            _controller.kompleks.value.mainimagepathsecond!);
+                      }
+
+                      // }
+                      _controller.fetchAll("kompleks/get");
+                      _controller.komplekses.refresh();
+                      Navigator.of(dialogContext).pop();
                     });
                   },
                 ),

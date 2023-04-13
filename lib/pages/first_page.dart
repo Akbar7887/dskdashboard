@@ -1,7 +1,10 @@
+import 'package:dskdashboard/controller/Controller.dart';
 import 'package:dskdashboard/pages/home.dart';
-import 'package:dskdashboard/service/repository.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:toast/toast.dart';
 
@@ -9,7 +12,8 @@ import '../ui.dart';
 
 TextEditingController _user = TextEditingController();
 TextEditingController _password = TextEditingController();
-Repository repository = Repository();
+final Controller _controller = Get.put(Controller());
+
 final _keyUser = GlobalKey<FormState>();
 final _keyPassword = GlobalKey<FormState>();
 bool visiblepassvord = true;
@@ -21,7 +25,7 @@ class FirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ToastContext().init(context);
     _user.text = "Admin";
-    _password.text = "";
+    _password.text = "7887";
     return Material(
         color: Colors.black87,
         child: SafeArea(child: Column(
@@ -154,7 +158,7 @@ class FirstPage extends StatelessWidget {
                   if (_keyPassword.currentState!.validate() == false) {
                     return;
                   }
-                  repository
+                  _controller
                       .login(_user.text.trim(), _password.text.trim())
                       .then((value) {
                     if (value) {

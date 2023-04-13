@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -8,11 +7,14 @@ import 'package:http/http.dart' as http;
 import '../models/ImageDom.dart';
 import '../ui.dart';
 
-
 class ApiConnector extends GetConnect {
   String? token;
   FlutterSecureStorage _storage = FlutterSecureStorage();
-
+  Map<String, String> header = {
+    'Content-Type': 'application/json; charset=utf-8',
+    // 'charset': 'utf-8',
+    // 'Accept': 'application/json',
+  };
 
   Future<List<dynamic>> getAll(String url) async {
     token = await _storage.read(key: "token");
@@ -132,8 +134,8 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<bool> postImageKompleks(String url, String id, Uint8List? data,
-      Uint8List? data0, Uint8List? data1) async {
+  Future<bool> postImageKompleks(
+      String url, String id, Uint8List? data, String filename) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -148,28 +150,8 @@ class ApiConnector extends GetConnect {
     request.headers.addAll(hedersWithToken);
     if (data != null) {
       List<int> list = data;
-      request.files.add(
-          http.MultipartFile.fromBytes("file", list, filename: ('$id.png')));
-    } else {
       request.files
-          .add(http.MultipartFile.fromBytes("file", [], filename: ('$id.png')));
-    }
-
-    if (data0 != null) {
-      List<int> list0 = data0;
-      request.files.add(
-          http.MultipartFile.fromBytes("file0", list0, filename: ('$id.png')));
-    } else {
-      request.files.add(
-          http.MultipartFile.fromBytes("file0", [], filename: ('$id.png')));
-    }
-    if (data1 != null) {
-      List<int> list1 = data1;
-      request.files.add(
-          http.MultipartFile.fromBytes("file1", list1, filename: ('$id.png')));
-    } else {
-      request.files.add(
-          http.MultipartFile.fromBytes("file1", [], filename: ('$id.png')));
+          .add(http.MultipartFile.fromBytes("file", list, filename: filename));
     }
 
     final response = await request.send();
@@ -200,22 +182,17 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<bool> deleteAll(String url, Map<String, dynamic> param) async {
-    String? token = await _storage.read(key: "token");
+  Future<bool> deletebyId(String url, String id) async {
+    token = await _storage.read(key: "token");
+    header.addAll({"Authorization": "Bearer $token"});
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: {"id": id});
 
-    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: param);
-    Map<String, String> hedersWithToken = {
-      "Content-type": "application/json",
-      "Authorization": "Bearer $token"
-    };
-    final response = await http.delete(uri, headers: hedersWithToken);
+    final response = await http.delete(uri, headers: header);
 
-    if (response.statusCode == 200) {
-      // final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
-
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
-      throw Exception("Error");
+      throw false;
     }
   }
 
@@ -241,6 +218,35 @@ class ApiConnector extends GetConnect {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<bool> removeByid(String url, String id) async {
+    token = await _storage.read(key: "token");
+    header.addAll({"Authorization": "Bearer $token"});
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: {"id": id});
+
+    final response = await http.put(uri, headers: header);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw Exception("Error");
+    }
+  }
+
+  Future<bool> removeImage(String url, String id, String filename) async {
+    token = await _storage.read(key: "token");
+    header.addAll({"Authorization": "Bearer $token"});
+    Uri uri = Uri.parse("${Ui.url}${url}")
+        .replace(queryParameters: {"filename": filename, "id": id});
+
+    final response = await http.put(uri, headers: header);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      throw false;
     }
   }
 }
