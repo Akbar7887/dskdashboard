@@ -36,8 +36,7 @@ class Controller extends GetxController {
 
   @override
   onInit() {
-    fetchAll("kompleks/get").then((value) =>
-        komplekses.value = value.map((e) => Kompleks.fromJson(e)).toList());
+    fetchAll("kompleks/get", Kompleks());
     super.onInit();
   }
 
@@ -49,8 +48,12 @@ class Controller extends GetxController {
     return await _api.save(url, object);
   }
 
-  Future<List<dynamic>> fetchAll(String url) async {
-    return await _api.getAll(url);
+  fetchAll(String url, dynamic obj) {
+    return _api.getAll(url).then((value) {
+      if (obj is Kompleks) {
+        komplekses.value = value.map((e) => Kompleks.fromJson(e)).toList();
+      }
+    });
   }
 
   Future<bool> deletebyId(String url, String id) async {
@@ -58,7 +61,7 @@ class Controller extends GetxController {
   }
 
   Future<bool> postImageKompleks(
-      String url, String id,String seq, Uint8List data, String filename) {
+      String url, String id, String seq, Uint8List data, String filename) {
     return _api.postImageKompleks(url, id, seq, data, filename);
   }
 
@@ -67,7 +70,7 @@ class Controller extends GetxController {
   }
 
   Future<bool> removeImage(String url, String id, String filename) async {
-    return await _api.removeImage(url,id, filename);
+    return await _api.removeImage(url, id, filename);
   }
 }
 
