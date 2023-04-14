@@ -1,9 +1,7 @@
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -49,7 +47,7 @@ class KomleksPage extends GetView<Controller> {
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.black54)),
               onPressed: () {
-                _controller.kompleks.value = Kompleks();
+                _controller.kompleks = Kompleks().obs;
                 _webImage = null;
                 _webImage0 = null;
                 _webImage1 = null;
@@ -120,6 +118,70 @@ class KomleksPage extends GetView<Controller> {
     );
   }
 
+  Widget removeImage(
+      BuildContext context, setState, String filename, Uint8List? web) {
+    return ElevatedButton(
+        onPressed: () async {
+          _controller
+              .removeImage("kompleks/removeimage",
+                  _controller.kompleks.value.id.toString(), filename)
+              .then((value) {
+            setState(() {
+              web = null;
+            });
+          });
+        },
+        child: Icon(Icons.delete_forever_sharp));
+  }
+
+  Widget getColunImage(
+      BuildContext context, setState, String path, Uint8List web) {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      _webImage == null
+          ? Image.network(
+              _controller.kompleks.value.id == null
+                  ? ""
+                  : "${Ui.url}kompleks/download/house/${path}",
+              width: 100,
+              height: 100, errorBuilder:
+                  (BuildContext context, Object error, StackTrace? stackTrace) {
+              return Icon(Icons.photo);
+            })
+          : Container(
+              child: Image.memory(
+                web!,
+                width: 100,
+                height: 100,
+              ),
+            ),
+      SizedBox(
+        height: 50,
+      ),
+      // Spacer(),
+
+      SizedBox(
+        height: 10,
+      ),
+      removeImage(
+          context, setState, _controller.kompleks.value.mainimagepath!, web),
+      SizedBox(
+        height: 10,
+      ),
+      ElevatedButton(
+          onPressed: () async {
+            XFile? image =
+                await ImagePicker().pickImage(source: ImageSource.gallery);
+            if (image != null) {
+              var f = await image.readAsBytes();
+              setState(() {
+                _webImage = f;
+              });
+            }
+          },
+          child: Text("Загрузить фото.."))
+    ]);
+  }
+
   Future<void> showdialogwidget(BuildContext context) {
     if (_controller.kompleks.value.id != null) {
       _titleControl.text = _controller.kompleks.value.title!;
@@ -137,33 +199,17 @@ class KomleksPage extends GetView<Controller> {
       _deskriptionContoller.clear();
     }
 
-    Widget removeImage(
-        BuildContext context, setState, String filename, Uint8List? web) {
-      return ElevatedButton(
-          onPressed: () async {
-            _controller
-                .removeImage("kompleks/removeimage",
-                    _controller.kompleks.value.id.toString(), filename)
-                .then((value) {
-              setState(() {
-                web = null;
-              });
-            });
-          },
-          child: Icon(Icons.delete_forever_sharp));
-    }
-
     return showDialog<void>(
         context: context,
         barrierDismissible: true,
         // false = user must tap button, true = tap outside dialog
         builder: (BuildContext dialogContext) {
-          return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
+          return AlertDialog(
               // key: UniqueKey(),
               title: Text('Комплекс'),
               content: SafeArea(
-                  child: Container(
+                  child: StatefulBuilder(builder: (BuildContext context,StateSetter setState) {
+            return Container(
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
                       child: Form(
@@ -414,129 +460,21 @@ class KomleksPage extends GetView<Controller> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              _webImage == null
-                                                  ? Image.network(
-                                                      _controller.kompleks
-                                                                  .value ==
-                                                              null
-                                                          ? ""
-                                                          : "${Ui.url}kompleks/download/house/${_controller.kompleks.value!.mainimagepath}",
-                                                      width: 100,
-                                                      height: 100, errorBuilder:
-                                                          (BuildContext context,
-                                                              Object error,
-                                                              StackTrace?
-                                                                  stackTrace) {
-                                                      return Icon(Icons.photo);
-                                                    })
-                                                  : Container(
-                                                      child: Image.memory(
-                                                        _webImage!,
-                                                        width: 100,
-                                                        height: 100,
-                                                      ),
-                                                    ),
-                                              SizedBox(
-                                                height: 50,
-                                              ),
-                                              // Spacer(),
-
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              removeImage(
-                                                  context,
-                                                  setState,
-                                                  _controller.kompleks.value
-                                                      .mainimagepath!,
-                                                  _webImage),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              ElevatedButton(
-                                                  onPressed: () async {
-                                                    XFile? image =
-                                                        await ImagePicker()
-                                                            .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .gallery);
-                                                    if (image != null) {
-                                                      var f = await image
-                                                          .readAsBytes();
-                                                      setState(() {
-                                                        _webImage = f;
-                                                      });
-                                                    }
-                                                  },
-                                                  child:
-                                                      Text("Загрузить фото.."))
-                                            ]),
+                                        getColunImage(
+                                            context,
+                                            setState,
+                                            _controller
+                                                .kompleks.value.mainimagepath!,
+                                            _webImage!),
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              _webImage0 == null
-                                                  ? Image.network(
-                                                      _controller.kompleks
-                                                                  .value ==
-                                                              null
-                                                          ? ""
-                                                          : "${Ui.url}kompleks/download/house/${_controller.kompleks.value.mainimagepathfirst}",
-                                                      width: 100,
-                                                      height: 100, errorBuilder:
-                                                          (BuildContext context,
-                                                              Object error,
-                                                              StackTrace?
-                                                                  stackTrace) {
-                                                      return Icon(Icons.photo);
-                                                    })
-                                                  : Container(
-                                                      child: Image.memory(
-                                                        _webImage0!,
-                                                        width: 100,
-                                                        height: 100,
-                                                      ),
-                                                    ),
-                                              SizedBox(
-                                                height: 50,
-                                              ),
-                                              removeImage(
-                                                  context,
-                                                  setState,
-                                                  _controller.kompleks.value
-                                                      .mainimagepathfirst!,
-                                                  _webImage),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              // Spacer(),
-                                              ElevatedButton(
-                                                  onPressed: () async {
-                                                    XFile? image =
-                                                        await ImagePicker()
-                                                            .pickImage(
-                                                                source:
-                                                                    ImageSource
-                                                                        .gallery);
-                                                    if (image != null) {
-                                                      var f = await image
-                                                          .readAsBytes();
-                                                      setState(() {
-                                                        _webImage0 = f;
-                                                      });
-                                                    }
-                                                  },
-                                                  child:
-                                                      Text("Загрузить фото.."))
-                                            ]),
+                                        getColunImage(
+                                            context,
+                                            setState,
+                                            _controller.kompleks.value
+                                                .mainimagepathfirst!,
+                                            _webImage0!),
                                         SizedBox(
                                           width: 10,
                                         ),
@@ -545,61 +483,12 @@ class KomleksPage extends GetView<Controller> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          _webImage1 == null
-                                              ? Image.network(
-                                                  _controller.kompleks.value ==
-                                                          null
-                                                      ? ""
-                                                      : "${Ui.url}kompleks/download/house/${_controller.kompleks.value.mainimagepathsecond}",
-                                                  width: 100,
-                                                  height: 100, errorBuilder:
-                                                      (BuildContext context,
-                                                          Object error,
-                                                          StackTrace?
-                                                              stackTrace) {
-                                                  return Icon(Icons.photo);
-                                                })
-                                              : Container(
-                                                  child: Image.memory(
-                                                    _webImage1!,
-                                                    width: 100,
-                                                    height: 100,
-                                                  ),
-                                                ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          removeImage(
-                                              context,
-                                              setState,
-                                              _controller.kompleks.value
-                                                  .mainimagepathsecond!,
-                                              _webImage),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          // Spacer(),
-                                          ElevatedButton(
-                                              onPressed: () async {
-                                                XFile? image =
-                                                    await ImagePicker()
-                                                        .pickImage(
-                                                            source: ImageSource
-                                                                .gallery);
-                                                if (image != null) {
-                                                  var f =
-                                                      await image.readAsBytes();
-                                                  setState(() {
-                                                    _webImage1 = f;
-                                                  });
-                                                }
-                                              },
-                                              child: Text("Загрузить фото.."))
-                                        ]),
+                                    getColunImage(
+                                        context,
+                                        setState,
+                                        _controller.kompleks.value
+                                            .mainimagepathsecond!,
+                                        _webImage1!),
                                     SizedBox(
                                       height: 10,
                                     ),
@@ -607,12 +496,12 @@ class KomleksPage extends GetView<Controller> {
                                 ),
                               )
                             ],
-                          )))),
+                          )));})),
               actions: <Widget>[
                 TextButton(
                   child: Text('Сохранить'),
                   onPressed: () {
-                    if (_controller.kompleks.value == null) {
+                    if (_controller.kompleks.value.id == null) {
                       _controller.kompleks.value = Kompleks();
                     } else {}
 
@@ -645,24 +534,30 @@ class KomleksPage extends GetView<Controller> {
                         _controller.postImageKompleks(
                             "kompleks/upload",
                             _controller.kompleks.value.id.toString(),
+                            "1",
                             _webImage!,
-                            _controller.kompleks.value.mainimagepath!);
+                            "${_controller.kompleks.value.id.toString()}.png");
                       }
                       if (_webImage0 != null) {
                         _controller.postImageKompleks(
                             "kompleks/upload",
                             _controller.kompleks.value.id.toString(),
-                            _webImage!,
-                            _controller.kompleks.value.mainimagepathfirst!);
+                            "2",
+                            _webImage0!,
+                            "${_controller.kompleks.value.id.toString()}.png");
                       }
                       if (_webImage1 != null) {
                         _controller.postImageKompleks(
                             "kompleks/upload",
                             _controller.kompleks.value.id.toString(),
-                            _webImage!,
-                            _controller.kompleks.value.mainimagepathsecond!);
+                            "3",
+                            _webImage1!,
+                            "${_controller.kompleks.value.id.toString()}.png");
                       }
 
+                      _webImage = null;
+                      _webImage0 = null;
+                      _webImage1 = null;
                       // }
                       _controller.fetchAll("kompleks/get");
                       _controller.komplekses.refresh();
@@ -679,6 +574,5 @@ class KomleksPage extends GetView<Controller> {
               ],
             );
           });
-        });
   }
 }

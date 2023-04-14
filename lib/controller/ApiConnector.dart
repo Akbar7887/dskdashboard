@@ -24,11 +24,9 @@ class ApiConnector extends GetConnect {
     };
     Uri uri = Uri.parse("${Ui.url}${url}");
     final response = await http.get(uri, headers: hedersWithToken);
-
     if (response.statusCode == 200) {
-      final List<dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
-
-      return json; //json.map((e) => Catalog.fromJson(e)).toList();
+      return jsonDecode(utf8.decode(
+          response.bodyBytes)); //json.map((e) => Catalog.fromJson(e)).toList();
     } else {
       throw Exception("Error");
     }
@@ -134,8 +132,8 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<bool> postImageKompleks(
-      String url, String id, Uint8List? data, String filename) async {
+  Future<bool> postImageKompleks(String url, String id, String seq,
+      Uint8List data, String filename) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -146,6 +144,8 @@ class ApiConnector extends GetConnect {
     final uri = Uri.parse('${Ui.url}${url}');
     var request = await http.MultipartRequest('POST', uri);
     request.fields['id'] = id;
+    request.fields['filename'] = filename;
+    request.fields['seq'] = seq;
 
     request.headers.addAll(hedersWithToken);
     if (data != null) {

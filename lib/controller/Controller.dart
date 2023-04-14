@@ -58,8 +58,8 @@ class Controller extends GetxController {
   }
 
   Future<bool> postImageKompleks(
-      String url, String id, Uint8List? data, String filename) {
-    return _api.postImageKompleks(url, id, data, filename);
+      String url, String id,String seq, Uint8List data, String filename) {
+    return _api.postImageKompleks(url, id, seq, data, filename);
   }
 
   Future<bool> removeById(String url, String id) async {
