@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -132,8 +133,8 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<bool> postImageKompleks(String url, String id, String seq,
-      Uint8List data, String filename) async {
+  Future<bool> postImageKompleks(String url, String id,
+      List<File?> data) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -144,18 +145,26 @@ class ApiConnector extends GetConnect {
     final uri = Uri.parse('${Ui.url}${url}');
     var request = await http.MultipartRequest('POST', uri);
     request.fields['id'] = id;
-    request.fields['filename'] = filename;
-    request.fields['seq'] = seq;
+    // request.fields['filename'] = filename;
 
     request.headers.addAll(hedersWithToken);
     if (data != null) {
-      List<int> list = data;
       request.files
-          .add(http.MultipartFile.fromBytes("file", list, filename: filename));
+          .add(await http.MultipartFile.fromPath("file", data[0]!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath("file", data[1]!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath("file", data[2]!.path));
+
+      // request.files
+      //     .add(http.MultipartFile.fromBytes("file", data[1]!, filename: filename));
+      // request.files
+      //     .add(http.MultipartFile.fromBytes("file", data[2]!, filename: filename));
     }
 
     final response = await request.send();
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode == 200
+        || response.statusCode == 201) {
       return true;
     } else {
       return false;

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dskdashboard/models/Dom.dart';
@@ -61,8 +62,8 @@ class Controller extends GetxController {
   }
 
   Future<bool> postImageKompleks(
-      String url, String id, String seq, Uint8List data, String filename) {
-    return _api.postImageKompleks(url, id, seq, data, filename);
+      String url, String id, List<File?> data) {
+    return _api.postImageKompleks(url, id, data);
   }
 
   Future<bool> removeById(String url, String id) async {
