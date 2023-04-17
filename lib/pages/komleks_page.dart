@@ -22,7 +22,7 @@ TextEditingController _statusbuildingControl = TextEditingController();
 TextEditingController _dateprojectControl = TextEditingController();
 var formatter = new DateFormat('yyyy-MM-dd');
 List<Uint8List?> _webImage = [null, null, null];
-List<File?> _filepaths = [null, null,null];
+// List<File?> _filepaths = [null, null,null];
 
 class KomleksPage extends GetView<Controller> {
   @override
@@ -155,12 +155,10 @@ class KomleksPage extends GetView<Controller> {
                                 return Icon(Icons.photo);
                               })
                             : Container(
-                                child: Image.file(
-                                  _filepaths[i]!),
-                                  width: 100,
-                                  height: 100,
-                                ),
-
+                                child: Image.memory(_webImage[i]!),
+                                width: 100,
+                                height: 100,
+                              ),
                         SizedBox(
                           height: 50,
                         ),
@@ -173,7 +171,9 @@ class KomleksPage extends GetView<Controller> {
                                       path!)
                                   .then((value) {
                                 setState(() {
-                                  _filepaths[i] = null;
+                                  _webImage[i] = null;
+                                  path = "";
+                                  _controller.kompleks.refresh();
                                 });
                               });
                             },
@@ -186,9 +186,9 @@ class KomleksPage extends GetView<Controller> {
                               XFile? image = await ImagePicker()
                                   .pickImage(source: ImageSource.gallery);
                               if (image != null) {
-                                var f = File(await image.path);
+                                var f = await image.readAsBytes();
                                 setState(() {
-                                  _filepaths[i] = f;
+                                  _webImage[i] = f;
                                 });
                               }
                             },
@@ -504,15 +504,20 @@ class KomleksPage extends GetView<Controller> {
                     // if (_webImage!.isNotEmpty ||
                     //     _webImage0!.isNotEmpty ||
                     //     _webImage1!.isNotEmpty) {
-                        _controller.postImageKompleks(
+                    _controller
+                        .postImageKompleks(
                             "kompleks/upload",
                             _controller.kompleks.value.id.toString(),
-                            _filepaths);
+                            _webImage,
+                            '${_controller.kompleks.value.id.toString()}.png')
+                        .then((value) {
+                      _controller.fetchAll("kompleks/get", Kompleks());
+                      Navigator.of(dialogContext).pop();
+                    }).catchError(() {
+                      Navigator.of(dialogContext).pop();
+                    });
 
-
-                    _controller.fetchAll("kompleks/get", Kompleks());
                     // _controller.komplekses.refresh();
-                    Navigator.of(dialogContext).pop();
                   });
                 },
               ),
@@ -527,7 +532,6 @@ class KomleksPage extends GetView<Controller> {
         });
   }
 }
-
 
 // import 'dart:typed_data';
 //

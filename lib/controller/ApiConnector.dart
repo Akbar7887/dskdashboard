@@ -133,8 +133,8 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<bool> postImageKompleks(String url, String id,
-      List<File?> data) async {
+  Future<bool> postImageKompleks(
+      String url, String id, List<Uint8List?> data, String filename) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -148,23 +148,22 @@ class ApiConnector extends GetConnect {
     // request.fields['filename'] = filename;
 
     request.headers.addAll(hedersWithToken);
-    if (data != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath("file", data[0]!.path));
-      request.files
-          .add(await http.MultipartFile.fromPath("file", data[1]!.path));
-      request.files
-          .add(await http.MultipartFile.fromPath("file", data[2]!.path));
 
-      // request.files
-      //     .add(http.MultipartFile.fromBytes("file", data[1]!, filename: filename));
-      // request.files
-      //     .add(http.MultipartFile.fromBytes("file", data[2]!, filename: filename));
+    if (data[0] != null) {
+      request.files.add(await http.MultipartFile.fromBytes("file", data[0]!,
+          filename: filename));
+    }
+    if (data[0] != null) {
+      request.files.add(await http.MultipartFile.fromBytes("file", data[1]!,
+          filename: filename));
+    }
+    if (data[0] != null) {
+      request.files.add(await http.MultipartFile.fromBytes("file", data[2]!,
+          filename: filename));
     }
 
     final response = await request.send();
-    if (response.statusCode == 200
-        || response.statusCode == 201) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       return false;
