@@ -37,24 +37,26 @@ class Controller extends GetxController {
 
   @override
   onInit() {
-    super.onInit();
-
     getAll();
+    fetchAll("make/get", Make());
 
+    super.onInit();
   }
 
-  getAll(){
+  getAll() {
     fetchAll("kompleks/get", Kompleks()).then((value) {
       if (komplekses.length != 0) {
         kompleks.value = komplekses.value.first;
         if (kompleks.value.domSet!.length != 0) {
-
-          kompleks.value.domSet?.sort((a,b) => a.id!.compareTo(b.id!));
+          kompleks.value.domSet?.sort((a, b) => a.id!.compareTo(b.id!));
           doms.value = kompleks.value.domSet!;
           if (doms.length != 0) {
             dom.value = doms.value.first;
             if (dom.value.imagedom!.length != 0) {
               imagedoms.value = dom.value.imagedom!;
+              if (imagedoms.value.length != 0) {
+                imagedom.value = imagedoms.value.first;
+              }
             }
           }
         }
@@ -87,6 +89,11 @@ class Controller extends GetxController {
       if (obj is Dom) {
         doms.value = value.map((e) => Dom.fromJson(e)).toList();
       }
+      if(obj is Make){
+        makes.value = value.map((e) => Make.fromJson(e)).toList();
+      }
+
+
     });
   }
 

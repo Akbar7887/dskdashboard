@@ -63,6 +63,11 @@ class ImagePage extends StatelessWidget {
                               _controller.doms.value = newValue.domSet!;
                               if(_controller.doms.value.length != 0){
                                 _controller.dom.value = _controller.doms.value.first;
+                                if(_controller.doms.value.first.imagedom!.length != 0){
+                                  _controller.imagedoms.value =
+                                      _controller.doms.value.first.imagedom!;
+
+                                }
                               }
                             })),
                     SizedBox(
