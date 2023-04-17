@@ -37,6 +37,13 @@ class Controller extends GetxController {
 
   @override
   onInit() {
+    super.onInit();
+
+    getAll();
+
+  }
+
+  getAll(){
     fetchAll("kompleks/get", Kompleks()).then((value) {
       if (komplekses.length != 0) {
         kompleks.value = komplekses.value.first;
@@ -53,8 +60,6 @@ class Controller extends GetxController {
         }
       }
     });
-
-    super.onInit();
   }
 
   Future<bool> login(String username, String password) async {

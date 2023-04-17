@@ -1,14 +1,12 @@
+import 'package:dskdashboard/controller/Controller.dart';
 import 'package:dskdashboard/pages/image_page.dart';
 import 'package:dskdashboard/pages/komleks_page.dart';
-import 'package:dskdashboard/pages/make_page.dart';
-import 'package:dskdashboard/pages/meneger_page.dart';
-import 'package:dskdashboard/pages/news_page.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'doma_page.dart';
-import 'job_page.dart';
 
 
 class Home extends StatefulWidget {
@@ -19,6 +17,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final Controller _controller = Get.put(Controller());
   int page = 1;
 
   @override

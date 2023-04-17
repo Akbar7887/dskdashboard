@@ -24,12 +24,12 @@ var formatter = new DateFormat('yyyy-MM-dd');
 List<Uint8List?> _webImage = [null, null, null];
 // List<File?> _filepaths = [null, null,null];
 
-class KomleksPage extends GetView<Controller> {
+class KomleksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => ListView(
           children: [
-            Container(
+             Container(
               height: 50,
               alignment: Alignment.center,
               child: Text(

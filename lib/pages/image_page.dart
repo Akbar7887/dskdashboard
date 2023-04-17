@@ -12,7 +12,7 @@ import '../models/Dom.dart';
 import '../models/ImageDom.dart';
 import '../ui.dart';
 
-int _indexImage = 0;
+
 Uint8List? _webImage;
 TextEditingController _titleControl = TextEditingController();
 TextEditingController _dateprojectControl = TextEditingController();
@@ -122,7 +122,7 @@ class ImagePage extends StatelessWidget {
                             child: Card(
                                 elevation: 5,
                                 child: Image.network(
-                                  "${Ui.url}imagedata/download/images/${_controller.imagedoms.value[_indexImage].imagepath}",
+                                  "${Ui.url}imagedata/download/images/${_controller.imagedom.value.imagepath}",
                                   errorBuilder: (context, object, stacktrace) {
                                     return Center(child: Icon(Icons.photo));
                                   },
@@ -183,6 +183,7 @@ class ImagePage extends StatelessWidget {
                                                         .value[index].web =
                                                     ImageDom.fromJson(value)
                                                         .web;
+                                                _controller.imagedoms.refresh();
                                                 // });
                                               });
                                             },
@@ -212,6 +213,8 @@ class ImagePage extends StatelessWidget {
                                                       .layout =
                                                   ImageDom.fromJson(value)
                                                       .layout;
+                                              _controller.imagedoms.refresh();
+
                                               // });
                                             });
                                           },
@@ -226,7 +229,7 @@ class ImagePage extends StatelessWidget {
                                 child: InkWell(
                                     onTap: () {
                                       // setState(() {
-                                      _indexImage = index;
+                                      _controller.imagedom.value = _controller.imagedoms.value[index];
                                       // });
                                     },
                                     child: Image.network(
@@ -460,6 +463,9 @@ class ImagePage extends StatelessWidget {
                           .postImage("imagedata/upload", imagedom.id.toString(),
                               _webImage!)
                           .then((value) {
+                        _controller.getAll();
+                        _controller.imagedoms.refresh();
+
                         // setState(() {
                         //
                         // });
