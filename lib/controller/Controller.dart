@@ -19,7 +19,7 @@ class Controller extends GetxController {
   RxList<Catalog> catalogs = <Catalog>[].obs;
   Rx<Catalog> catalog = Catalog().obs;
   RxList<Dom> doms = <Dom>[].obs;
-  Rx<Dom> dom = Dom().obs;
+  Rx<Dom?> dom = Dom().obs;
   RxList<ImageDom> imagedoms = <ImageDom>[].obs;
   Rx<ImageDom> imagedom = ImageDom().obs;
   RxList<Job> jobs = <Job>[].obs;

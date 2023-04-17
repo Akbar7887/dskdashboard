@@ -7,6 +7,7 @@ import 'package:dskdashboard/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'doma_page.dart';
 import 'job_page.dart';
 
 
@@ -258,8 +259,8 @@ class _HomeState extends State<Home> {
     switch (page) {
       case 1:
         return KomleksPage();
-      // case 2:
-      //   return DomaPage();
+      case 2:
+        return DomaPage();
       // case 3:
       //   return ImagePage();
       // case 4:
