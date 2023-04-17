@@ -261,8 +261,8 @@ class _HomeState extends State<Home> {
         return KomleksPage();
       case 2:
         return DomaPage();
-      // case 3:
-      //   return ImagePage();
+      case 3:
+        return ImagePage();
       // case 4:
       //   return MakePage();
       // case 5:

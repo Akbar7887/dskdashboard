@@ -37,7 +37,23 @@ class Controller extends GetxController {
 
   @override
   onInit() {
-    fetchAll("kompleks/get", Kompleks());
+    fetchAll("kompleks/get", Kompleks()).then((value) {
+      if (komplekses.length != 0) {
+        kompleks.value = komplekses.value.first;
+        if (kompleks.value.domSet!.length != 0) {
+
+          kompleks.value.domSet?.sort((a,b) => a.id!.compareTo(b.id!));
+          doms.value = kompleks.value.domSet!;
+          if (doms.length != 0) {
+            dom.value = doms.value.first;
+            if (dom.value.imagedom!.length != 0) {
+              imagedoms.value = dom.value.imagedom!;
+            }
+          }
+        }
+      }
+    });
+
     super.onInit();
   }
 
@@ -48,7 +64,9 @@ class Controller extends GetxController {
   Future<dynamic> save(String url, dynamic object) async {
     return await _api.save(url, object);
   }
-  Future<dynamic> saveWithParentId(String url, dynamic object, String id) async {
+
+  Future<dynamic> saveWithParentId(
+      String url, dynamic object, String id) async {
     return await _api.saveWithParentId(url, object, id);
   }
 
@@ -67,13 +85,22 @@ class Controller extends GetxController {
     });
   }
 
+  Future<dynamic> postWebImage(
+      String url, String nameparam, String id, bool web) {
+    return _api.postWebImage(url, nameparam, id, web);
+  }
+
+  Future<dynamic> postImage(String url, String id, Uint8List data) {
+    return _api.postImage(url, id, data);
+  }
+
   Future<bool> deletebyId(String url, String id) async {
     return await _api.deletebyId(url, id);
   }
 
   Future<bool> postImageKompleks(
       String url, String id, List<Uint8List?> data, String filename) {
-    return _api.postImageKompleks(url, id, data,filename);
+    return _api.postImageKompleks(url, id, data, filename);
   }
 
   Future<bool> removeById(String url, String id) async {
