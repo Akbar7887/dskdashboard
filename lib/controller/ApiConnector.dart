@@ -153,11 +153,11 @@ class ApiConnector extends GetConnect {
       request.files.add(await http.MultipartFile.fromBytes("file", data[0]!,
           filename: filename));
     }
-    if (data[0] != null) {
+    if (data[1] != null) {
       request.files.add(await http.MultipartFile.fromBytes("file", data[1]!,
           filename: filename));
     }
-    if (data[0] != null) {
+    if (data[2] != null) {
       request.files.add(await http.MultipartFile.fromBytes("file", data[2]!,
           filename: filename));
     }
