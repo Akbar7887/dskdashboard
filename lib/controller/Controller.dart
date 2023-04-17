@@ -19,7 +19,7 @@ class Controller extends GetxController {
   RxList<Catalog> catalogs = <Catalog>[].obs;
   Rx<Catalog> catalog = Catalog().obs;
   RxList<Dom> doms = <Dom>[].obs;
-  Rx<Dom?> dom = Dom().obs;
+  Rx<Dom> dom = Dom().obs;
   RxList<ImageDom> imagedoms = <ImageDom>[].obs;
   Rx<ImageDom> imagedom = ImageDom().obs;
   RxList<Job> jobs = <Job>[].obs;
@@ -48,11 +48,21 @@ class Controller extends GetxController {
   Future<dynamic> save(String url, dynamic object) async {
     return await _api.save(url, object);
   }
+  Future<dynamic> saveWithParentId(String url, dynamic object, String id) async {
+    return await _api.saveWithParentId(url, object, id);
+  }
 
-  fetchAll(String url, dynamic obj) {
+  Future<List<dynamic>> getById(String url, String id) {
+    return _api.getById(url, id);
+  }
+
+  Future<void> fetchAll(String url, dynamic obj) {
     return _api.getAll(url).then((value) {
       if (obj is Kompleks) {
         komplekses.value = value.map((e) => Kompleks.fromJson(e)).toList();
+      }
+      if (obj is Dom) {
+        doms.value = value.map((e) => Dom.fromJson(e)).toList();
       }
     });
   }

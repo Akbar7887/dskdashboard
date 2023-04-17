@@ -1,4 +1,3 @@
-
 import 'package:dskdashboard/controller/Controller.dart';
 import 'package:dskdashboard/models/Kompleks.dart';
 
@@ -9,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../models/Dom.dart';
 
 // List<Kompleks>? _listKomleks = [];
@@ -19,10 +17,11 @@ import '../models/Dom.dart';
 TextEditingController _nameControl = TextEditingController();
 final _keyform = GlobalKey<FormState>();
 final Controller _controller = Get.find();
-Kompleks? _dropdownKompleks = _controller.komplekses.value.length !=0? _controller.komplekses.value[0]: null;
+Kompleks? _dropdownKompleks = _controller.komplekses.value.length != 0
+    ? _controller.komplekses.value[0]
+    : null;
+
 class DomaPage extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
@@ -42,7 +41,8 @@ class DomaPage extends StatelessWidget {
               child: DropdownButton<Kompleks>(
                 isExpanded: true,
                 hint: Text("Комплексы"),
-                items: _controller.komplekses.value.map<DropdownMenuItem<Kompleks>>((e) {
+                items: _controller.komplekses.value
+                    .map<DropdownMenuItem<Kompleks>>((e) {
                   return DropdownMenuItem(
                     value: e,
                     child: Text(e.title!),
@@ -52,6 +52,7 @@ class DomaPage extends StatelessWidget {
                 onChanged: (Kompleks? newValue) {
                   setState(() {
                     _dropdownKompleks = newValue!;
+                    _controller.kompleks.value = newValue;
                     _controller.doms.value = newValue.domSet!;
                   });
                 },
@@ -66,7 +67,7 @@ class DomaPage extends StatelessWidget {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black54)),
                 onPressed: () {
-                  _controller.dom.value = null;
+                  _controller.dom = Dom().obs;
                   showdialogwidget(context);
                 },
                 child: Text("Добавить")),
@@ -81,43 +82,45 @@ class DomaPage extends StatelessWidget {
   }
 
   Widget getDataTable(BuildContext context) {
-    return DataTable(
-        columns: [
-          DataColumn(label: Text("№")),
-          DataColumn(label: Text("Наименование")),
-          DataColumn(label: Text("Изменить")),
-          DataColumn(label: Text("Удалить")),
-        ],
-        rows: _controller.doms.value.map((e) {
-          return DataRow(cells: [
-            DataCell(Text((_controller.doms.value.indexOf(e) + 1).toString())),
-            DataCell(Text(e.name!)),
-            DataCell(IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                _controller.dom.value = e;
-                showdialogwidget(context);
-              },
-            )),
-            DataCell(IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: () {
-                _controller.removeById("kompleks/removedom",
-                     e.id.toString()).then((value) {
-                       _controller.doms.value.remove(e);
-                       _controller.doms.refresh();
-                });
-              },
-            )),
-          ]);
-        }).toList());
+    return Obx(() => DataTable(
+            columns: [
+              DataColumn(label: Text("№")),
+              DataColumn(label: Text("Наименование")),
+              DataColumn(label: Text("Изменить")),
+              DataColumn(label: Text("Удалить")),
+            ],
+            rows: _controller.doms.value.map((e) {
+              return DataRow(cells: [
+                DataCell(
+                    Text((_controller.doms.value.indexOf(e) + 1).toString())),
+                DataCell(Text(e.name!)),
+                DataCell(IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    _controller.dom.value = e;
+                    showdialogwidget(context);
+                  },
+                )),
+                DataCell(IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  onPressed: () {
+                    _controller
+                        .removeById("kompleks/removedom", e.id.toString())
+                        .then((value) {
+                      _controller.doms.value.remove(e);
+                      _controller.doms.refresh();
+                    });
+                  },
+                )),
+              ]);
+            }).toList()));
   }
 
   Future<void> showdialogwidget(BuildContext context) {
-    if (_controller.dom.value != null) {
+    if (_controller.dom.value.id != null) {
       _nameControl.text = _controller.dom.value!.name!;
     } else {
-      _nameControl.text = "";
+      _nameControl.clear();
     }
 
     return showDialog<void>(
@@ -176,19 +179,26 @@ class DomaPage extends StatelessWidget {
                 if (!_keyform.currentState!.validate()) {
                   return;
                 }
-                if (_controller.dom.value == null) {
+                if (_controller.dom.value.id == null) {
                   _controller.dom.value = Dom();
                   // _doma!.kompleks = _kompleks;
-                  _controller.dom.value!.name = _nameControl.text;
+                  _controller.dom.value.name = _nameControl.text;
                 } else {
-                  _controller.dom.value!.name = _nameControl.text;
+                  _controller.dom.value.name = _nameControl.text;
                 }
-                _controller.kompleks.value.domSet = [];
-                _controller.kompleks.value!.domSet!.add(_controller.dom.value!);
-
-                _controller.save("kompleks/save", _controller.kompleks.value).then((value) {
-                  _controller.fetchAll("kompleks/get", Kompleks());
-                  Navigator.of(dialogContext).pop();
+                _controller
+                    .saveWithParentId("dom/save", _controller.dom.value,
+                        _dropdownKompleks!.id.toString())
+                    .then((value) {
+                  _controller
+                      .getById("dom/get", _dropdownKompleks!.id.toString())
+                      .then((value) {
+                    _controller.doms.value =
+                        value.map((e) => Dom.fromJson(e)).toList();
+                    _controller.doms.refresh();
+                    Navigator.of(dialogContext).pop();
+                  });
+                  // _controller.fetchAll("kompleks/get", Kompleks());
                 }).whenComplete(() {
                   return Center(
                     child: CircularProgressIndicator(),

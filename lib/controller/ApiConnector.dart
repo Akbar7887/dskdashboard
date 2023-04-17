@@ -33,6 +33,24 @@ class ApiConnector extends GetConnect {
     }
   }
 
+  Future<List<dynamic>> getById(String url, String id) async {
+    token = await _storage.read(key: "token");
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+    Map<String, dynamic> parm = {'id': id};
+
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: parm);
+    final response = await http.get(uri, headers: hedersWithToken);
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(
+          response.bodyBytes)); //json.map((e) => Catalog.fromJson(e)).toList();
+    } else {
+      throw Exception("Error");
+    }
+  }
+
   Future<bool> login(String user, String passwor) async {
     Map<String, String> data = {'username': user, 'password': passwor};
     Map<String, String> header1 = {
@@ -74,6 +92,24 @@ class ApiConnector extends GetConnect {
   Future<dynamic> saveWithDom(String url, dynamic object, String dom_id) async {
     String? token = await _storage.read(key: "token");
     Map<String, dynamic> parm = {'dom_id': dom_id};
+
+    Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: parm);
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+    final response = await http.post(uri,
+        headers: hedersWithToken, body: jsonEncode(object));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception("Error");
+    }
+  }
+
+  Future<dynamic> saveWithParentId(String url, dynamic object, String id) async {
+    String? token = await _storage.read(key: "token");
+    Map<String, dynamic> parm = {'id': id};
 
     Uri uri = Uri.parse("${Ui.url}${url}").replace(queryParameters: parm);
     Map<String, String> hedersWithToken = {
