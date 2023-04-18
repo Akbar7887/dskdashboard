@@ -206,6 +206,36 @@ class ApiConnector extends GetConnect {
     }
   }
 
+  Future<bool> postImageList(
+      String url, String id, List<Uint8List?> datas, String filename) async {
+    token = await _storage.read(key: "token");
+
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+
+    final uri = Uri.parse('${Ui.url}${url}');
+    var request = await http.MultipartRequest('POST', uri);
+    request.fields['id'] = id;
+    // request.fields['filename'] = filename;
+
+    request.headers.addAll(hedersWithToken);
+
+    datas.forEach((element) async{
+      request.files.add(await http.MultipartFile.fromBytes("file", element!,
+          filename: filename));
+    });
+
+
+    final response = await request.send();
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<dynamic> postWebImage(
       String url, String nameparam, String id, bool web) async {
     String? token = await _storage.read(key: "token");

@@ -92,29 +92,40 @@ class Controller extends GetxController {
       }
       if (obj is Dom) {
         doms.value = value.map((e) => Dom.fromJson(e)).toList();
+        doms.value.sort((a,b) => a.id!.compareTo(b.id!));
+
       }
       if (obj is Make) {
         makes.value = value.map((e) => Make.fromJson(e)).toList();
+        makes.value.sort((a,b) => a.id!.compareTo(b.id!));
+
       }
       if (obj is Meneger) {
         menegers.value = value.map((e) => Meneger.fromJson(e)).toList();
         if (menegers.value.length != 0) {
           meneger.value = menegers.value.first;
         }
+        menegers.value.sort((a,b) => a.id!.compareTo(b.id!));
+
       }
       if(obj is Job){
         jobs.value = value.map((e) => Job.fromJson(e)).toList();
         if(jobs.value.length != 0){
           job.value = jobs.value.first;
         }
+        jobs.value.sort((a,b) => a.id!.compareTo(b.id!));
+
       }
       if(obj is News){
         newses.value = value.map((e) => News.fromJson(e)).toList();
+        newses.value.sort((a,b) => a.id!.compareTo(b.id!));
+
         if(newses.value.length != 0){
           news.value = newses.value.first;
           if(news.value.imageNewsList!.length != 0){
             imageNews.value = news.value.imageNewsList!.first;
             imageNewses.value = news.value.imageNewsList!;
+            imageNewses.value.sort((a,b) => a.id!.compareTo(b.id!));
           }
         }
       }
@@ -141,6 +152,11 @@ class Controller extends GetxController {
   Future<bool> postImageKompleks(
       String url, String id, List<Uint8List?> data, String filename) {
     return _api.postImageKompleks(url, id, data, filename);
+  }
+
+  Future<bool> postImageList(
+      String url, String id, List<Uint8List?> data, String filename) {
+    return _api.postImageList(url, id, data, filename);
   }
 
   Future<bool> removeById(String url, String id) async {

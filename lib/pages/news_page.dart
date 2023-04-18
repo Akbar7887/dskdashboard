@@ -30,6 +30,7 @@ class _NewsPageState extends State<NewsPage> {
   TextEditingController _datacreateControl = TextEditingController();
   Uint8List? _webImage;
   Uint8List? _webVideo;
+  List<Uint8List> _webImages = [];
   final _keyNews = GlobalKey<FormState>();
   var formatter = new DateFormat('yyyy-MM-dd');
   final Controller _controller = Get.put(Controller());
@@ -61,283 +62,297 @@ class _NewsPageState extends State<NewsPage> {
           title: Text('Добавить новость'),
           content: StatefulBuilder(
             builder: (context, setState) {
-              void update() {
-                setState(() {
-                  if (_controller.news.value.id != null) {
-                    _controller.news.value = _controller.newses.value
-                        .firstWhere((element) =>
-                            element.id == _controller.news.value.id);
-                  }
-                });
-              }
-
               return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: Form(
                       key: _keyNews,
-                      child: Column(
+                      child: Row(
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            child: TextFormField(
-                                controller: _titleControl,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Просим заплнить заголовок";
-                                  }
-                                },
-                                style: GoogleFonts.openSans(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.black),
-                                decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    //Theme.of(context).backgroundColor,
-                                    labelText: "Заголовок",
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)))),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            child: TextFormField(
-                                controller: _descriptionControl,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Просим заплнить Описание";
-                                  }
-                                },
-                                style: GoogleFonts.openSans(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.black),
-                                decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    //Theme.of(context).backgroundColor,
-                                    labelText: "Описание",
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)))),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            child: TextFormField(
-                                controller: _datacreateControl,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Просим заплнить дату";
-                                  }
-                                },
-                                onTap: () async {
-                                  await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2015),
-                                    lastDate: DateTime(2030),
-                                  ).then((selectedDate) {
-                                    if (selectedDate != null) {
-                                      _datacreateControl.text =
-                                          formatter.format(selectedDate);
-                                    }
-                                  });
-                                  FocusScope.of(context)
-                                      .requestFocus(new FocusNode());
-                                },
-                                style: GoogleFonts.openSans(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w200,
-                                    color: Colors.black),
-                                decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    //Theme.of(context).backgroundColor,
-                                    labelText: "Дата создание",
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            width: 0.5, color: Colors.black)))),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
                           Expanded(
-                              child: Card(
-                                  child: Row(
-                            children: [
-                              Expanded(
-                                  child: Column(children: [
-                                Container(
-                                  child: Text(
-                                    "Основное видео",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                              flex: 2,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        '№ ${_controller.news.value.id.toString()}'),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      XFile? image = await ImagePicker()
-                                          .pickVideo(
-                                              source: ImageSource.gallery);
-                                      if (image != null) {
-                                        _videoname = image.name;
-                                        var f = await image.readAsBytes();
-                                        setState(() {
-                                          _webVideo = f;
-                                        });
-                                      }
-                                    },
-                                    child: Text("Загрузить видео..")),
-                                Divider(),
-                                // _webVideo == null
-                                //     ?
-
-                                Container(
-                                    width: 300,
-                                    height: 150,
-                                    child: _controller.news.value.id != null
-                                        ? VideoVistavka(
-                                            url:
-                                                '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
-                                        : Center(
-                                            child: CircularProgressIndicator(),
-                                          ))
-                                // : Container(
-                                //     child:
-                                //   ),
-                              ])),
-                              Expanded(
-                                  child: Column(children: [
-                                Container(
-                                  child: Text(
-                                    "Основное фото",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      XFile? image = await ImagePicker()
-                                          .pickImage(
-                                              source: ImageSource.gallery);
-                                      if (image != null) {
-                                        var f = await image.readAsBytes();
-                                        setState(() {
-                                          _webImage = f;
-                                        });
-                                      }
-                                    },
-                                    child: Text("Загрузить фото..")),
-                                Divider(),
-                                Container(
-                                    width: 300,
-                                    height: 150,
-                                    child: _webImage == null
-                                        ? Image.network(
-                                            _controller.news.value.id == null
-                                                ? ""
-                                                : '${Ui.url}news/download/news/${_controller.news.value.imagepath}',
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                2,
-                                            errorBuilder: (BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace) {
-                                              return Icon(Icons.photo);
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: TextFormField(
+                                        controller: _titleControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Просим заплнить заголовок";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Заголовок",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: TextFormField(
+                                        controller: _descriptionControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Просим заплнить Описание";
+                                          }
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Описание",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    child: TextFormField(
+                                        controller: _datacreateControl,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Просим заплнить дату";
+                                          }
+                                        },
+                                        onTap: () async {
+                                          await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2015),
+                                            lastDate: DateTime(2030),
+                                          ).then((selectedDate) {
+                                            if (selectedDate != null) {
+                                              _datacreateControl.text =
+                                                  formatter
+                                                      .format(selectedDate);
+                                            }
+                                          });
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
+                                        },
+                                        style: GoogleFonts.openSans(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w200,
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.white,
+                                            //Theme.of(context).backgroundColor,
+                                            labelText: "Дата создание",
+                                            enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.black)))),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Expanded(
+                                      child: Card(
+                                          child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Column(children: [
+                                        Container(
+                                          child: Text(
+                                            "Основное видео",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickVideo(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              if (image != null) {
+                                                _videoname = image.name;
+                                                var f =
+                                                    await image.readAsBytes();
+                                                setState(() {
+                                                  _webVideo = f;
+                                                });
+                                              }
                                             },
-                                            // loadingBuilder: (BuildContext context,
-                                            //     Widget child,
-                                            //     ImageChunkEvent? loadingProgress) {
-                                            //   return Center(
-                                            //     child: CircularProgressIndicator(),
-                                            //   );
-                                            // },
-                                          )
-                                        : Container(
-                                            child: Image.memory(
-                                              _webImage!,
-                                              width: 200,
-                                              height: 200,
-                                            ),
-                                          )),
-                              ])),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              VerticalDivider(),
-                              Expanded(
-                                  child: _controller.news.value.id == null
-                                      ? Container()
-                                      : Column(
+                                            child: Text("Загрузить видео..")),
+                                        Divider(),
+                                        // _webVideo == null
+                                        //     ?
+
+                                        Container(
+                                            width: 300,
+                                            height: 150,
+                                            child: _controller.news.value.id !=
+                                                    null
+                                                ? VideoVistavka(
+                                                    url:
+                                                        '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
+                                                : Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ))
+                                        // : Container(
+                                        //     child:
+                                        //   ),
+                                      ])),
+                                      Expanded(
+                                          child: Column(children: [
+                                        Container(
+                                          child: Text(
+                                            "Основное фото",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              if (image != null) {
+                                                var f =
+                                                    await image.readAsBytes();
+                                                setState(() {
+                                                  _webImage = f;
+                                                });
+                                              }
+                                            },
+                                            child: Text("Загрузить фото..")),
+                                        Divider(),
+                                        Container(
+                                            child: Card(
+                                                child: Row(
                                           children: [
-                                            Container(
-                                              child: ElevatedButton(
-                                                onPressed: () async {
-                                                  XFile? image =
-                                                      await ImagePicker()
-                                                          .pickImage(
-                                                              source:
-                                                                  ImageSource
-                                                                      .gallery);
-                                                  if (image != null) {
-                                                    var f = await image
-                                                        .readAsBytes();
-                                                    _controller
-                                                        .postImage(
-                                                            "news/imagenewsupload",
-                                                            _controller
-                                                                .news.value.id
-                                                                .toString(),
-                                                            f)
-                                                        .then((value) {
-                                                      _controller.fetchAll(
-                                                          "news/get", News());
-                                                    });
-                                                    // setState(() {
-                                                    //   _webImage = f;
-                                                    // });
-                                                  }
-                                                },
-                                                child:
-                                                    Text("Добавить доп фото"),
-                                              ),
-                                            ),
-                                            Divider(),
                                             Expanded(
-                                                child: _controller
-                                                            .news.value.id ==
+                                                flex: 4,
+                                                child: _webImage == null
+                                                    ? Image.network(
+                                                        _controller.news.value
+                                                                    .id ==
+                                                                null
+                                                            ? ""
+                                                            : '${Ui.url}news/download/news/${_controller.news.value.imagepath}',
+                                                        width: 150,
+                                                        height: 150,
+                                                        errorBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                Object error,
+                                                                StackTrace?
+                                                                    stackTrace) {
+                                                          return Icon(
+                                                              Icons.photo);
+                                                        },
+                                                      )
+                                                    : Container(
+                                                        child: Image.memory(
+                                                          _webImage!,
+                                                          width: 200,
+                                                          height: 200,
+                                                        ),
+                                                      )),
+                                            Expanded(
+                                                child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      Icons
+                                                          .delete_forever_sharp,
+                                                      color: Colors.blue,
+                                                    ))),
+                                          ],
+                                        )))
+                                      ])),
+                                    ],
+                                  )))
+                                ],
+                              )),
+                          Expanded(
+                              child: _controller.news.value.id == null
+                                  ? Container()
+                                  : Column(
+                                      children: [
+                                        Container(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              if (image != null) {
+                                                var f =
+                                                    await image.readAsBytes();
+                                                _webImages.add(f);
+                                              }
+                                            },
+                                            child: Text("Добавить доп фото"),
+                                          ),
+                                        ),
+                                        Divider(),
+                                        Expanded(
+                                            child:
+                                                _controller.news.value.id ==
                                                         null
                                                     ? Center(
                                                         child:
@@ -353,28 +368,47 @@ class _NewsPageState extends State<NewsPage> {
                                                             (context, idx) {
                                                           return Container(
                                                             child: Card(
-                                                                child: Image.network(
-                                                                    _controller.news.value.id ==
-                                                                            null
-                                                                        ? ''
-                                                                        : '${Ui.url}news/download/imagenews/${_controller.news.value.imageNewsList![idx].imagepath}',
-                                                                    height: 200,
-                                                                    width: 100,
-                                                                    errorBuilder: (BuildContext
-                                                                            context,
-                                                                        Object
-                                                                            error,
-                                                                        StackTrace?
-                                                                            stackTrace) {
-                                                              return Icon(
-                                                                  Icons.photo);
-                                                            })),
+                                                                child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: 40,
+                                                                    child: IconButton(
+                                                                        onPressed: () {
+
+                                                                        },
+                                                                        icon: Icon(
+                                                                          Icons
+                                                                              .delete_forever_sharp,
+                                                                          color:
+                                                                              Colors.blue,
+                                                                        ))),
+                                                                SizedBox(width: 10,),
+                                                                Expanded(
+
+                                                                    child: Image.network(
+                                                                        _controller.news.value.id ==
+                                                                                null
+                                                                            ? ''
+                                                                            : '${Ui.url}news/download/imagenews/${_controller.news.value.imageNewsList![idx].imagepath}',
+                                                                        height:
+                                                                            200,
+                                                                        width:
+                                                                            100,
+                                                                        errorBuilder: (BuildContext context,
+                                                                            Object
+                                                                                error,
+                                                                            StackTrace?
+                                                                                stackTrace) {
+                                                                  return Icon(
+                                                                      Icons
+                                                                          .photo);
+                                                                }))
+                                                              ],
+                                                            )),
                                                           );
                                                         }))
-                                          ],
-                                        ))
-                            ],
-                          )))
+                                      ],
+                                    )),
                         ],
                       )));
             },
@@ -426,6 +460,20 @@ class _NewsPageState extends State<NewsPage> {
                       });
                       _webVideo = null;
                     });
+                  }
+                  if (_webImages.length != 0) {
+                    _controller
+                        .postImageList(
+                            "news/imagenewsupload",
+                            _controller.news.value.id.toString(),
+                            _webImages,
+                            "")
+                        .then((value) {
+                      _controller.fetchAll("news/get", News());
+                      Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                    });
+                  } else {
+                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                   }
 
                   // Dismiss alert dialog
