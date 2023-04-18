@@ -38,7 +38,11 @@ class Controller extends GetxController {
   @override
   onInit() {
     getAll();
-    fetchAll("make/get", Make());
+    fetchAll("make/get", Make()).then((value) {
+      if(makes.length != 0){
+        make.value = makes.value.first;
+      }
+    });
 
     super.onInit();
   }

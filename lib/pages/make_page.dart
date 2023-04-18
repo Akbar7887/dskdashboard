@@ -75,8 +75,6 @@ class MakePage extends StatelessWidget {
             onPressed: () {
               _controller.make.value = e;
               _webImage = null;
-              _listController = [];
-
               _controller.catalogs.value =
                   (_controller.make.value.catalogs == null
                       ? []
@@ -96,7 +94,7 @@ class MakePage extends StatelessWidget {
   }
 
   Future<void> showDialogMake(BuildContext context) async {
-    if (_controller.make.value != null) {
+    if (_controller.make.value.id != null) {
       _nameContoller.text = _controller.make.value.name!;
       _descriptionContoller.text = _controller.make.value.description!;
       // _nameContoller.text = _make!.name!;
@@ -299,13 +297,12 @@ class MakePage extends StatelessWidget {
                               _controller.make.value.id.toString(), _webImage!)
                           .then((value) {
                         _webImage = null;
-                        Navigator.pop(
-                            dialogContext, true); // Dismiss alert dialog
+                        // Dismiss alert dialog
                       });
-                    } else {
-                      Navigator.pop(dialogContext, true); // D
                     }
-
+                    _controller.fetchAll("make/get", Make()).then((value) {
+                      Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                    });
                     // Dismiss alert dialog
                   });
                 },
@@ -442,16 +439,15 @@ class MakePage extends StatelessWidget {
                         icon: Icon(Icons.delete_forever),
                         onPressed: () {
                           _controller
-                              .deletebyId("catalog/remove", e.id.toString())
+                              .removeById("make/remove", e.id.toString())
                               .then((value) {
-                            setState(() {
+                            _controller
+                                .fetchAll("make/get", Make())
+                                .then((value) {
                               fillController();
                             });
                           }).catchError((e) {
-                            setState(() {
-                              _controller.catalogs.value.remove(e);
-                              fillController();
-                            });
+                            fillController();
                           });
                         },
                       )),
