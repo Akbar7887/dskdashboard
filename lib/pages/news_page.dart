@@ -458,20 +458,7 @@ class _NewsPageState extends State<NewsPage> {
                       _webImage = null;
                     });
                   }
-                  if (_webVideo != null) {
-                    _controller
-                        .saveVideo("news/videoupload",
-                            _controller.news.value.id.toString(), _webVideo, _videoname!)
-                        .then((value) {
-                      _controller.fetchAll("news/get", News()).then((value) {
-                        setState(() {
-                          sourceMeneger =
-                              SourceMeneger(listNews: _controller.newses.value);
-                        });
-                      });
-                      _webVideo = null;
-                    });
-                  }
+                 
                   if (_webImages.length != 0) {
                     _controller
                         .postImageList("news/imagenewsupload",
@@ -480,12 +467,24 @@ class _NewsPageState extends State<NewsPage> {
                       _controller.fetchAll("news/get", News());
                       Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                     });
-                  } else {
-                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                   }
-
-                  // Dismiss alert dialog
                 });
+                if (_webVideo != null) {
+                  _controller
+                      .saveVideo("news/videoupload",
+                      _controller.news.value.id.toString(), _webVideo, _videoname!)
+                      .then((value) {
+                    _controller.fetchAll("news/get", News()).then((value) {
+                      setState(() {
+                        sourceMeneger =
+                            SourceMeneger(listNews: _controller.newses.value);
+                      });
+                    });
+                  });
+                }else{
+                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+
+                }
               },
             ),
             TextButton(
