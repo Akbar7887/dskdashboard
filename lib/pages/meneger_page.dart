@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:dskdashboard/controller/Controller.dart';
 import 'package:dskdashboard/ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,20 +9,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
 import '../models/Meneger.dart';
 
-late SourceMeneger sourceMeneger;
-TextEditingController _nameControl = TextEditingController();
-TextEditingController _phoneControl = TextEditingController();
-TextEditingController _emailControl = TextEditingController();
-TextEditingController _postControl = TextEditingController();
-Uint8List? _webImage;
-final Controller _controller = Get.put(Controller());
+
 
 final _keyMeneger = GlobalKey<FormState>();
 
-class MenegerPage extends GetView<Controller> {
+class MenegerPage extends  StatefulWidget {
+  @override
+  State<MenegerPage> createState() => _MenegerPageState();
+}
+
+class _MenegerPageState extends State<MenegerPage> {
+  late SourceMeneger sourceMeneger;
+  TextEditingController _nameControl = TextEditingController();
+  TextEditingController _phoneControl = TextEditingController();
+  TextEditingController _emailControl = TextEditingController();
+  TextEditingController _postControl = TextEditingController();
+  Uint8List? _webImage;
+  final Controller _controller = Get.put(Controller());
+
+
+  @override
+  void initState() {
+    sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
+
+    super.initState();
+  }
+
   Future<void> showDialogMeneger(BuildContext context) async {
     if (_controller.meneger.value.id != null) {
       _nameControl.text = _controller.meneger.value.name!;
@@ -254,7 +267,9 @@ class MenegerPage extends GetView<Controller> {
                       _controller
                           .fetchAll("meneger/get", Meneger())
                           .then((value) {
-                        sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
+                            setState(() {
+                              sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
+                            });
 
                         Navigator.of(dialogContext).pop();
                       });
@@ -263,7 +278,9 @@ class MenegerPage extends GetView<Controller> {
                     _controller
                         .fetchAll("meneger/get", Meneger())
                         .then((value) {
-                      sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
+                      setState(() {
+                        sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
+                      });
 
                       Navigator.of(dialogContext).pop();
                     });
@@ -285,7 +302,6 @@ class MenegerPage extends GetView<Controller> {
 
   @override
   Widget build(BuildContext context) {
-    sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
     return Padding(
         padding: EdgeInsets.only(left: 20, right: 20),
         child: Column(
@@ -316,7 +332,7 @@ class MenegerPage extends GetView<Controller> {
               height: 20,
             ),
             Expanded(
-                child: Obx(() => SfDataGridTheme(
+                child: SfDataGridTheme(
                     data: SfDataGridThemeData(
                         headerColor: Colors.blue,
                         rowHoverTextStyle: TextStyle(color: Colors.white)),
@@ -425,7 +441,7 @@ class MenegerPage extends GetView<Controller> {
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ))),
-                        ]))))
+                        ])))
           ],
         ));
   }
