@@ -44,7 +44,7 @@ class Controller extends GetxController {
       }
     });
     fetchAll("meneger/get", Meneger());
-
+    fetchAll("job/get", Job());
     super.onInit();
   }
 
@@ -96,6 +96,12 @@ class Controller extends GetxController {
         menegers.value = value.map((e) => Meneger.fromJson(e)).toList();
         if (menegers.value.length != 0) {
           meneger.value = menegers.value.first;
+        }
+      }
+      if(obj is Job){
+        jobs.value = value.map((e) => Job.fromJson(e)).toList();
+        if(jobs.value.length != 0){
+          job.value = jobs.value.first;
         }
       }
     });

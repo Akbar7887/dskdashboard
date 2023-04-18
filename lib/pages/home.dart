@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'doma_page.dart';
+import 'job_page.dart';
 import 'make_page.dart';
 import 'meneger_page.dart';
 
@@ -270,8 +271,8 @@ class _HomeState extends State<Home> {
         return MenegerPage();
       // case 6:
       //   return NewsPage();
-      // case 7:
-      //   return JobPage();
+      case 7:
+        return JobPage();
     }
   }
 }
