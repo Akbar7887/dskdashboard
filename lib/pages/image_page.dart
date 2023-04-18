@@ -468,7 +468,7 @@ class ImagePage extends StatelessWidget {
                           .postImage("imagedata/upload", imagedom.id.toString(),
                               _webImage!)
                           .then((value) {
-                        _controller.getAll();
+                        _controller.fetchAll("kompleks/get", Kompleks());
                         _controller.imagedoms.refresh();
 
                         // setState(() {

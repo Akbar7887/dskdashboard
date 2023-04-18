@@ -37,35 +37,15 @@ class Controller extends GetxController {
 
   @override
   onInit() {
-    getAll();
+    fetchAll("kompleks/get", Kompleks());
     fetchAll("make/get", Make()).then((value) {
-      if(makes.length != 0){
+      if (makes.length != 0) {
         make.value = makes.value.first;
       }
     });
+    fetchAll("meneger/get", Meneger());
 
     super.onInit();
-  }
-
-  getAll() {
-    fetchAll("kompleks/get", Kompleks()).then((value) {
-      if (komplekses.length != 0) {
-        kompleks.value = komplekses.value.first;
-        if (kompleks.value.domSet!.length != 0) {
-          kompleks.value.domSet?.sort((a, b) => a.id!.compareTo(b.id!));
-          doms.value = kompleks.value.domSet!;
-          if (doms.length != 0) {
-            dom.value = doms.value.first;
-            if (dom.value.imagedom!.length != 0) {
-              imagedoms.value = dom.value.imagedom!;
-              if (imagedoms.value.length != 0) {
-                imagedom.value = imagedoms.value.first;
-              }
-            }
-          }
-        }
-      }
-    });
   }
 
   Future<bool> login(String username, String password) async {
@@ -89,15 +69,35 @@ class Controller extends GetxController {
     return _api.getAll(url).then((value) {
       if (obj is Kompleks) {
         komplekses.value = value.map((e) => Kompleks.fromJson(e)).toList();
+        if (komplekses.length != 0) {
+          kompleks.value = komplekses.value.first;
+          if (kompleks.value.domSet!.length != 0) {
+            kompleks.value.domSet?.sort((a, b) => a.id!.compareTo(b.id!));
+            doms.value = kompleks.value.domSet!;
+            if (doms.length != 0) {
+              dom.value = doms.value.first;
+              if (dom.value.imagedom!.length != 0) {
+                imagedoms.value = dom.value.imagedom!;
+                if (imagedoms.value.length != 0) {
+                  imagedom.value = imagedoms.value.first;
+                }
+              }
+            }
+          }
+        }
       }
       if (obj is Dom) {
         doms.value = value.map((e) => Dom.fromJson(e)).toList();
       }
-      if(obj is Make){
+      if (obj is Make) {
         makes.value = value.map((e) => Make.fromJson(e)).toList();
       }
-
-
+      if (obj is Meneger) {
+        menegers.value = value.map((e) => Meneger.fromJson(e)).toList();
+        if (menegers.value.length != 0) {
+          meneger.value = menegers.value.first;
+        }
+      }
     });
   }
 

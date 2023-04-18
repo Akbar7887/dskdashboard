@@ -85,7 +85,17 @@ class MakePage extends StatelessWidget {
           )),
           DataCell(IconButton(
             icon: Icon(Icons.delete_forever),
-            onPressed: () {},
+            onPressed: () {
+              _controller
+                  .removeById("make/delete", e.id.toString())
+                  .then((value) {
+                _controller.fetchAll("make/get", Make()).then((value) {
+                  if (_controller.makes.length != 0) {
+                    _controller.make.value = _controller.makes.value.first;
+                  }
+                });
+              });
+            },
           )),
         ]);
       }).toList(),

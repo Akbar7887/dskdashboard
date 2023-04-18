@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'doma_page.dart';
 import 'make_page.dart';
+import 'meneger_page.dart';
 
 
 class Home extends StatefulWidget {
@@ -265,8 +266,8 @@ class _HomeState extends State<Home> {
         return ImagePage();
       case 4:
         return MakePage();
-      // case 5:
-      //   return MenegerPage();
+      case 5:
+        return MenegerPage();
       // case 6:
       //   return NewsPage();
       // case 7:
