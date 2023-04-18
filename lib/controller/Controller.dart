@@ -132,8 +132,8 @@ class Controller extends GetxController {
     });
   }
 
-  Future<dynamic> saveVideo(String url, String id , Uint8List object) async {
-    return await _api.saveVideo(url, id, object);
+  Future<dynamic> saveVideo(String url, String id , Uint8List? object, String videoname) async {
+    return await _api.saveVideo(url, id, object, videoname);
   }
 
   Future<dynamic> postWebImage(
@@ -155,8 +155,8 @@ class Controller extends GetxController {
   }
 
   Future<bool> postImageList(
-      String url, String id, List<Uint8List?> data, String filename) {
-    return _api.postImageList(url, id, data, filename);
+      String url, String id, List<Uint8List?> data) {
+    return _api.postImageList(url, id, data);
   }
 
   Future<bool> removeById(String url, String id) async {
@@ -166,6 +166,8 @@ class Controller extends GetxController {
   Future<bool> removeImage(String url, String id, String filename) async {
     return await _api.removeImage(url, id, filename);
   }
+
+
 }
 
 class HomeBindings extends Bindings {

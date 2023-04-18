@@ -233,24 +233,18 @@ class _NewsPageState extends State<NewsPage> {
                                             },
                                             child: Text("Загрузить видео..")),
                                         Divider(),
-                                        // _webVideo == null
-                                        //     ?
+                                       Container(
+                                                width: 300,
+                                                height: 150,
+                                                child: _controller.news.value.videopath != null
+                                                    ? VideoVistavka(
+                                                        url:
+                                                            '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
+                                                    : Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ))
 
-                                        Container(
-                                            width: 300,
-                                            height: 150,
-                                            child: _controller.news.value.id !=
-                                                    null
-                                                ? VideoVistavka(
-                                                    url:
-                                                        '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
-                                                : Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  ))
-                                        // : Container(
-                                        //     child:
-                                        //   ),
                                       ])),
                                       Expanded(
                                           child: Column(children: [
@@ -295,7 +289,7 @@ class _NewsPageState extends State<NewsPage> {
                                                             ? ""
                                                             : '${Ui.url}news/download/news/${_controller.news.value.imagepath}',
                                                         width: 150,
-                                                        height: 150,
+                                                        height: 100,
                                                         errorBuilder:
                                                             (BuildContext
                                                                     context,
@@ -315,7 +309,18 @@ class _NewsPageState extends State<NewsPage> {
                                                       )),
                                             Expanded(
                                                 child: IconButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      _controller
+                                                          .removeById(
+                                                              "news/removenewsimage",
+                                                              _controller
+                                                                  .news.value.id
+                                                                  .toString())
+                                                          .then((value) {
+                                                        _controller.fetchAll(
+                                                            "news/get", News());
+                                                      });
+                                                    },
                                                     icon: Icon(
                                                       Icons
                                                           .delete_forever_sharp,
@@ -371,10 +376,15 @@ class _NewsPageState extends State<NewsPage> {
                                                                 child: Row(
                                                               children: [
                                                                 Container(
-                                                                  width: 40,
+                                                                    width: 40,
                                                                     child: IconButton(
                                                                         onPressed: () {
-
+                                                                          _controller
+                                                                              .deletebyId("news/removeimagenews", _controller.news.value.imageNewsList![idx].id.toString())
+                                                                              .then((value) {
+                                                                            _controller.fetchAll("news/get",
+                                                                                News());
+                                                                          });
                                                                         },
                                                                         icon: Icon(
                                                                           Icons
@@ -382,9 +392,10 @@ class _NewsPageState extends State<NewsPage> {
                                                                           color:
                                                                               Colors.blue,
                                                                         ))),
-                                                                SizedBox(width: 10,),
+                                                                SizedBox(
+                                                                  width: 10,
+                                                                ),
                                                                 Expanded(
-
                                                                     child: Image.network(
                                                                         _controller.news.value.id ==
                                                                                 null
@@ -450,7 +461,7 @@ class _NewsPageState extends State<NewsPage> {
                   if (_webVideo != null) {
                     _controller
                         .saveVideo("news/videoupload",
-                            _controller.news.value.id.toString(), _webVideo!)
+                            _controller.news.value.id.toString(), _webVideo, _videoname!)
                         .then((value) {
                       _controller.fetchAll("news/get", News()).then((value) {
                         setState(() {
@@ -463,11 +474,8 @@ class _NewsPageState extends State<NewsPage> {
                   }
                   if (_webImages.length != 0) {
                     _controller
-                        .postImageList(
-                            "news/imagenewsupload",
-                            _controller.news.value.id.toString(),
-                            _webImages,
-                            "")
+                        .postImageList("news/imagenewsupload",
+                            _controller.news.value.id.toString(), _webImages)
                         .then((value) {
                       _controller.fetchAll("news/get", News());
                       Navigator.of(dialogContext).pop(); // Dismiss alert dialog
@@ -539,7 +547,7 @@ class _NewsPageState extends State<NewsPage> {
                         navigationMode: GridNavigationMode.cell,
                         allowSorting: true,
                         onCellTap: (cell) {
-                          if (cell.rowColumnIndex.columnIndex == 4) {
+                          if (cell.rowColumnIndex.columnIndex != 5) {
                             _controller.news.value = _controller
                                 .newses.value[cell.rowColumnIndex.rowIndex - 1];
                             _webImage = null;
@@ -603,17 +611,6 @@ class _NewsPageState extends State<NewsPage> {
                                         fontWeight: FontWeight.bold),
                                   ))),
                           GridColumn(
-                              columnName: "edit",
-                              label: Container(
-                                  padding: EdgeInsets.all(16.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'Изменить',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ))),
-                          GridColumn(
                               columnName: "delete",
                               label: Container(
                                   padding: EdgeInsets.all(16.0),
@@ -650,7 +647,6 @@ class SourceMeneger extends DataGridSource {
               DataGridCell<String>(
                   columnName: "datecreate",
                   value: formatter.format(DateTime.parse(e.datacreate!))),
-              DataGridCell<Icon>(columnName: "edit", value: Icon(Icons.edit)),
               DataGridCell<Icon>(
                   columnName: "delete", value: Icon(Icons.delete)),
             ]))
@@ -684,10 +680,6 @@ class SourceMeneger extends DataGridSource {
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Text(row.getCells()[3].value.toString()),
       ),
-      Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Icon(Icons.edit)),
       Container(
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 16),

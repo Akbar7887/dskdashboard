@@ -207,7 +207,7 @@ class ApiConnector extends GetConnect {
   }
 
   Future<bool> postImageList(
-      String url, String id, List<Uint8List?> datas, String filename) async {
+      String url, String id, List<Uint8List?> datas) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -224,7 +224,7 @@ class ApiConnector extends GetConnect {
 
     datas.forEach((element) async{
       request.files.add(await http.MultipartFile.fromBytes("file", element!,
-          filename: filename));
+          filename: '${id}.png'));
     });
 
 
@@ -295,7 +295,7 @@ class ApiConnector extends GetConnect {
     }
   }
 
-  Future<dynamic> saveVideo(String url, String id, Uint8List data) async {
+  Future<dynamic> saveVideo(String url, String id, Uint8List? data, String videoname) async {
     token = await _storage.read(key: "token");
 
     Map<String, String> hedersWithToken = {
@@ -303,14 +303,14 @@ class ApiConnector extends GetConnect {
       "Authorization": "Bearer $token"
     };
 
-    List<int> list = data;
+
     final uri = Uri.parse('${Ui.url}${url}');
     var request = await http.MultipartRequest('POST', uri);
     request.fields['id'] = id;
 
     request.headers.addAll(hedersWithToken);
     request.files
-        .add(http.MultipartFile.fromBytes("file", list, ));
+        .add(http.MultipartFile.fromBytes("file", data!, filename: videoname));
 
     final response = await request.send();
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -348,4 +348,5 @@ class ApiConnector extends GetConnect {
       throw false;
     }
   }
+
 }
