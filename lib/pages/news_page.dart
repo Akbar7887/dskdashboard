@@ -35,6 +35,12 @@ class _NewsPageState extends State<NewsPage> {
   final Controller _controller = Get.put(Controller());
   String? _videoname;
 
+  @override
+  void initState() {
+    sourceMeneger = SourceMeneger(listNews: _controller.newses.value);
+    super.initState();
+  }
+
   Future<void> showDialogMeneger() async {
     if (_controller.news.value.id != null) {
       _titleControl.text = _controller.news.value.title!;
@@ -398,27 +404,29 @@ class _NewsPageState extends State<NewsPage> {
                         .postImage(
                             "news/upload", news.id.toString(), _webImage!)
                         .then((value) {
+                      _controller.fetchAll("news/get", News()).then((value) {
+                        setState(() {
+                          sourceMeneger =
+                              SourceMeneger(listNews: _controller.newses.value);
+                        });
+                      });
                       _webImage = null;
-                      _controller.fetchAll("news/get", News());
                     });
-                  } else {
-                    _controller.fetchAll("news/get", News());
-                    Navigator.of(dialogContext).pop();
                   }
                   if (_webVideo != null) {
                     _controller
                         .saveVideo("news/videoupload",
                             _controller.news.value.id.toString(), _webVideo!)
                         .then((value) {
+                      _controller.fetchAll("news/get", News()).then((value) {
+                        setState(() {
+                          sourceMeneger =
+                              SourceMeneger(listNews: _controller.newses.value);
+                        });
+                      });
                       _webVideo = null;
-                      _controller.fetchAll("news/get", News());
-
-                      Navigator.of(dialogContext).pop();
                     });
-                  } else {
-                    _controller.fetchAll("news/get", News());
                   }
-                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
 
                   // Dismiss alert dialog
                 });
@@ -456,6 +464,7 @@ class _NewsPageState extends State<NewsPage> {
                 child: ElevatedButton(
                     onPressed: () {
                       _webImage = null;
+                      _webVideo = null;
                       _controller.news = News().obs;
                       showDialogMeneger();
                       // setState(() {
@@ -486,6 +495,7 @@ class _NewsPageState extends State<NewsPage> {
                             _controller.news.value = _controller
                                 .newses.value[cell.rowColumnIndex.rowIndex - 1];
                             _webImage = null;
+                            _webVideo = null;
                             showDialogMeneger();
                           }
                           if (cell.rowColumnIndex.columnIndex == 5) {

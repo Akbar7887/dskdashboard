@@ -10,6 +10,7 @@ import 'doma_page.dart';
 import 'job_page.dart';
 import 'make_page.dart';
 import 'meneger_page.dart';
+import 'news_page.dart';
 
 
 class Home extends StatefulWidget {
@@ -269,8 +270,8 @@ class _HomeState extends State<Home> {
         return MakePage();
       case 5:
         return MenegerPage();
-      // case 6:
-      //   return NewsPage();
+      case 6:
+        return NewsPage();
       case 7:
         return JobPage();
     }

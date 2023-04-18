@@ -34,6 +34,9 @@ class Controller extends GetxController {
   Rx<Meneger> meneger = Meneger().obs;
   RxList<News> newses = <News>[].obs;
   Rx<News> news = News().obs;
+  RxList<ImageNews> imageNewses = <ImageNews>[].obs;
+  Rx<ImageNews> imageNews = ImageNews().obs;
+
 
   @override
   onInit() {
@@ -109,6 +112,10 @@ class Controller extends GetxController {
         newses.value = value.map((e) => News.fromJson(e)).toList();
         if(newses.value.length != 0){
           news.value = newses.value.first;
+          if(news.value.imageNewsList!.length != 0){
+            imageNews.value = news.value.imageNewsList!.first;
+            imageNewses.value = news.value.imageNewsList!;
+          }
         }
       }
     });
