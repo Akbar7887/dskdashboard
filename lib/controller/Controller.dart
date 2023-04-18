@@ -45,6 +45,7 @@ class Controller extends GetxController {
     });
     fetchAll("meneger/get", Meneger());
     fetchAll("job/get", Job());
+    fetchAll("news/get", News());
     super.onInit();
   }
 
@@ -104,7 +105,17 @@ class Controller extends GetxController {
           job.value = jobs.value.first;
         }
       }
+      if(obj is News){
+        newses.value = value.map((e) => News.fromJson(e)).toList();
+        if(newses.value.length != 0){
+          news.value = newses.value.first;
+        }
+      }
     });
+  }
+
+  Future<dynamic> saveVideo(String url, String id , Uint8List object) async {
+    return await _api.saveVideo(url, id, object);
   }
 
   Future<dynamic> postWebImage(

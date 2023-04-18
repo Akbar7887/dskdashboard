@@ -265,6 +265,31 @@ class ApiConnector extends GetConnect {
     }
   }
 
+  Future<dynamic> saveVideo(String url, String id, Uint8List data) async {
+    token = await _storage.read(key: "token");
+
+    Map<String, String> hedersWithToken = {
+      "Content-type": "application/json",
+      "Authorization": "Bearer $token"
+    };
+
+    List<int> list = data;
+    final uri = Uri.parse('${Ui.url}${url}');
+    var request = await http.MultipartRequest('POST', uri);
+    request.fields['id'] = id;
+
+    request.headers.addAll(hedersWithToken);
+    request.files
+        .add(http.MultipartFile.fromBytes("file", list, ));
+
+    final response = await request.send();
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> removeByid(String url, String id) async {
     token = await _storage.read(key: "token");
     header.addAll({"Authorization": "Bearer $token"});
