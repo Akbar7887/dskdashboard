@@ -427,7 +427,7 @@ class _NewsPageState extends State<NewsPage> {
           actions: <Widget>[
             TextButton(
               child: Text('Сохранить'),
-              onPressed: () {
+              onPressed: ()  {
                 if (!_keyNews.currentState!.validate()) {
                   return;
                 }
@@ -481,10 +481,9 @@ class _NewsPageState extends State<NewsPage> {
                       });
                     });
                   });
-                }else{
-                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-
                 }
+                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+
               },
             ),
             TextButton(

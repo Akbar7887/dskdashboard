@@ -38,6 +38,7 @@ dependencies:
   syncfusion_flutter_datagrid: ^20.3.50
   syncfusion_flutter_core: ^20.3.50
   video_player: ^2.5.2
+  video_player_web: ^2.0.15
   conditioned: ^0.1.0-dev.1
   get: ^4.6.5
 

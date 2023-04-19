@@ -25,7 +25,9 @@ class _VideoVistavkaState extends State<VideoVistavka> {
     super.initState();
     _controller = VideoPlayerController.network(
       widget.url!,
-    );
+    )..initialize().then((value) {
+
+    });
 
     _controller.addListener(() {
       setState(() {});
