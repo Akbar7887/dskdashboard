@@ -14,7 +14,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:video_player/video_player.dart';
 import '../models/Meneger.dart';
-import '../widgets/video.dart';
+import '../widgets/videovstavka.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -233,18 +233,19 @@ class _NewsPageState extends State<NewsPage> {
                                             },
                                             child: Text("Загрузить видео..")),
                                         Divider(),
-                                       Container(
-                                                width: 300,
-                                                height: 150,
-                                                child: _controller.news.value.videopath != null
-                                                    ? VideoVistavka(
-                                                        url:
-                                                            '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
-                                                    : Center(
-                                                        child:
-                                                            CircularProgressIndicator(),
-                                                      ))
-
+                                        Container(
+                                            width: 300,
+                                            height: 150,
+                                            child: _controller
+                                                        .news.value.videopath !=
+                                                    null
+                                                ? VideoVistavka(
+                                                    url:
+                                                        '${Ui.url}news/download/newsvideo/${_controller.news.value.videopath}')
+                                                : Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ))
                                       ])),
                                       Expanded(
                                           child: Column(children: [
@@ -288,7 +289,7 @@ class _NewsPageState extends State<NewsPage> {
                                                                 null
                                                             ? ""
                                                             : '${Ui.url}news/download/news/${_controller.news.value.imagepath}',
-                                                        width: 150,
+                                                        width: 100,
                                                         height: 100,
                                                         errorBuilder:
                                                             (BuildContext
@@ -427,7 +428,7 @@ class _NewsPageState extends State<NewsPage> {
           actions: <Widget>[
             TextButton(
               child: Text('Сохранить'),
-              onPressed: ()  {
+              onPressed: () {
                 if (!_keyNews.currentState!.validate()) {
                   return;
                 }
@@ -458,21 +459,23 @@ class _NewsPageState extends State<NewsPage> {
                       _webImage = null;
                     });
                   }
-                 
+
                   if (_webImages.length != 0) {
                     _controller
                         .postImageList("news/imagenewsupload",
                             _controller.news.value.id.toString(), _webImages)
                         .then((value) {
                       _controller.fetchAll("news/get", News());
-                      Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                     });
                   }
                 });
                 if (_webVideo != null) {
                   _controller
-                      .saveVideo("news/videoupload",
-                      _controller.news.value.id.toString(), _webVideo, _videoname!)
+                      .saveVideo(
+                          "news/videoupload",
+                          _controller.news.value.id.toString(),
+                          _webVideo,
+                          _videoname!)
                       .then((value) {
                     _controller.fetchAll("news/get", News()).then((value) {
                       setState(() {
@@ -482,14 +485,17 @@ class _NewsPageState extends State<NewsPage> {
                     });
                   });
                 }
-                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
 
               },
             ),
             TextButton(
               child: Text('Отменить'),
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                Navigator.of(dialogContext).pop(); // D
+
+// ismiss alert dialog
               },
             ),
           ],

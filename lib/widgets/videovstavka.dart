@@ -11,6 +11,7 @@ class VideoVistavka extends StatefulWidget {
    VideoVistavka({required this.url}) : super();
 
   String? url;
+
   @override
   _VideoVistavkaState createState() => _VideoVistavkaState();
 
@@ -37,8 +38,10 @@ class _VideoVistavkaState extends State<VideoVistavka> {
     _controller.play();
   }
 
+
   @override
   void dispose() {
+    _controller.pause();
     _controller.dispose();
     super.dispose();
   }
