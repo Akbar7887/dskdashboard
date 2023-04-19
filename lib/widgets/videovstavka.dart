@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,13 +7,12 @@ import 'package:video_player/video_player.dart';
 import '../controller/Controller.dart';
 
 class VideoVistavka extends StatefulWidget {
-   VideoVistavka({required this.url}) : super();
+  VideoVistavka({required this.url}) : super();
 
   String? url;
 
   @override
   _VideoVistavkaState createState() => _VideoVistavkaState();
-
 }
 
 class _VideoVistavkaState extends State<VideoVistavka> {
@@ -26,22 +24,19 @@ class _VideoVistavkaState extends State<VideoVistavka> {
     super.initState();
     _controller = VideoPlayerController.network(
       widget.url!,
-    )..initialize().then((value) {
-
-    });
+    );
 
     _controller.addListener(() {
       setState(() {});
     });
-    _controller.setLooping(true);
+    // _controller.setLooping(true);
     _controller.initialize().then((_) => setState(() {}));
     _controller.play();
   }
 
-
   @override
   void dispose() {
-    _controller.pause();
+    // _controller.pause();
     _controller.dispose();
     super.dispose();
   }
