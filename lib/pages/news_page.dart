@@ -551,14 +551,14 @@ class _NewsPageState extends State<NewsPage> {
                         navigationMode: GridNavigationMode.cell,
                         allowSorting: true,
                         onCellTap: (cell) {
-                          if (cell.rowColumnIndex.columnIndex != 5) {
+                          if (cell.rowColumnIndex.columnIndex != 4) {
                             _controller.news.value = _controller
                                 .newses.value[cell.rowColumnIndex.rowIndex - 1];
                             _webImage = null;
                             _webVideo = null;
                             showDialogMeneger();
                           }
-                          if (cell.rowColumnIndex.columnIndex == 5) {
+                          if (cell.rowColumnIndex.columnIndex == 4) {
                             _controller.news.value = _controller
                                 .newses.value[cell.rowColumnIndex.rowIndex - 1];
                             _controller
