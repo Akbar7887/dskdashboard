@@ -288,7 +288,7 @@ class _NewsPageState extends State<NewsPage> {
                                                                     .id ==
                                                                 null
                                                             ? ""
-                                                            : '${Ui.url}news/download/news/${_controller.news.value.imagepath}',
+                                                            : '${Ui.url}news/v1/download/news/${_controller.news.value.imagepath}',
                                                         width: 100,
                                                         height: 100,
                                                         errorBuilder:
@@ -319,7 +319,7 @@ class _NewsPageState extends State<NewsPage> {
                                                                   .toString())
                                                           .then((value) {
                                                         _controller.fetchAll(
-                                                            "news/get", News());
+                                                            "news/v1/get", News());
                                                       });
                                                     },
                                                     icon: Icon(
@@ -383,7 +383,7 @@ class _NewsPageState extends State<NewsPage> {
                                                                           _controller
                                                                               .deletebyId("news/removeimagenews", _controller.news.value.imageNewsList![idx].id.toString())
                                                                               .then((value) {
-                                                                            _controller.fetchAll("news/get",
+                                                                            _controller.fetchAll("news/v1/get",
                                                                                 News());
                                                                           });
                                                                         },
@@ -401,7 +401,7 @@ class _NewsPageState extends State<NewsPage> {
                                                                         _controller.news.value.id ==
                                                                                 null
                                                                             ? ''
-                                                                            : '${Ui.url}news/download/imagenews/${_controller.news.value.imageNewsList![idx].imagepath}',
+                                                                            : '${Ui.url}news/v1/download/imagenews/${_controller.news.value.imageNewsList![idx].imagepath}',
                                                                         height:
                                                                             200,
                                                                         width:
@@ -450,7 +450,7 @@ class _NewsPageState extends State<NewsPage> {
                         .postImage(
                             "news/upload", news.id.toString(), _webImage!)
                         .then((value) {
-                      _controller.fetchAll("news/get", News()).then((value) {
+                      _controller.fetchAll("news/v1/get", News()).then((value) {
                         setState(() {
                           sourceMeneger =
                               SourceMeneger(listNews: _controller.newses.value);
@@ -465,7 +465,7 @@ class _NewsPageState extends State<NewsPage> {
                         .postImageList("news/imagenewsupload",
                             _controller.news.value.id.toString(), _webImages)
                         .then((value) {
-                      _controller.fetchAll("news/get", News());
+                      _controller.fetchAll("news/v1/get", News());
                     });
                   }
                 });
@@ -477,7 +477,7 @@ class _NewsPageState extends State<NewsPage> {
                           _webVideo,
                           _videoname!)
                       .then((value) {
-                    _controller.fetchAll("news/get", News()).then((value) {
+                    _controller.fetchAll("news/v1/get", News()).then((value) {
                       setState(() {
                         sourceMeneger =
                             SourceMeneger(listNews: _controller.newses.value);

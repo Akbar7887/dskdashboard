@@ -40,15 +40,15 @@ class Controller extends GetxController {
 
   @override
   onInit() {
-    fetchAll("kompleks/get", Kompleks());
-    fetchAll("make/get", Make()).then((value) {
+    fetchAll("kompleks/v1/get", Kompleks());
+    fetchAll("make/v1/get", Make()).then((value) {
       if (makes.length != 0) {
         make.value = makes.value.first;
       }
     });
-    fetchAll("meneger/get", Meneger());
-    fetchAll("job/get", Job());
-    fetchAll("news/get", News());
+    fetchAll("meneger/v1/get", Meneger());
+    fetchAll("job/v1/get", Job());
+    fetchAll("news/v1/get", News());
     super.onInit();
   }
 

@@ -102,7 +102,7 @@ class JobPage extends StatelessWidget {
                             _controller
                                 .removeById("job/remove", e.id.toString())
                                 .then((value) {
-                              _controller.fetchAll("job/get", Job());
+                              _controller.fetchAll("job/v1/get", Job());
                             }).catchError((onError) {
                               print(onError);
                             });
@@ -342,7 +342,7 @@ class JobPage extends StatelessWidget {
                                                           .then((value) {
                                                         setState(() {
                                                           _controller.fetchAll(
-                                                              "job/get", Job());
+                                                              "job/v1/get", Job());
                                                         });
                                                       });
                                                     },
@@ -370,7 +370,7 @@ class JobPage extends StatelessWidget {
                     _controller
                         .save("job/save", _controller.job.value)
                         .then((value) {
-                      _controller.fetchAll("job/get", Job()).then((value) {
+                      _controller.fetchAll("job/v1/get", Job()).then((value) {
                         // _controller.jobs.refresh();
                         Navigator.of(dialogContext).pop();
                       });

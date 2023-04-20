@@ -127,7 +127,7 @@ class ImagePage extends StatelessWidget {
                             child: Card(
                                 elevation: 5,
                                 child: Image.network(
-                                  "${Ui.url}imagedata/download/images/${_controller.imagedom.value.imagepath}",
+                                  "${Ui.url}imagedata/v1/download/images/${_controller.imagedom.value.imagepath}",
                                   errorBuilder: (context, object, stacktrace) {
                                     return Center(child: Icon(Icons.photo));
                                   },
@@ -238,7 +238,7 @@ class ImagePage extends StatelessWidget {
                                       // });
                                     },
                                     child: Image.network(
-                                      "${Ui.url}imagedata/download/images/${_controller.imagedoms.value[index].imagepath}",
+                                      "${Ui.url}imagedata/v1/download/images/${_controller.imagedoms.value[index].imagepath}",
                                     ))),
                           ],
                         )),
@@ -407,7 +407,7 @@ class ImagePage extends StatelessWidget {
                           children: [
                         _webImage == null
                             ? Image.network(
-                                '${Ui.url}imagedata/download/images/${_imagepath}',
+                                '${Ui.url}imagedata/v1/download/images/${_imagepath}',
                                 width: MediaQuery.of(context).size.width / 3,
                                 height: MediaQuery.of(context).size.height / 2,
                                 errorBuilder: (BuildContext context,

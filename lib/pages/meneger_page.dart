@@ -189,7 +189,7 @@ class _MenegerPageState extends State<MenegerPage> {
                                     ? Image.network(
                                         _controller.meneger.value.id == null
                                             ? ""
-                                            : '${Ui.url}meneger/download/meneger/${_controller.meneger.value.imagepath}',
+                                            : '${Ui.url}meneger/v1/download/meneger/${_controller.meneger.value.imagepath}',
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 3,
@@ -265,7 +265,7 @@ class _MenegerPageState extends State<MenegerPage> {
                             "meneger/upload", men.id.toString(), _webImage!)
                         .then((value) {
                       _controller
-                          .fetchAll("meneger/get", Meneger())
+                          .fetchAll("meneger/v1/get", Meneger())
                           .then((value) {
                             setState(() {
                               sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
@@ -276,7 +276,7 @@ class _MenegerPageState extends State<MenegerPage> {
                     });
                   } else {
                     _controller
-                        .fetchAll("meneger/get", Meneger())
+                        .fetchAll("meneger/v1/get", Meneger())
                         .then((value) {
                       setState(() {
                         sourceMeneger = SourceMeneger(listMeneger: _controller.menegers.value);
@@ -359,7 +359,7 @@ class _MenegerPageState extends State<MenegerPage> {
                                 .removeById("meneger/remove",
                                     _controller.meneger.value.id.toString())
                                 .then((value) {
-                              _controller.fetchAll("meneger/get", Meneger());
+                              _controller.fetchAll("meneger/v1/get", Meneger());
                             });
                           }
                         },

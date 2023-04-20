@@ -190,7 +190,7 @@ class DomaPage extends StatelessWidget {
                         _dropdownKompleks!.id.toString())
                     .then((value) {
                   _controller
-                      .getById("dom/get", _dropdownKompleks!.id.toString())
+                      .getById("dom/v1/get", _dropdownKompleks!.id.toString())
                       .then((value) {
                     _controller.doms.value =
                         value.map((e) => Dom.fromJson(e)).toList();

@@ -147,7 +147,7 @@ class KomleksPage extends StatelessWidget {
                             ? Image.network(
                                 path == null
                                     ? ""
-                                    : "${Ui.url}kompleks/download/house/${path}",
+                                    : "${Ui.url}kompleks/v1/download/house/${path}",
                                 width: 100,
                                 height: 100, errorBuilder:
                                     (BuildContext context, Object error,
@@ -512,7 +512,7 @@ class KomleksPage extends StatelessWidget {
                             _webImage,
                             '${_controller.kompleks.value.id.toString()}.png')
                         .then((value) {
-                      _controller.fetchAll("kompleks/get", Kompleks());
+                      _controller.fetchAll("kompleks/v1/get", Kompleks());
                       Navigator.of(dialogContext).pop();
                     }).catchError(() {
                       Navigator.of(dialogContext).pop();

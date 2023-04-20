@@ -89,7 +89,7 @@ class MakePage extends StatelessWidget {
               _controller
                   .removeById("make/delete", e.id.toString())
                   .then((value) {
-                _controller.fetchAll("make/get", Make()).then((value) {
+                _controller.fetchAll("make/v1/get", Make()).then((value) {
                   if (_controller.makes.length != 0) {
                     _controller.make.value = _controller.makes.value.first;
                   }
@@ -210,7 +210,7 @@ class MakePage extends StatelessWidget {
                                       ? Image.network(
                                           _controller.make.value.id == null
                                               ? ''
-                                              : '${Ui.url}make/download/makes/${_controller.make.value.imagepath}',
+                                              : '${Ui.url}make/v1/download/makes/${_controller.make.value.imagepath}',
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
@@ -309,7 +309,7 @@ class MakePage extends StatelessWidget {
                         // Dismiss alert dialog
                       });
                     }
-                    _controller.fetchAll("make/get", Make()).then((value) {
+                    _controller.fetchAll("make/v1/get", Make()).then((value) {
                       Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                     });
                     // Dismiss alert dialog
@@ -451,7 +451,7 @@ class MakePage extends StatelessWidget {
                               .removeById("make/remove", e.id.toString())
                               .then((value) {
                             _controller
-                                .fetchAll("make/get", Make())
+                                .fetchAll("make/v1/get", Make())
                                 .then((value) {
                               fillController();
                             });
