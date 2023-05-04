@@ -1,3 +1,5 @@
+
+
 import 'ImageNews.dart';
 
 class News {
@@ -8,8 +10,9 @@ class News {
     String? imagepath;
     String? title;
     String? videopath;
+    bool? showmain = false;
 
-    News({ this.datacreate, this.description, this.id, this.imageNewsList, this.imagepath, this.title, this.videopath});
+    News({ this.datacreate, this.description, this.id, this.imageNewsList, this.imagepath, this.title, this.videopath, this.showmain});
 
     factory News.fromJson(Map<String, dynamic> json) {
         return News(
@@ -19,7 +22,8 @@ class News {
             imageNewsList: json['imageNewsList'] != null ? (json['imageNewsList'] as List).map((i) => ImageNews.fromJson(i)).toList() : null, 
             imagepath: json['imagepath'], 
             title: json['title'],
-            videopath: json['videopath']
+            videopath: json['videopath'],
+            showmain: json['showmain']
         );
     }
 
@@ -34,6 +38,7 @@ class News {
             data['imageNewsList'] = this.imageNewsList!.map((v) => v.toJson()).toList();
         }
         data['videopath'] = this.videopath;
+        data['showmain'] = this.showmain;
         return data;
     }
 }

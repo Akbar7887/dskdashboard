@@ -72,12 +72,40 @@ class _NewsPageState extends State<NewsPage> {
                           Expanded(
                               flex: 2,
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                         '№ ${_controller.news.value.id.toString()}'),
                                   ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+
+                                  Container(
+                                      child: Row(
+                                    children: [
+                                      Container(
+                                          child: Text(
+                                              "Показать в бегущем строке")),
+                                      Container(
+                                          child: Checkbox(
+                                        // checkColor: Colors.blue,
+                                        value: _controller
+                                                    .news.value.showmain ==
+                                                null
+                                            ? false
+                                            : _controller.news.value.showmain,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            _controller.news.value.showmain =
+                                                value;
+                                          });
+                                        },
+                                      ))
+                                    ],
+                                  )),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -319,7 +347,8 @@ class _NewsPageState extends State<NewsPage> {
                                                                   .toString())
                                                           .then((value) {
                                                         _controller.fetchAll(
-                                                            "news/v1/get", News());
+                                                            "news/v1/get",
+                                                            News());
                                                       });
                                                     },
                                                     icon: Icon(
@@ -487,7 +516,6 @@ class _NewsPageState extends State<NewsPage> {
                 }
 
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-
               },
             ),
             TextButton(
