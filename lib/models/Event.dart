@@ -1,4 +1,11 @@
 class Event {
+
+  int? id;
+  String? title;
+  String? description;
+  String? datecreate;
+
+
   Event({
       this.id, 
       this.title, 
@@ -11,10 +18,6 @@ class Event {
     description = json['description'];
     datecreate = json['datecreate'];
   }
-  int id;
-  String title;
-  String description;
-  String datecreate;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
