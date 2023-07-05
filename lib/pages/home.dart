@@ -24,6 +24,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final Controller _controller = Get.put(Controller());
   int page = 1;
+  double height = 50;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _HomeState extends State<Home> {
                     color: Colors.white,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -94,7 +95,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -120,7 +121,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -146,7 +147,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -172,7 +173,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -198,7 +199,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -224,7 +225,7 @@ class _HomeState extends State<Home> {
                     height: 5,
                   ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -246,8 +247,11 @@ class _HomeState extends State<Home> {
                             "Вакансия",
                             style: Ui.fonttext,
                           ))),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Container(
-                      height: 70,
+                      height: height,
                       padding: EdgeInsets.only(left: 5, right: 5),
                       child: ElevatedButton(
                           style: ButtonStyle(
@@ -261,7 +265,7 @@ class _HomeState extends State<Home> {
                           // color: Colors.black54,
                           onPressed: () {
                             setState(() {
-                              page = 7;
+                              page = 8;
                               // kompleksBloc.add(BlocLoadEvent());
                             });
                           },
