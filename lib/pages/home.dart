@@ -1,4 +1,5 @@
 import 'package:dskdashboard/controller/Controller.dart';
+import 'package:dskdashboard/pages/event_page.dart';
 import 'package:dskdashboard/pages/image_page.dart';
 import 'package:dskdashboard/pages/komleks_page.dart';
 import 'package:dskdashboard/ui.dart';
@@ -274,6 +275,8 @@ class _HomeState extends State<Home> {
         return NewsPage();
       case 7:
         return JobPage();
+      case 8:
+        return EventPage();
     }
   }
 }
