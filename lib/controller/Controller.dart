@@ -50,6 +50,7 @@ class Controller extends GetxController {
     fetchAll("meneger/v1/get", Meneger());
     fetchAll("job/v1/get", Job());
     fetchAll("news/v1/get", News());
+    fetchAll("event/v1/get", Events());
     super.onInit();
   }
 
@@ -115,12 +116,10 @@ class Controller extends GetxController {
           job.value = jobs.value.first;
         }
         jobs.value.sort((a,b) => a.id!.compareTo(b.id!));
-
       }
       if(obj is News){
         newses.value = value.map((e) => News.fromJson(e)).toList();
         newses.value.sort((a,b) => a.id!.compareTo(b.id!));
-
         if(newses.value.length != 0){
           news.value = newses.value.first;
           if(news.value.imageNewsList!.length != 0){
@@ -129,6 +128,13 @@ class Controller extends GetxController {
             imageNewses.value.sort((a,b) => a.id!.compareTo(b.id!));
           }
         }
+      }
+      if(obj is Events){
+        eventslist.value = value.map((e) => Events.fromJson(e)).toList();
+        if(jobs.value.length != 0){
+          events.value = eventslist.value.first;
+        }
+        eventslist.value.sort((a,b) => a.id!.compareTo(b.id!));
       }
     });
   }
