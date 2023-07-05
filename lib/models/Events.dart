@@ -1,4 +1,4 @@
-class Event {
+class Events {
 
   int? id;
   String? title;
@@ -6,13 +6,13 @@ class Event {
   String? datecreate;
 
 
-  Event({
+  Events({
       this.id, 
       this.title, 
       this.description, 
       this.datecreate,});
 
-  Event.fromJson(dynamic json) {
+  Events.fromJson(dynamic json) {
     id = json['id'];
     title = json['title'];
     description = json['description'];

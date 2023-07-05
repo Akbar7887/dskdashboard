@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dskdashboard/models/Dom.dart';
+import 'package:dskdashboard/models/Events.dart';
 import 'package:dskdashboard/models/ImageDom.dart';
 import 'package:dskdashboard/models/ImageNews.dart';
 import 'package:dskdashboard/models/Job.dart';
@@ -36,7 +36,8 @@ class Controller extends GetxController {
   Rx<News> news = News().obs;
   RxList<ImageNews> imageNewses = <ImageNews>[].obs;
   Rx<ImageNews> imageNews = ImageNews().obs;
-
+  RxList<Events> eventslist = <Events>[].obs;
+  Rx<Events> events = Events().obs;
 
   @override
   onInit() {
