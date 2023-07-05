@@ -37,6 +37,7 @@ class _EventPageState extends State<EventPage> {
           ),
         ),
         Divider(),
+        Expanded(child: dataGrid()),
       ],
     );
   }
@@ -49,7 +50,6 @@ class _EventPageState extends State<EventPage> {
         ),
         child: SfDataGrid(
           source: sourceMeneger,
-
           // headerGridLinesVisibility: GridLinesVisibility.vertical,
           allowEditing: true,
           columnWidthMode: ColumnWidthMode.fill,
