@@ -29,11 +29,11 @@ class _EventPageState extends State<EventPage> {
   }
 
   Future<void> showDialogMeneger() async {
-    if (_controller.news.value.id != null) {
+    if (_controller.events.value.id != null) {
       _titleControl.text = _controller.events.value.title!;
       _descriptionControl.text = _controller.events.value.description!;
-      _datacreateControl.text =
-          formatter.format(DateTime.parse(_controller.events.value.datecreate!));
+      _datacreateControl.text = formatter
+          .format(DateTime.parse(_controller.events.value.datecreate!));
     } else {
       _titleControl.clear();
       _descriptionControl.clear();
@@ -49,8 +49,8 @@ class _EventPageState extends State<EventPage> {
           content: StatefulBuilder(
             builder: (context, setState) {
               return SizedBox(
-                  height: MediaQuery.of(context).size.height/2,
-                  width: MediaQuery.of(context).size.width/2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  width: MediaQuery.of(context).size.width / 2,
                   child: Form(
                       key: _keyEvents,
                       child: Row(
@@ -163,7 +163,12 @@ class _EventPageState extends State<EventPage> {
                 _controller
                     .save("event/save", _controller.events.value)
                     .then((value) {
-                  Events event = Events.fromJson(value);
+                  // Events event = Events.fromJson(value);
+                  _controller.fetchAll("event/v1/get", Events());
+
+                  setState(() {
+                    sourceMeneger = SourceMeneger(listEvent: _controller.eventslist.value);
+                  });
                 });
                 Navigator.of(dialogContext).pop(); // Dismiss alert dialog
               },
@@ -201,11 +206,13 @@ class _EventPageState extends State<EventPage> {
                 alignment: Alignment.topLeft,
                 child: ElevatedButton(
                     onPressed: () {
+                      _controller.events.value = Events();
                       showDialogMeneger();
-
                     },
                     child: Text("Добавить"))),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Expanded(child: dataGrid()),
           ],
         ));
@@ -225,6 +232,23 @@ class _EventPageState extends State<EventPage> {
           selectionMode: SelectionMode.single,
           navigationMode: GridNavigationMode.cell,
           allowSorting: true,
+          onCellTap: (cell) {
+            if (cell.rowColumnIndex.columnIndex != 4) {
+              _controller.events.value = _controller
+                  .eventslist.value[cell.rowColumnIndex.rowIndex - 1];
+              showDialogMeneger();
+            }
+            if (cell.rowColumnIndex.columnIndex == 4) {
+              _controller.events.value = _controller
+                  .eventslist.value[cell.rowColumnIndex.rowIndex - 1];
+              _controller
+                  .removeById(
+                      "event/remove", _controller.events.value.id.toString())
+                  .then((value) {
+                _controller.fetchAll("event/v1/get", Events());
+              });
+            }
+          },
           columns: [
             GridColumn(
                 columnName: "id",
@@ -282,7 +306,7 @@ class _EventPageState extends State<EventPage> {
 }
 
 class SourceMeneger extends DataGridSource {
-  dynamic newCellValue;
+  //dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
   var formatter = new DateFormat('yyyy-MM-dd');
 
