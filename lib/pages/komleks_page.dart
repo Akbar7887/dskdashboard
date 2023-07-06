@@ -29,7 +29,7 @@ class KomleksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() => ListView(
           children: [
-             Container(
+            Container(
               height: 50,
               alignment: Alignment.center,
               child: Text(
@@ -512,11 +512,17 @@ class KomleksPage extends StatelessWidget {
                             _webImage,
                             '${_controller.kompleks.value.id.toString()}.png')
                         .then((value) {
-                      _controller.fetchAll("kompleks/v1/get", Kompleks());
-                      Navigator.of(dialogContext).pop();
+                      _controller.fetchAll("kompleks/v1/get", Kompleks()).then((value){
+                        Navigator.of(dialogContext).pop();
+                      });
+
                     }).catchError(() {
-                      Navigator.of(dialogContext).pop();
+                      _controller.fetchAll("kompleks/v1/get", Kompleks()).then((value){
+                        Navigator.of(dialogContext).pop();
+                      });
                     });
+
+
                   });
                 },
               ),
@@ -531,4 +537,3 @@ class KomleksPage extends StatelessWidget {
         });
   }
 }
-
