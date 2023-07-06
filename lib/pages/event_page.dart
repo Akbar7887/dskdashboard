@@ -247,17 +247,18 @@ class _EventPageState extends State<EventPage> {
                   .deletebyId(
                       "event/delete", _controller.events.value.id.toString())
                   .then((value) {
-                _controller.fetchAll("event/v1/get", Events()).then((value) {
-                  setState(() {
-                    // if (_controller.eventslist.value.length == 0) {
-                    //   _controller.eventslist.value = [];
-                    // } else {
-                     sourceMeneger =
-                          SourceMeneger(listEvent: _controller.eventslist.value);
-                    // }
-                  });
+                _controller.eventslist.value.remove(_controller.events.value);
+                // _controller.fetchAll("event/v1/get", Events()).then((value) {
+                setState(() {
+                  // if (_controller.eventslist.value.length == 0) {
+                  //   _controller.eventslist.value = [];
+                  // } else {
+                  sourceMeneger =
+                      SourceMeneger(listEvent: _controller.eventslist.value);
+                  // }
                 });
               });
+              // });
             }
           },
           columns: [
