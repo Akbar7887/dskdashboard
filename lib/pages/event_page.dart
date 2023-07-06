@@ -164,13 +164,15 @@ class _EventPageState extends State<EventPage> {
                     .save("event/save", _controller.events.value)
                     .then((value) {
                   // Events event = Events.fromJson(value);
-                  _controller.fetchAll("event/v1/get", Events());
+                  _controller.fetchAll("event/v1/get", Events()).then((value) {
+                    setState(() {
+                      sourceMeneger = SourceMeneger(
+                          listEvent: _controller.eventslist.value);
+                    });
 
-                  setState(() {
-                    sourceMeneger = SourceMeneger(listEvent: _controller.eventslist.value);
+                    Navigator.of(dialogContext).pop(); // Dismiss alert dialog
                   });
                 });
-                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
               },
             ),
             TextButton(
@@ -242,10 +244,19 @@ class _EventPageState extends State<EventPage> {
               _controller.events.value = _controller
                   .eventslist.value[cell.rowColumnIndex.rowIndex - 1];
               _controller
-                  .removeById(
-                      "event/remove", _controller.events.value.id.toString())
+                  .deletebyId(
+                      "event/delete", _controller.events.value.id.toString())
                   .then((value) {
-                _controller.fetchAll("event/v1/get", Events());
+                _controller.fetchAll("event/v1/get", Events()).then((value) {
+                  setState(() {
+                    // if (_controller.eventslist.value.length == 0) {
+                    //   _controller.eventslist.value = [];
+                    // } else {
+                     sourceMeneger =
+                          SourceMeneger(listEvent: _controller.eventslist.value);
+                    // }
+                  });
+                });
               });
             }
           },
@@ -309,6 +320,7 @@ class SourceMeneger extends DataGridSource {
   //dynamic newCellValue;
   TextEditingController editingController = TextEditingController();
   var formatter = new DateFormat('yyyy-MM-dd');
+  List<DataGridRow> _listDataRow = [];
 
   SourceMeneger({required List<Events> listEvent}) {
     _listDataRow = listEvent
@@ -327,8 +339,6 @@ class SourceMeneger extends DataGridSource {
             ]))
         .toList();
   }
-
-  List<DataGridRow> _listDataRow = [];
 
   List<DataGridRow> get rows => _listDataRow;
 
