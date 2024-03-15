@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
             children: [
               Expanded(
                 child: Container(
-                  color: Colors.white,
+                  color: Colors.blue,
                   child: ListView(
                     children: [
                       Container(

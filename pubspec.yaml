@@ -29,8 +29,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_fonts: ^4.0.2
-  http: ^0.13.4
+  google_fonts: ^4.0.5
+  http: ^1.0.0
   flutter_secure_storage: ^5.0.2
   toast: ^0.2.9
   intl: ^0.17.0
