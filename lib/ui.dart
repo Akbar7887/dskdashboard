@@ -14,5 +14,5 @@ class Ui {
   static final TextStyle fonttext = GoogleFonts.openSans(
       // fontSize: 20,
       fontWeight: FontWeight.w200,
-      color: Colors.white);
+      color: Colors.black);
 }

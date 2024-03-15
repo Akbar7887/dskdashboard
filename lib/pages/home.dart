@@ -36,12 +36,12 @@ class _HomeState extends State<Home> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
+            backgroundColor: Colors.blue,
             flexibleSpace: Container(
               padding: EdgeInsets.only(left: 100),
               alignment: Alignment.centerLeft,
               child: Text(
                 Ui.company,
-
               ),
             ),
           ),
@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
             children: [
               Expanded(
                 child: Container(
-                  color: Colors.red,
+                  color: Colors.white,
                   child: ListView(
                     children: [
                       Container(
