@@ -469,7 +469,9 @@ class _NewsPageState extends State<NewsPage> {
                 _controller.news.value.title = _titleControl.text;
                 _controller.news.value.description = _descriptionControl.text;
                 _controller.news.value.datacreate = _datacreateControl.text;
-
+                if(_controller.news.value.showmain == null){
+                  _controller.news.value.showmain = false;
+                }
                 _controller
                     .save("news/save", _controller.news.value)
                     .then((value) {
